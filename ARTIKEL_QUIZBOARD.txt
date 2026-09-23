@@ -1,0 +1,136 @@
+================================================================================
+PENGEMBANGAN QUIZBOARD: APLIKASI PEMUTAR KUIS KELAS OFFLINE BERBASIS FILE TEKS UNTUK MENUNJANG ASESMEN FORMATIF DALAM PEMBELAJARAN DI RUANG KELAS
+================================================================================
+
+NAMA LENGKAP    : [Nama Lengkap Anda — tanpa gelar]
+ALAMAT EMAIL    : [email@domain.ac.id]
+
+--------------------------------------------------------------------------------
+ABSTRAK
+--------------------------------------------------------------------------------
+Pemanfaatan kuis digital di kelas terbukti meningkatkan motivasi dan keterlibatan siswa, namun mayoritas platform kuis populer bersifat berlangganan, memerlukan akun dan koneksi internet, serta menuntut setiap siswa memiliki perangkat. Penelitian ini bertujuan mengembangkan QuizBoard, sebuah aplikasi pemutar kuis kelas yang berjalan sepenuhnya offline: guru cukup menyiapkan satu file teks (.txt) berisi soal pilihan ganda dan isian singkat, lalu menampilkannya satu per satu di proyektor atau layar besar dengan timer dan panel kendali guru. Siswa menjawab secara lisan atau di buku, sehingga aplikasi tidak memerlukan perangkat, akun, maupun data siswa. Metode penelitian yang digunakan adalah research and development (R&D) dengan model waterfall yang disertai pengujian fungsi secara black-box dan observasi penggunaan. Hasil pengembangan menunjukkan bahwa QuizBoard mampu (1) mengimpor dan memvalidasi template soal campuran (pilihan ganda dan isian singkat) dari satu file .txt dengan pesan galat yang menyebut nomor soal yang bermasalah, (2) menyajikan presentasi satu soal per layar penuh dengan timer terpisah untuk tiap tipe soal, mode latihan dan mode penilaian harian, pengacakan soal maupun opsi jawaban, serta efek suara, dan (3) menghasilkan kunci jawaban cetak untuk penilaian manual guru. Aplikasi dibangun dengan React 19, TypeScript, dan Vite tanpa dependensi UI eksternal sehingga ringan dijalankan pada komputer sekolah. QuizBoard memberikan alternatif asesmen formatif berbiaya nol yang selaras dengan prinsip penguatan memori (retrieval practice) dan umpan balik segera, sekaligus menutup kesenjangan infrastruktur yang menjadi hambatan adopsi platform kuis komersial.
+
+Kata kunci: kuis digital, asesmen formatif, retrieval practice, gamifikasi, aplikasi kelas, offline-first
+
+--------------------------------------------------------------------------------
+1. PENDAHULUAN
+--------------------------------------------------------------------------------
+1.1 Latar Belakang
+Asesmen formatif merupakan salah satu intervensi pembelajaran dengan dampak terbesar terhadap capaian siswa. Black dan Wiliam (1998), dalam tinjauan sistematis terhadap lebih dari 250 studi, menyimpulkan bahwa praktik penilaian formatif — mengumpulkan bukti pemahaman siswa selama proses belajar dan memakainya untuk menyesuaikan pengajaran — menghasilkan peningkatan belajar yang signifikan pada berbagai jenjang dan mata pelajaran. Namun pada praktiknya, sesi kuis singkat di tengah pembelajaran sering terhambat oleh beban administratif guru: menyiapkan soal, mencetak lembar, mengoreksi, dan mengelola waktu kelas.
+
+Platform kuis digital seperti Kahoot! telah menunjukkan efektivitas pada dimensi motivasi dan dinamika kelas. Tinjauan literatur atas 93 studi yang melibatkan hampir 50.000 partisipan menemukan bahwa Kahoot! berdampak positif terhadap kinerja belajar, dinamika kelas, sikap, dan kecemasan ujian (Wang & Tahir, 2020). Temuan serupa dilaporkan Licorish, Owen, George, dan Daniel (2018) yang mencatat bahwa pengalaman siswa terhadap kuis bergaya permainan memperkaya keterlibatan, motivasi, dan pengalaman belajar mereka. Secara lebih luas, tinjauan sistematis Zainuddin, Chu, Shujahat, dan Perera (2020) atas 39 studi empiris memastikan bahwa gamifikasi berdampak positif terhadap keterlibatan siswa maupun hasil belajar kognitif, psikomotor, dan afektif, meskipun Hamari, Koivisto, dan Sarsa (2014) telah lebih dulu mengingatkan bahwa efek gamifikasi bersifat kontekstual dan bergantung pada kualitas implementasi serta konteks penggunanya.
+
+Di balik keberhasilan tersebut, terdapat tiga hambatan adopsi yang nyata pada sekolah di Indonesia: (a) hampir seluruh platform populer berbasis langganan atau membatasi fitur pada versi gratis; (b) semuanya mensyaratkan koneksi internet stabil dan setiap siswa memiliki perangkat yang terhubung ke server; dan (c) sebagian besar menuntut guru maupun siswa membuat akun. Padahal pada banyak kelas, kendala justru terletak pada jumlah perangkat siswa dan kualitas jaringan, bukan pada kemauan guru. Selain itu, tidak semua tujuan asesmen memerlukan penilaian otomatis per siswa: untuk asesmen formatif sehari-hari, guru kerap lebih membutuhkan media penyaji soal yang baik di layar besar sementara siswa menjawab secara lisan atau di buku, dan koreksi dilakukan guru sendiri.
+
+Berdasarkan permasalahan tersebut, penelitian ini mengembangkan QuizBoard: aplikasi pemutar kuis kelas yang offline-first, tanpa akun, tanpa pengumpulan data siswa, dan cukup dioperasikan dari satu komputer guru. Model interaksinya sengaja dibalik dari platform komersial: alih-alih setiap siswa bermain pada perangkat masing-masing, seluruh yang perlu dilihat siswa — teks soal, nomor soal, timer, jawaban yang diungkap — berada di satu layar besar (proyektor atau TV), sementara guru mengendalikan alur kuis dari bar kendali di bagian bawah layar.
+
+1.2 Tujuan
+Tujuan penelitian ini adalah: (1) merancang dan membangun aplikasi pemutar kuis kelas berbasis web yang dapat dijalankan sepenuhnya offline pada komputer guru, tanpa akun dan tanpa pengumpulan data siswa; (2) mengimplementasikan format template soal berbasis file teks (.txt) yang mudah ditulis guru, mencakup soal pilihan ganda dan isian singkat dalam satu file yang sama (kuis campuran), lengkap dengan validasi yang informatif; (3) menyediakan fitur pendukung asesmen formatif, yaitu mode latihan (jawaban dapat dibuka untuk umpan balik segera) dan mode penilaian harian (jawaban tidak ditampilkan), timer terpisah per tipe soal, pengacakan soal dan opsi jawaban, pratinjau soal, serta kunci jawaban siap cetak; dan (4) menguji fungsionalitas aplikasi secara black-box terhadap kriteria penerimaan yang ditetapkan.
+
+1.3 Penjabaran Teori
+Kerangka teoretis pengembangan QuizBoard berpijak pada tiga pilar. Pertama, asesmen formatif. Black dan Wiliam (1998) menegaskan bahwa asesmen hanya menjadi formatif apabila bukti belajar siswa benar-benar digunakan guru untuk menyesuaikan langkah pembelajaran berikutnya. Dari prinsip ini, QuizBoard tidak berhenti pada penyajian soal: guru diberi sarana untuk membuka kunci jawaban di depan kelas (umpan balik segera) pada mode latihan, atau menahan jawaban pada mode penilaian harian ketika kuis digunakan sebagai instrumen penilaian harian. Kunci jawaban yang dapat dicetak memastikan keputusan pembelajaran tetap di tangan guru, bukan sistem.
+
+Kedua, retrieval practice atau testing effect. Roediger dan Karpicke (2006) membuktikan secara eksperimental bahwa mengambil jawaban dari ingatan (bukan membaca ulang materi) meningkatkan retensi jangka panjang secara signifikan. Kuis kelas yang dijalankan rutin merupakan wujud sederhana dari retrieval practice; karenanya QuizBoard dirancang agar siklus soal — jawab — ungkap jawaban dapat berlangsung cepat dan berulang: guru menyiapkan soal sekali dalam file teks, lalu kuis dapat diulang kapan pun dengan urutan dan opsi yang diacak.
+
+Ketiga, penerimaan teknologi dan gamifikasi. Model TAM (Technology Acceptance Model) menempatkan persepsi kegunaan (perceived usefulness) dan persepsi kemudahan penggunaan (perceived ease of use) sebagai determinan utama penerimaan sebuah teknologi oleh penggunanya (Davis, 1989). QuizBoard merespons kedua persepsi tersebut dengan menekan seluruh beban kerja menjadi dua langkah: menyiapkan satu file .txt, lalu membuka aplikasi — tanpa akun, tanpa konfigurasi server, tanpa koneksi internet. Untuk dimensi motivasi, prinsip gamifikasi dipinjam secara selektif: timer visual, maskot, efek suara, dan transisi antar soal hadir bukan sebagai papan peringkat kompetitif yang menurut Hamari et al. (2014) efektivitasnya bergantung konteks, melainkan sebagai elemen ritme dan energi kelas. Desain ini pula yang menjaga keselarasan dengan temuan Zainuddin et al. (2020) bahwa dampak gamifikasi terkuat hadir ketika elemen permainan melayani tujuan pembelajaran, bukan sebaliknya.
+
+--------------------------------------------------------------------------------
+2. METODE PENELITIAN
+--------------------------------------------------------------------------------
+2.1 Jenis dan Model Penelitian
+Penelitian ini merupakan penelitian pengembangan (research and development) dengan pendekatan kualitatif-deskriptif terhadap proses dan hasil pengembangan. Model pengembangan mengikuti pola waterfall dengan tahap: (1) analisis kebutuhan, (2) perancangan format dan antarmuka, (3) implementasi, (4) pengujian fungsional, dan (5) refleksi hasil penggunaan.
+
+2.2 Analisis Kebutuhan
+Analisis kebutuhan dilakukan dengan mengidentifikasi hambatan guru dalam melaksanakan kuis kelas: ketergantungan internet, biaya langganan, keharusan perangkat dan akun siswa, serta kerumitan alur persiapan soal. Kebutuhan fungsional yang ditetapkan adalah: impor template soal dari satu file .txt; validasi dengan pesan galat yang menyebut nomor soal; presentasi satu soal per layar penuh; timer terpisah untuk soal pilihan ganda dan isian singkat; mode latihan dan mode penilaian harian; pengacakan soal dan opsi jawaban; pratinjau soal dan jawaban; kunci jawaban cetak; kontrol guru (jeda, lewati, ungkap jawaban, bisu, layar penuh, keluar); serta penyimpanan sesi terakhir secara lokal.
+
+2.3 Perancangan
+Perancangan mencakup dua artefak utama. Pertama, format template soal: file teks polos dengan baris judul (Title:), baris pertanyaan bernomor, opsi A sampai D untuk soal pilihan ganda, baris Answer: untuk kunci (huruf bagi pilihan ganda, teks jawaban bagi isian singkat), pemisah tanda pipa (|) untuk jawaban alternatif, serta baris komentar yang diawali tanda pagar (#) dan diabaikan. Kedua, arah desain antarmuka: satu soal per layar penuh dengan tipografi besar yang terbaca dari baris belakang kelas, timer visual, bar kendali guru di bagian bawah, serta prinsip bahwa apa pun yang ditampilkan siswa harus dapat dibaca tanpa keraguan.
+
+2.4 Implementasi
+Aplikasi diimplementasikan sebagai aplikasi web satu halaman (single-page application) dengan React 19 dan TypeScript, dibangun dengan Vite, tanpa pustaka UI eksternal sehingga seluruh gaya dikendalikan lewat CSS internal. Struktur kode terdiri atas modul tipe domain (types.ts), parser template (parser.ts), penyimpanan sesi pada localStorage (storage.ts), efek suara berbasis Web Audio tanpa berkas audio (audio.ts), kuis contoh (demo.ts), serta komponen utama App.tsx yang memuat seluruh layar (impor, pengaturan, presentasi, selesai) dan mesin state presentasi.
+
+Beberapa keputusan teknis penting diambil sebagai berikut. Tipe Question dimodelkan sebagai discriminated union antara MultipleChoiceQuestion dan ShortAnswerQuestion, sehingga compiler TypeScript memastikan setiap pemakaian field memeriksa tipe soal terlebih dahulu. Parser mendeteksi tipe soal dari struktur baris: baris opsi A-D setelah pertanyaan berarti pilihan ganda, sedangkan pertanyaan yang langsung diikuti Answer: berarti isian singkat; jawaban isian dinormalisasi (trim dan case-insensitive) dan mendukung beberapa jawaban alternatif yang dipisah tanda pipa. Template lama (semua pilihan ganda) dijamin tetap terbaca tanpa perubahan (backward compatible). Seluruh data sesi disimpan pada localStorage peramban; tidak ada data siswa yang dikirim atau disimpan di mana pun.
+
+2.5 Teknik dan Instrumen Pengumpulan Data
+Data yang dikumpulkan berupa (a) hasil pengujian fungsional black-box terhadap kriteria penerimaan, (b) log hasil pengujian lint (oxlint) dan build (tsc + vite), dan (c) catatan observasi alur penggunaan dari persiapan soal hingga penutupan kuis.
+
+2.6 Teknik Analisis Data
+Analisis dilakukan secara deskriptif: setiap kriteria penerimaan dinilai lulus atau tidak lulus terhadap perilaku aplikasi, galat yang ditemukan didokumentasikan dan diperbaiki hingga seluruh kriteria lulus, lalu hasil pengujian disajikan sebagai narasi capaian fungsionalitas.
+
+--------------------------------------------------------------------------------
+3. HASIL DAN PEMBAHASAN
+--------------------------------------------------------------------------------
+3.1 Hasil Pengembangan Aplikasi
+Hasil pengembangan adalah QuizBoard, aplikasi web satu halaman yang berjalan sepenuhnya di komputer guru. Alur penggunaan terdiri atas empat layar: impor, pengaturan, presentasi, dan selesai.
+
+3.1.1 Impor template soal
+Guru menyeret (drag and drop) file .txt atau memilihnya lewat dialog berkas. Parser membaca judul kuis, lalu mem-parsing soal satu per satu. Dua tipe soal didukung dalam satu file yang sama, misalnya:
+
+    Title: IPA - Sistem Pernapasan Manusia
+
+    # Baris yang diawali # adalah komentar dan diabaikan
+
+    1. Organ tubuh utama yang berfungsi dalam sistem pernapasan adalah?
+    A. Jantung
+    B. Paru-paru
+    C. Lambung
+    D. Ginjal
+    Answer: B
+
+    2. Proses pertukaran oksigen dan karbon dioksida di tubuh disebut?
+    Answer: Pernapasan | Respirasi
+
+Validasi yang ditegakkan mencakup: soal pilihan ganda wajib memiliki tepat empat opsi A-D dan kunci berupa satu huruf; soal isian singkat wajib memiliki teks jawaban minimal satu; dan kegagalan format menghentikan impor dengan pesan yang menyebut nomor soal yang bermasalah sehingga guru langsung tahu baris mana yang diperbaiki. Nomor soal boleh bolong, komentar diabaikan, dan tombol Download Template menghasilkan berkas contoh yang dapat langsung diimpor ulang tanpa galat.
+
+3.1.2 Pengaturan kuis
+Sebelum presentasi, guru meninjau soal melalui pratinjau (termasuk durasi timer yang akan dipakai), mencetak kunci jawaban, lalu menyetel mode penilaian harian atau latihan, durasi timer terpisah untuk soal pilihan ganda dan isian singkat, pengacakan soal dan pengacakan opsi jawaban, serta setelan suara. Ketika guru menutup aplikasi di tengah sesi, kuis beserta setelan dan posisi soal terakhir tersimpan di localStorage dan ditawarkan untuk dilanjutkan pada sesi berikutnya.
+
+3.1.3 Presentasi
+Setiap soal ditampilkan satu per satu pada layar penuh: nomor soal, teks soal berukuran besar, dan timer visual yang mengalir. Soal pilihan ganda disajikan sebagai empat kartu opsi; soal isian singkat disajikan sebagai kartu isian terbuka dengan ikon dan placeholder "Jawabanmu?" — tanpa kolom input, karena siswa menjawab secara lisan atau di buku. Setiap soal diberi lencana tipe ("Pilihan Ganda" atau "Isian Singkat") agar kelas selalu tahu cara menjawab. Bar kendali di bagian bawah layar memuat: jeda, lewati soal, tampilkan/sembunyikan jawaban (mode latihan), kunci jawaban, bisu, layar penuh, dan keluar. Papan ketik juga didukung: F layar penuh, N soal berikutnya, Spasi/P jeda, Esc menutup dialog.
+
+Ketika waktu habis, mode latihan mengungkap jawaban dengan animasi (seluruh jawaban alternatif isian ditampilkan dipisah garis miring), sedangkan mode penilaian harian hanya menampilkan layar "waktu habis" lalu melanjutkan ke soal berikutnya tanpa membocorkan jawaban. Efek suara dibangkitkan dengan Web Audio API tanpa berkas audio sehingga aplikasi tetap berjalan tanpa koneksi internet.
+
+3.1.4 Penutup kuis dan kunci jawaban
+Setelah soal terakhir, layar penutup menandai selesainya kuis. Kunci jawaban dapat dicetak kapan saja berupa satu lembar berisi nomor, tipe soal, jawaban (huruf atau teks beserta alternatifnya), dan teks soal — sarana koreksi manual guru setelah kelas berjalan.
+
+3.2 Hasil Pengujian Fungsional
+Pengujian black-box dilakukan terhadap sembilan kriteria penerimaan utama. Pertama, impor template lama (semua pilihan ganda) berhasil dengan tampilan dan jalannya kuis yang identik dengan perilaku sebelumnya, sehingga kompatibilitas mundur terjaga. Kedua, impor template campuran (pilihan ganda dan isian singkat berselang-seling) berhasil; jumlah soal terhitung benar dan urutan tampil sesuai berkas. Ketiga, soal isian singkat pada presentasi tampil sebagai kartu isian tanpa grid opsi, dan timer, jeda, lewati, serta layar penuh berjalan normal. Keempat, pada mode latihan, tombol ungkap jawaban dan pengungkapan otomatis saat waktu habis menampilkan jawaban isian termasuk semua alternatif dengan animasi yang konsisten, dan dapat disembunyikan kembali. Kelima, pada mode penilaian harian, jawaban (baik pilihan ganda maupun isian) tidak pernah ditampilkan, sementara kunci jawaban bagi guru tetap memuat jawaban teks. Keenam, pengacakan jawaban hanya memengaruhi soal pilihan ganda; soal isian tidak terpengaruh dan tidak menimbulkan galat. Ketujuh, soal isian tanpa Answer: atau dengan Answer: kosong gagal diimpor dengan pesan yang jelas menyebut nomor soal dan tipenya. Kedelapan, komentar diawali # diabaikan parser, dan berkas hasil Download Template dapat langsung diimpor ulang tanpa galat. Kesembilan, kuis contoh (Try Demo) berisi campuran pilihan ganda dan isian singkat dan berjalan mulus dari awal hingga akhir.
+
+Seluruh kriteria dinyatakan lulus. Pemeriksaan kualitas kode menunjukkan build produksi (tsc -b && vite build) selesai tanpa galat tipe, dan pemeriksaan lint oxlint tidak menemukan galat. Ukuran bundle produksi terkompresi berada di kisaran 72 kB (gzip), cukup ringan untuk dijalankan pada komputer sekolah yang lawas. Aplikasi dapat disebar dengan menyalin folder hasil build disertai skrip peluncur yang menyalakan server statis lokal, sehingga persiapan di PC kelas tidak memerlukan instalasi tambahan selain Node.js atau penyalinan folder build.
+
+3.3 Pembahasan
+Hasil pengembangan menunjukkan bahwa hampir seluruh manfaat motivasional dan formatif dari kuis kelas digital dapat dicapai tanpa akun, tanpa internet, dan tanpa perangkat siswa. Dari kacamata asesmen formatif, QuizBoard memfasilitasi siklus umpan balik yang dianjurkan Black dan Wiliam (1998): bukti pemahaman siswa terkumpul cepat (jawaban lisan/buku saat soal tampil), ungkapan kunci jawaban memberi umpan balik segera di depan kelas pada mode latihan, dan guru memegang kendali penuh atas keputusan tindak lanjut melalui mode penilaian harian serta kunci jawaban cetak. Dari kacamata retrieval practice, kemudahan menyiapkan dan mengulang kuis (satu file teks, opsi acak) mendorong pengulangan pengambilan jawaban dari ingatan yang oleh Roediger dan Karpicke (2006) terbukti memperkuat retensi jangka panjang — bukan sekadar kesenangan sesaat.
+
+Dari kacamata penerimaan teknologi, pembatasan beban masuk adalah keputusan desain yang paling menentukan. Davis (1989) menempatkan persepsi kemudahan penggunaan sebagai prediktor penerimaan; dengan meniadakan akun, konfigurasi server, dan koneksi jaringan, biaya adopsi QuizBoard turun ke titik minimum: menulis soal dalam teks polos. Format file teks juga memiliki efek samping yang berharga bagi guru: soal mudah dibagikan, disimpan, dicetak, dan diedit dengan alat apa pun, tanpa ketergantungan pada format berkas milik platform tertentu.
+
+Elemen gamifikasi yang dipinjam sengaja dibatasi pada timer visual, maskot, suara, dan transisi. Pilihan ini selaras dengan catatan Hamari et al. (2014) bahwa efek gamifikasi tidak otomatis dan sangat bergantung konteks, serta temuan Zainuddin et al. (2020) bahwa dampak positif terkuat hadir ketika elemen permainan mendukung proses belajar. Ketiadaan papan peringkat adalah keputusan yang disadari: pada mode penilaian harian, kompetisi antarindividu justru dapat mengganggu fungsi asesmen, sementara ritme kuis yang hidup — yang dipertahankan lewat timer dan transisi — tetap memberi energi kelas sebagaimana dilaporkan pada studi pengalaman siswa terhadap kuis bergaya permainan (Licorish et al., 2018; Wang & Tahir, 2020).
+
+Perbandingan dengan platform komersial memperlihatkan trade-off yang jujur. QuizBoard tidak menilai jawaban otomatis, tidak merekam skor per siswa, dan tidak menyediakan analitik. Pada konteks tempat platform komersial dapat berjalan baik, fitur-fitur tersebut jelas lebih lengkap di sana. Namun pada konteks yang menjadi sasaran pengembangan — kelas tanpa perangkat siswa, jaringan tidak stabil, atau anggaran nol — fitur tersebut justru tidak relevan sebelum hambatan infrastruktur terselesaikan. QuizBoard mengisi celah ini: sebagian besar manfaat formatif dan motivasional dengan biaya adopsi mendekati nol.
+
+Keterbatasan penelitian ini mencakup: (a) pengujian masih berupa pengujian fungsional black-box dan observasi penggunaan, belum eksperimen kuasi terhadap hasil belajar; (b) tipe soal terbatas pada pilihan ganda dan isian singkat; (c) pencocokan jawaban isian hanya dilakukan pada tingkat normalisasi teks (trim dan case-insensitive), belum memperhitungkan variasi ejaan yang luas; dan (d) belum ada penelusuran pengalaman guru pengguna dalam skala luas.
+
+--------------------------------------------------------------------------------
+4. KESIMPULAN DAN SARAN
+--------------------------------------------------------------------------------
+4.1 Kesimpulan
+Pertama, QuizBoard berhasil dikembangkan sebagai aplikasi pemutar kuis kelas offline berbasis web dengan React 19 dan TypeScript: guru menyiapkan satu file .txt, memeriksa soal, lalu menampilkannya satu per satu di layar besar dengan timer dan kendali lengkap di tangan guru — tanpa akun, tanpa internet, dan tanpa perangkat siswa. Kedua, format template teks campuran (pilihan ganda dan isian singkat dalam satu berkas, termasuk jawaban alternatif dipisah tanda pipa) terbukti dapat diparsing secara andal dengan validasi informatif yang menyebut nomor soal bermasalah, dan tetap kompatibel mundur dengan template lama. Ketiga, sembilan kriteria penerimaan fungsional lulus seluruhnya pada pengujian black-box, disertai build produksi tanpa galat tipe dan lint tanpa galat, dengan bundle terkompresi sekitar 72 kB. Keempat, secara teoretis, desain aplikasi menjalankan prinsip asesmen formatif (Black & Wiliam, 1998), memfasilitasi retrieval practice (Roediger & Karpicke, 2006), dan menerapkan gamifikasi secara selektif sesuai temuan literatur (Hamari et al., 2014; Zainuddin et al., 2020), sambil menekan beban adopsi sesuai prediktor penerimaan teknologi pada TAM (Davis, 1989).
+
+4.2 Saran
+Penelitian lanjutan disarankan menguji dampak penggunaan QuizBoard terhadap hasil belajar melalui eksperimen kuasi (pretest-posttest) pada mata pelajaran tertentu. Fitur yang layak dikembangkan berikutnya meliputi tipe soal benar/salah dan menjodohkan, ekspor hasil penilaian guru ke berkas rekap, mode tim (papan peringkat kelompok, bukan individu), serta pencocokan jawaban isian yang lebih toleran terhadap variasi ejaan. Bagi guru, disarankan memanfaatkan mode latihan untuk penguatan rutin (retrieval practice) dan mode penilaian harian untuk asesmen yang jawabannya tidak boleh terbuka, serta menyiapkan soal jauh di muka dan menyimpannya sebagai pustaka file teks yang dapat dipakai ulang antar tahun ajaran. Bagi pengembang aplikasi kelas pada umumnya, hasil penelitian ini menunjukkan bahwa membalik asumsi "satu siswa satu perangkat" menjadi "satu layar kelas" adalah jalur yang layak untuk konteks infrastruktur terbatas, tanpa mengorbankan manfaat pedagogis inti.
+
+--------------------------------------------------------------------------------
+DAFTAR PUSTAKA
+--------------------------------------------------------------------------------
+Black, P., & Wiliam, D. (1998). Assessment and classroom learning. Assessment in Education: Principles, Policy & Practice, 5(1), 7-74. https://doi.org/10.1080/0969595980050102
+
+Davis, F. D. (1989). Perceived usefulness, perceived ease of use, and user acceptance of information technology. MIS Quarterly, 13(3), 319-340. https://doi.org/10.2307/249008
+
+Hamari, J., Koivisto, J., & Sarsa, H. (2014). Does gamification work? — A literature review of empirical studies on gamification. Proceedings of the 47th Hawaii International Conference on System Sciences (HICSS), 3025-3034. https://doi.org/10.1109/HICSS.2014.377
+
+Licorish, S. A., Owen, H. E., George, J. L., & Daniel, B. K. (2018). Students' perception of Kahoot!'s influence on teaching and learning: A game-based technology assessment tool. Smart Learning Environments, 5, Article 9. https://doi.org/10.1186/s41039-018-0078-8
+
+Roediger, H. L., III, & Karpicke, J. D. (2006). Test-enhanced learning: Taking memory tests improves long-term retention. Psychological Science, 17(3), 249-255. https://doi.org/10.1111/j.1467-9280.2006.01693.x
+
+Wang, A. I., & Tahir, R. (2020). The effect of using Kahoot! for learning — A literature review. Computers & Education, 149, Article 103818. https://doi.org/10.1016/j.compedu.2020.103818
+
+Zainuddin, Z., Chu, S. K. W., Shujahat, M., & Perera, C. J. (2020). The impact of gamification on learning and instruction: A systematic review of empirical evidence. Educational Research Review, 30, Article 100326. https://doi.org/10.1016/j.edurev.2020.100326

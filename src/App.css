@@ -1,0 +1,2313 @@
+/* ===== Design Tokens ===== */
+/* Arah "Lembar": kertas ujian, tinta cetak, pena merah guru. Lihat DESIGN.md.
+   Dua warna inti (kertas, tinta) plus satu aksen (pena). Nama --md-sys-color-* di bawah ini
+   adalah lapisan alias supaya 190 aturan yang sudah ada tetap bekerja; mengganti nama peran
+   adalah pekerjaan terpisah, bukan sesuatu yang diselundupkan di tengah penggantian palet. */
+:root {
+  --paper: #F4F5F1;
+  --sheet: #FFFFFF;
+  --ink: #14181C;
+  --ink-soft: #5A6168;
+  --rule: #9AA096;
+  --pen: #B4231C;
+  --pen-wash: #F4E4E1;
+
+  /* Papan yang menarik perhatian (countdown, waktu habis): permukaan yang berlawanan dengan
+     kertas di sekitarnya. Di tema terang ia papan gelap, di tema gelap ia papan terang.
+     Teksnya selalu di atas 14:1, jadi ia tetap terbaca dari baris belakang. */
+  --overlay-plate: var(--ink);
+  --overlay-ink: var(--paper);
+
+  /* Tinta menggantikan indigo: satu warna untuk semua yang berbahasa */
+  --md-sys-color-primary: var(--ink);
+  --md-sys-color-on-primary: var(--sheet);
+  --md-sys-color-primary-container: #E9ECE6;
+  --md-sys-color-on-primary-container: var(--ink);
+
+  /* Pena menggantikan amber, sage, coral, dan warning sekaligus: satu aksen, satu arti */
+  --md-sys-color-secondary: var(--pen);
+  --md-sys-color-on-secondary: var(--sheet);
+  --md-sys-color-secondary-container: var(--pen-wash);
+  --md-sys-color-on-secondary-container: var(--pen);
+
+  --md-sys-color-tertiary: var(--pen);
+  --md-sys-color-on-tertiary: var(--sheet);
+  --md-sys-color-tertiary-container: var(--pen-wash);
+  --md-sys-color-on-tertiary-container: var(--pen);
+
+  --md-sys-color-error: var(--pen);
+  --md-sys-color-on-error: var(--sheet);
+  --md-sys-color-error-container: var(--pen-wash);
+  --md-sys-color-on-error-container: var(--pen);
+
+  --md-sys-color-warning: var(--pen);
+  --md-sys-color-warning-container: var(--pen-wash);
+
+  /* Kertas: ruang lebih gelap, lembar lebih terang. Hierarki tanpa satu pun bayangan. */
+  --md-sys-color-surface: var(--paper);
+  --md-sys-color-on-surface: var(--ink);
+  --md-sys-color-surface-variant: #EDEFEA;
+  --md-sys-color-on-surface-variant: var(--ink-soft);
+  --md-sys-color-surface-container: #EDEFEA;
+  --md-sys-color-surface-container-low: #F8F9F6;
+  --md-sys-color-surface-container-high: #E5E8E1;
+  --md-sys-color-surface-container-highest: #DEE2DA;
+
+  /* Garis: pemisah struktural. Batas kontrol interaktif memakai ink-soft (syarat 3:1) */
+  --md-sys-color-outline: var(--ink-soft);
+  --md-sys-color-outline-variant: var(--rule);
+
+  --md-sys-color-inverse-surface: var(--ink);
+  --md-sys-color-inverse-on-surface: var(--paper);
+  --md-sys-color-inverse-primary: var(--pen);
+
+  /* Tipografi: satu keluarga untuk semua teks, satu lagi hanya untuk angka */
+  --md-sys-typescale-display-large: 800 clamp(1.75rem, 3.4vw, 3.25rem)/1.2 'Plus Jakarta Sans', sans-serif;
+  --md-sys-typescale-display-medium: 700 clamp(1.5rem, 2.6vw, 2.4rem)/1.25 'Plus Jakarta Sans', sans-serif;
+  --md-sys-typescale-headline-large: 700 clamp(1.25rem, 2.2vw, 2rem)/1.25 'Plus Jakarta Sans', sans-serif;
+  --md-sys-typescale-headline-medium: 600 clamp(1.05rem, 1.6vw, 1.5rem)/1.3 'Plus Jakarta Sans', sans-serif;
+  --md-sys-typescale-title-large: 600 1.25rem/1.4 'Plus Jakarta Sans', sans-serif;
+  --md-sys-typescale-title-medium: 600 1rem/1.4 'Plus Jakarta Sans', sans-serif;
+  --md-sys-typescale-body-large: 400 clamp(1rem, 1.1vw, 1.125rem)/1.6 'Plus Jakarta Sans', sans-serif;
+  --md-sys-typescale-body-medium: 400 0.875rem/1.55 'Plus Jakarta Sans', sans-serif;
+  --md-sys-typescale-label-large: 600 0.875rem/1.4 'Plus Jakarta Sans', sans-serif;
+  --md-sys-typescale-label-medium: 600 0.8125rem/1.4 'Plus Jakarta Sans', sans-serif;
+
+  /* Skala khusus layar presentasi, dibaca dari 3 sampai 8 meter */
+  --type-soal: 700 clamp(1.75rem, 3.4vw, 3.25rem)/1.25 'Plus Jakarta Sans', sans-serif;
+  --type-pilihan: 500 clamp(1.125rem, 1.9vw, 1.75rem)/1.35 'Plus Jakarta Sans', sans-serif;
+  --type-mesin: 700 clamp(1.25rem, 1.9vw, 2rem)/1 'Space Mono', monospace;
+  --type-label: 600 0.8125rem/1.4 'Plus Jakarta Sans', sans-serif;
+
+  /* Elevasi: hanya panel yang menutup layar yang naik. Kartu memakai garis, bukan bayangan. */
+  --md-sys-elevation-1: none;
+  --md-sys-elevation-2: 0 10px 30px rgba(20,24,28,0.16);
+  --md-sys-elevation-3: 0 18px 50px rgba(20,24,28,0.22);
+
+  /* Bentuk: sudut punya arti. 0 untuk kertas, 4px untuk yang disentuh, bulat hanya gelembung. */
+  --md-sys-shape-corner-small: 4px;
+  --md-sys-shape-corner-medium: 0;
+  --md-sys-shape-corner-large: 0;
+  --md-sys-shape-corner-extra-large: 0;
+  --md-sys-shape-corner-full: 9999px;
+
+  /* Motion */
+  --md-sys-motion-easing-standard: cubic-bezier(0.2, 0, 0, 1);
+  --md-sys-motion-easing-emphasized: cubic-bezier(0.2, 0, 0, 1);
+  --md-sys-motion-easing-decelerate: cubic-bezier(0, 0, 0, 1);
+  --md-sys-motion-easing-accelerate: cubic-bezier(0.3, 0, 0.8, 0.15);
+  --md-sys-motion-duration-short1: 50ms;
+  --md-sys-motion-duration-short2: 100ms;
+  --md-sys-motion-duration-short3: 150ms;
+  --md-sys-motion-duration-short4: 200ms;
+  --md-sys-motion-duration-medium1: 250ms;
+  --md-sys-motion-duration-medium2: 300ms;
+  --md-sys-motion-duration-medium3: 350ms;
+  --md-sys-motion-duration-medium4: 400ms;
+  --md-sys-motion-duration-long1: 450ms;
+  --md-sys-motion-duration-long2: 500ms;
+}
+
+/* ===== Design Tokens: Tema Gelap =====
+   Peran warnanya dibalik, bukan sekadar digelapkan: tinta pindah ke warna terang, meja jadi
+   gelap, dan lembar tetap satu tingkat lebih terang dari meja supaya hierarki kertas/lembar
+   yang sama masih terbaca. Aturan desainnya tidak berubah, hanya nilainya: satu tinta, satu
+   pena, satu tangga permukaan.
+
+   Rasio yang dijaga (dihitung terhadap pasangan di bawah, bukan dikira-kira):
+   - ink di atas sheet 14,0:1 (teks soal, dibaca dari 8 meter)
+   - ink di atas pen-wash 13,3:1 (baris jawaban yang ditandai pena)
+   - ink-soft di atas paper 8,1:1 dan di atas sheet 7,1:1 (batas kontrol, minimum 3:1)
+   - pen di atas sheet 6,1:1 dan di atas pen-wash 5,8:1 (angka timer kritis, teks kunci jawaban)
+   - on-primary di atas primary, dan overlay-ink di atas overlay-plate 15,0:1 */
+:root[data-theme='dark'] {
+  --paper: #14181C; /* meja: permukaan paling gelap */
+  --sheet: #1E242A; /* lembar di atas meja */
+  --ink: #F1F3EF; /* tinta: warna semua yang berbahasa */
+  --ink-soft: #A8B0B8;
+  --rule: #4E5760;
+
+  /* Pena naik ke coral. Merah tema terang (#B4231C) di atas lembar gelap hanya 2,38:1, jadi
+     ia berhenti jadi penanda dan berubah jadi bercak. Coral ini mempertahankan arti yang sama:
+     satu-satunya warna hangat, dipakai sesedikit mungkin. */
+  --pen: #FF7A66;
+  --pen-wash: #3A211E;
+
+  /* Momen menarik perhatian dibalik jadi papan terang. Dipakai abu kertas, bukan putih murni:
+     layar gelap sepanjang kuis lalu dikejutkan putih 100% justru mengembalikan silau yang
+     dihindari saat guru memilih tema ini. */
+  --overlay-plate: #E9ECE6;
+  --overlay-ink: #14181C;
+
+  /* Tangga permukaan, urutan terangnya sama dengan tema terang: makin tinggi, makin jauh dari
+     meja. Nilai literal di :root tidak ikut turunan warna inti, jadi harus ditulis ulang. */
+  --md-sys-color-primary-container: #262E37;
+  --md-sys-color-surface-variant: #202730;
+  --md-sys-color-surface-container: #222A33;
+  --md-sys-color-surface-container-low: #1A2026;
+  --md-sys-color-surface-container-high: #28313A;
+  --md-sys-color-surface-container-highest: #2E3843;
+
+  /* Bayangan hitam 16% tidak terlihat di atas latar gelap, jadi ia diperdalam, bukan dihapus:
+     panel yang menutup layar tetap harus terbaca sebagai benda yang naik. */
+  --md-sys-elevation-2: 0 10px 30px rgba(0, 0, 0, 0.5);
+  --md-sys-elevation-3: 0 18px 50px rgba(0, 0, 0, 0.62);
+}
+
+/* ===== App Shell ===== */
+.app-shell {
+  height: 100vh; /* fallback for browsers without dynamic viewport units */
+  height: 100dvh; /* tracks the real visible viewport so mobile browser chrome never clips the screen */
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  background: var(--md-sys-color-surface);
+  overflow: hidden;
+  position: relative;
+}
+
+/* ===== Header ===== */
+.app-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 24px;
+  background: var(--md-sys-color-surface);
+  border-bottom: 1px solid var(--md-sys-color-outline-variant);
+  flex-shrink: 0;
+  z-index: 10;
+}
+
+.app-header__logo {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.app-header__icon {
+  width: 36px;
+  height: 36px;
+  background: var(--md-sys-color-primary);
+  border-radius: var(--md-sys-shape-corner-small);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 18px;
+  color: var(--md-sys-color-on-primary);
+}
+
+.app-header__title {
+  font: 700 1.25rem/1.4 'Plus Jakarta Sans', sans-serif;
+  color: var(--md-sys-color-on-surface);
+}
+
+.app-header__subtitle {
+  font: var(--md-sys-typescale-label-medium);
+  color: var(--md-sys-color-on-surface-variant);
+}
+
+/* ===== Main Content ===== */
+.main-content {
+  flex: 1;
+  overflow-y: auto;
+  overflow-x: hidden;
+}
+
+/* ===== Import Screen ===== */
+.import-screen {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 100%;
+  padding: 32px 24px;
+  gap: 32px;
+}
+
+.import-hero {
+  text-align: center;
+  max-width: 560px;
+}
+
+.import-hero__icon {
+  width: 80px;
+  height: 80px;
+  margin: 0 auto 20px;
+  background: var(--md-sys-color-primary-container);
+  border-radius: var(--md-sys-shape-corner-extra-large);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 36px;
+  color: var(--md-sys-color-on-primary-container);
+}
+
+.import-hero__title {
+  font: var(--md-sys-typescale-display-medium);
+  color: var(--md-sys-color-on-surface);
+  margin-bottom: 8px;
+  letter-spacing: -0.01em;
+}
+
+.import-hero__subtitle {
+  font: var(--md-sys-typescale-body-large);
+  color: var(--md-sys-color-on-surface-variant);
+}
+
+/* Drop Zone: lembar kosong di atas meja. Kertas tidak bersudut bulat dan tidak bergaris
+   putus, jadi ini kotak putih dengan tepi tinta, bukan widget unggah. */
+.drop-zone {
+  width: 100%;
+  max-width: 520px;
+  border: 2px solid var(--ink);
+  border-radius: 0;
+  padding: 48px 32px;
+  text-align: center;
+  background: var(--sheet);
+  transition: transform var(--md-sys-motion-duration-short4) var(--md-sys-motion-easing-standard),
+              border-color var(--md-sys-motion-duration-medium2) var(--md-sys-motion-easing-standard),
+              background-color var(--md-sys-motion-duration-medium2) var(--md-sys-motion-easing-standard),
+              box-shadow var(--md-sys-motion-duration-medium2) var(--md-sys-motion-easing-standard);
+  cursor: pointer;
+  will-change: transform;
+  backface-visibility: hidden;
+}
+
+.drop-zone:hover,
+.drop-zone--active {
+  border-color: var(--ink);
+  background: var(--md-sys-color-primary-container);
+}
+
+.drop-zone--active {
+  transform: scale(1.02);
+}
+
+.drop-zone:active {
+  transform: scale(0.99);
+}
+
+.drop-zone__text {
+  font: var(--md-sys-typescale-body-large);
+  color: var(--md-sys-color-on-surface-variant);
+  margin-bottom: 16px;
+}
+
+/* on-surface-variant, not outline: on .drop-zone:hover the background turns
+   primary-container #E9ECE6. The pair measures 5.34:1 on hover and 7.32:1 at rest
+   on the sheet, so the hint stays AA in both states. */
+.drop-zone__or {
+  font: var(--md-sys-typescale-label-large);
+  color: var(--md-sys-color-on-surface-variant);
+  margin-bottom: 16px;
+}
+
+.drop-zone__hint {
+  font: var(--md-sys-typescale-label-medium);
+  color: var(--md-sys-color-on-surface-variant);
+  margin-top: 12px;
+}
+
+/* Import actions */
+.import-actions {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+/* Resume Card: baris buku besar, bukan kartu. Dua garis mendatar sudah cukup memisahkan
+   sesi terakhir dari lembar impor di atas dan di bawahnya. */
+.resume-card {
+  width: 100%;
+  max-width: 520px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding: 14px 0;
+  background: transparent;
+  border: none;
+  border-top: 1px solid var(--rule);
+  border-bottom: 1px solid var(--rule);
+  border-radius: 0;
+  text-align: left;
+}
+
+.resume-card__title {
+  font: var(--md-sys-typescale-title-medium);
+  color: var(--md-sys-color-on-surface);
+  margin-bottom: 2px;
+}
+
+.resume-card__meta {
+  font: var(--md-sys-typescale-body-medium);
+  color: var(--md-sys-color-on-surface-variant);
+  font-variant-numeric: tabular-nums;
+}
+
+.resume-card__actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+/* Success / Error */
+.import-result {
+  max-width: 520px;
+  width: 100%;
+  text-align: center;
+}
+
+.import-success {
+  padding: 24px;
+  background: var(--sheet);
+  border: 2px solid var(--ink);
+  border-radius: 0;
+  color: var(--ink);
+}
+
+.import-success__icon {
+  color: var(--ink);
+  margin-bottom: 12px;
+}
+
+.import-success__title {
+  font: var(--md-sys-typescale-headline-medium);
+  margin-bottom: 4px;
+}
+
+.import-success__subtitle {
+  font: var(--md-sys-typescale-body-large);
+  opacity: 0.8;
+}
+
+.import-error {
+  padding: 24px;
+  background: var(--sheet);
+  border: 2px solid var(--pen);
+  border-radius: 0;
+  color: var(--ink);
+}
+
+.import-error__icon {
+  color: var(--pen);
+  margin-bottom: 12px;
+}
+
+.import-error__title {
+  font: var(--md-sys-typescale-headline-medium);
+  margin-bottom: 8px;
+}
+
+.import-error__message {
+  font: var(--md-sys-typescale-body-large);
+  margin-bottom: 16px;
+  line-height: 1.6;
+}
+
+.import-error__list {
+  text-align: left;
+  list-style: disc;
+  padding-left: 24px;
+  margin-bottom: 20px;
+}
+
+.import-error__list li {
+  font: var(--md-sys-typescale-body-medium);
+  margin-bottom: 4px;
+}
+
+/* ===== Buttons ===== */
+/* Tombol adalah benda yang disentuh jari, bukan kertas: sudut 4px menandainya, sementara
+   lembar dan panel tetap 0. Bulat penuh hanya dipakai gelembung jawaban. */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 12px 20px;
+  border-radius: var(--md-sys-shape-corner-small);
+  font: var(--md-sys-typescale-label-large);
+  transition: transform var(--md-sys-motion-duration-short3) var(--md-sys-motion-easing-standard),
+              background-color var(--md-sys-motion-duration-short4) var(--md-sys-motion-easing-standard),
+              color var(--md-sys-motion-duration-short4) var(--md-sys-motion-easing-standard),
+              box-shadow var(--md-sys-motion-duration-short4) var(--md-sys-motion-easing-standard);
+  white-space: nowrap;
+  user-select: none;
+  min-height: 44px;
+  backface-visibility: hidden;
+  will-change: transform;
+}
+
+.btn--primary {
+  background: var(--ink);
+  color: var(--sheet);
+}
+
+/* Percampuran ke arah lembar, bukan `brightness()`: di tema terang tinta digelapkan, di tema
+   gelap tinta diterangkan, dan arahnya ditentukan token, bukan angka tetap yang cuma benar
+   di satu tema. */
+.btn--primary:hover {
+  background: color-mix(in srgb, var(--ink) 88%, var(--sheet));
+}
+
+.btn--primary:active {
+  transform: scale(0.97);
+}
+
+.btn--secondary {
+  background: var(--md-sys-color-surface-container);
+  color: var(--ink);
+  border: 1px solid var(--rule);
+}
+
+.btn--secondary:hover {
+  filter: brightness(0.97);
+}
+
+.btn--secondary:active {
+  transform: scale(0.97);
+}
+
+.btn--outlined {
+  background: transparent;
+  color: var(--ink);
+  border: 2px solid var(--ink);
+}
+
+.btn--outlined:hover {
+  background: color-mix(in srgb, var(--ink) 8%, transparent);
+}
+
+.btn--outlined:active {
+  transform: scale(0.97);
+}
+
+.btn--text {
+  background: transparent;
+  color: var(--md-sys-color-primary);
+  padding: 12px 16px;
+}
+
+.btn--text:active {
+  transform: scale(0.97);
+}
+
+.btn--text:hover {
+  background: color-mix(in srgb, var(--md-sys-color-primary) 8%, transparent);
+}
+
+.btn--large {
+  padding: 16px 32px;
+  font-size: 1rem;
+  min-height: 52px;
+}
+
+.btn--small {
+  padding: 8px 16px;
+  min-height: 36px;
+  font: var(--md-sys-typescale-label-medium);
+}
+
+.btn--icon {
+  padding: 10px;
+  min-width: 44px;
+  min-height: 44px;
+}
+
+.btn--icon-only {
+  padding: 10px;
+  width: 44px;
+  height: 44px;
+  min-width: unset;
+}
+
+.btn:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+  transform: none;
+}
+
+.btn:disabled:hover {
+  background: transparent;
+  filter: none;
+  box-shadow: var(--md-sys-elevation-1);
+}
+
+/* ===== Setup Screen ===== */
+.setup-screen {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  min-height: 100%;
+  padding: 32px 24px;
+  gap: 24px;
+  max-width: 720px;
+  margin: 0 auto;
+  width: 100%;
+}
+
+.setup-header {
+  text-align: center;
+  margin-bottom: 8px;
+}
+
+.setup-header__label {
+  font: var(--md-sys-typescale-label-medium);
+  color: var(--md-sys-color-on-surface-variant);
+  margin-bottom: 4px;
+}
+
+.setup-header__title {
+  font: var(--md-sys-typescale-display-medium);
+  color: var(--md-sys-color-on-surface);
+  margin-bottom: 4px;
+  word-break: break-word;
+}
+
+.setup-header__count {
+  font: var(--md-sys-typescale-body-large);
+  color: var(--md-sys-color-on-surface-variant);
+}
+
+/* Mode Selector */
+.mode-section {
+  width: 100%;
+}
+
+.section-label {
+  font: var(--md-sys-typescale-title-medium);
+  color: var(--md-sys-color-on-surface);
+  margin-bottom: 12px;
+}
+
+/* Daftar bernomor, bukan dua kartu besar. Baris terpilih ditandai centang pena di kolom
+   tepi, jadi pilihan guru terbaca sebagai tanda tangan, bukan sebagai blok warna. */
+.mode-cards {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 0;
+  border-top: 1px solid var(--rule);
+}
+
+.mode-card {
+  position: relative;
+  padding: 16px 16px 16px 34px;
+  border-radius: 0;
+  border: none;
+  border-bottom: 1px solid var(--rule);
+  background: transparent;
+  cursor: pointer;
+  transition: background-color var(--md-sys-motion-duration-short4) var(--md-sys-motion-easing-standard);
+  text-align: left;
+  backface-visibility: hidden;
+}
+
+.mode-card:hover {
+  background: color-mix(in srgb, var(--ink) 5%, var(--paper));
+}
+
+.mode-card--selected {
+  background: var(--pen-wash);
+}
+
+/* Centang digambar dari dua tepi yang diputar, bukan dari glyph: tampil sama di semua
+   sistem operasi dan tidak bergantung pada font. */
+.mode-card--selected::before {
+  content: '';
+  position: absolute;
+  left: 10px;
+  top: 24px;
+  width: 11px;
+  height: 6px;
+  border-left: 2px solid var(--pen);
+  border-bottom: 2px solid var(--pen);
+  transform: rotate(-45deg);
+}
+
+.mode-card__title {
+  font: var(--md-sys-typescale-title-medium);
+  color: var(--md-sys-color-on-surface);
+  margin-bottom: 4px;
+}
+
+.mode-card__desc {
+  font: var(--md-sys-typescale-body-medium);
+  color: var(--md-sys-color-on-surface-variant);
+  line-height: 1.5;
+}
+
+/* Timer Setting: bagian ini hidup di lembar yang sama dengan mode, jadi ia memakai
+   garis pemisah yang sama, bukan panel berwarna sendiri. */
+.timer-section {
+  width: 100%;
+  background: transparent;
+  border-radius: 0;
+  padding: 0;
+}
+
+.timer-input-row {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin-top: 8px;
+}
+
+.timer-input {
+  width: 84px;
+  padding: 12px 16px;
+  border: 1px solid var(--ink-soft);
+  border-radius: 0;
+  font: var(--md-sys-typescale-headline-medium);
+  font-variant-numeric: tabular-nums;
+  text-align: center;
+  background: var(--sheet);
+  color: var(--md-sys-color-on-surface);
+}
+
+/* `outline: none` dihapus di sini: cincin fokus global di index.css harus tetap terlihat
+   saat field ini dicapai dengan Tab. */
+.timer-input:focus {
+  border-color: var(--ink);
+}
+
+.timer-presets {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+/* Preset waktu adalah field formulir, bukan chip pil: angka tabular sejajar seperti kolom. */
+.timer-preset {
+  min-width: 58px;
+  padding: 10px 12px;
+  border-radius: var(--md-sys-shape-corner-small);
+  font: 700 0.875rem/1 'Space Mono', monospace;
+  font-variant-numeric: tabular-nums;
+  background: var(--sheet);
+  color: var(--ink);
+  border: 1px solid var(--rule);
+  cursor: pointer;
+  transition: border-color var(--md-sys-motion-duration-short3) var(--md-sys-motion-easing-standard),
+              background-color var(--md-sys-motion-duration-short3) var(--md-sys-motion-easing-standard),
+              color var(--md-sys-motion-duration-short3) var(--md-sys-motion-easing-standard);
+  backface-visibility: hidden;
+}
+
+.timer-preset:hover {
+  border-color: var(--ink);
+}
+
+.timer-preset:active {
+  transform: scale(0.97);
+}
+
+.timer-preset--active {
+  background: var(--ink);
+  color: var(--sheet);
+  border-color: var(--ink);
+}
+
+.timer-groups {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px;
+  margin-top: 12px;
+}
+
+.timer-group {
+  flex: 1 1 240px;
+  min-width: 0;
+  padding: 14px 0;
+  background: transparent;
+  border-top: 1px solid var(--rule);
+  border-radius: 0;
+}
+
+.timer-group__label {
+  font: var(--md-sys-typescale-label-large);
+  color: var(--md-sys-color-on-surface);
+}
+
+.timer-group__hint {
+  font: var(--md-sys-typescale-label-medium);
+  color: var(--md-sys-color-on-surface-variant);
+  margin-top: 2px;
+}
+
+.timer-group .timer-input-row {
+  margin-top: 12px;
+}
+
+.timer-group .timer-input {
+  background: var(--md-sys-color-surface);
+}
+
+.timer-group .timer-presets {
+  margin-top: 12px;
+}
+
+/* Advanced Settings: pelipatan memakai garis, bukan panel berwarna. */
+.advanced-section {
+  width: 100%;
+  background: transparent;
+  border-top: 1px solid var(--rule);
+  border-bottom: 1px solid var(--rule);
+  border-radius: 0;
+  overflow: hidden;
+}
+
+.advanced-toggle {
+  width: 100%;
+  padding: 16px 0;
+  background: none;
+  border: none;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font: var(--md-sys-typescale-title-medium);
+  color: var(--md-sys-color-on-surface);
+  cursor: pointer;
+}
+
+.advanced-toggle__arrow {
+  transition: transform var(--md-sys-motion-duration-medium2) var(--md-sys-motion-easing-standard);
+  font-size: 20px;
+  color: var(--md-sys-color-on-surface-variant);
+}
+
+.advanced-toggle__arrow--open {
+  transform: rotate(180deg);
+}
+
+.advanced-content {
+  padding: 0 0 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+/* ===== Toggle Switch: kotak yang dicentang pena ===== */
+.toggle-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.toggle-row__label {
+  font: var(--md-sys-typescale-body-large);
+  color: var(--md-sys-color-on-surface);
+}
+
+.toggle-row__desc {
+  font: var(--md-sys-typescale-body-medium);
+  color: var(--md-sys-color-on-surface-variant);
+}
+
+/* Sakelar gaya ponsel diganti kotak centang: dokumen tidak punya sakelar, dan satu glyph
+   centang yang sama dipakai di seluruh aplikasi. Kotak 24px diperbesar ke 44px lewat
+   padding pada label, jadi target jari tetap aman. */
+.toggle-switch {
+  position: relative;
+  width: 24px;
+  height: 24px;
+  flex-shrink: 0;
+}
+
+.toggle-switch input {
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+.toggle-switch__track {
+  position: absolute;
+  inset: 0;
+  background: var(--sheet);
+  border: 2px solid var(--ink-soft);
+  border-radius: 0;
+  cursor: pointer;
+  transition: border-color var(--md-sys-motion-duration-short4) var(--md-sys-motion-easing-standard);
+}
+
+.toggle-switch input:checked + .toggle-switch__track {
+  border-color: var(--pen);
+}
+
+.toggle-switch input:checked + .toggle-switch__track::after {
+  content: '';
+  position: absolute;
+  left: 4px;
+  top: 6px;
+  width: 12px;
+  height: 6px;
+  border-left: 2px solid var(--pen);
+  border-bottom: 2px solid var(--pen);
+  transform: rotate(-45deg);
+}
+
+/* Input-nya 0x0 supaya tidak terlihat, jadi cincin fokus global tidak akan pernah tampak.
+   Cincinnya dipindah ke kotak yang benar-benar terlihat. */
+.toggle-switch input:focus-visible + .toggle-switch__track {
+  outline: 3px solid var(--ink);
+  outline-offset: 2px;
+}
+
+.toggle-switch__thumb {
+  display: none;
+}
+
+/* Sound Settings */
+.sound-settings {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.sound-checkbox-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.sound-checkbox {
+  width: 20px;
+  height: 20px;
+  accent-color: var(--md-sys-color-primary);
+  cursor: pointer;
+}
+
+.sound-checkbox-label {
+  font: var(--md-sys-typescale-body-medium);
+  color: var(--md-sys-color-on-surface);
+}
+
+.volume-slider {
+  width: 100%;
+  accent-color: var(--md-sys-color-primary);
+  height: 6px;
+}
+
+/* Start Button */
+.start-section {
+  width: 100%;
+  padding: 24px 0;
+}
+
+.start-btn {
+  width: 100%;
+  padding: 18px 32px;
+  font-size: 1.15rem;
+  font-weight: 700;
+  border-radius: var(--md-sys-shape-corner-small);
+  background: var(--ink);
+  color: var(--sheet);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  min-height: 60px;
+  transition: transform var(--md-sys-motion-duration-short4) var(--md-sys-motion-easing-standard),
+              filter var(--md-sys-motion-duration-short4) var(--md-sys-motion-easing-standard);
+  backface-visibility: hidden;
+}
+
+.start-btn:hover {
+  background: color-mix(in srgb, var(--ink) 88%, var(--sheet));
+}
+
+.start-btn:active {
+  transform: scale(0.98);
+}
+
+/* ===== Presentation Screen ===== */
+.presentation {
+  position: fixed;
+  inset: 0;
+  background: var(--md-sys-color-surface);
+  display: flex;
+  flex-direction: column;
+  z-index: 1000;
+  overflow: hidden;
+}
+
+/* Pita atas: judul kecil di kiri, posisi soal di kanan. Judul kuis adalah konteks, bukan
+   bintang, jadi ia turun ke label dan soal yang pegang ukuran besar. */
+.pres-header {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 16px;
+  padding: clamp(8px, 1.2vh, 14px) clamp(16px, 3vw, 40px) 0;
+  flex-shrink: 0;
+}
+
+.pres-title {
+  font: var(--md-sys-typescale-label-large);
+  color: var(--md-sys-color-on-surface-variant);
+  max-width: 60%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.pres-counter {
+  font: 700 clamp(1.125rem, 1.6vw, 1.5rem)/1 'Space Mono', monospace;
+  color: var(--ink);
+  white-space: nowrap;
+  font-variant-numeric: tabular-nums;
+}
+
+/* Rel timer: garis ukur selebar lembar dengan angka sisa waktu di ujungnya. Guru membaca
+   keseluruhan rel dalam satu pandangan, siswa menghitung segmen dari kiri. */
+.timer-area {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: flex-end;
+  gap: clamp(12px, 2vw, 28px);
+  padding: clamp(8px, 1.4vh, 16px) clamp(16px, 3vw, 40px) clamp(6px, 1vh, 12px);
+  flex-shrink: 0;
+}
+
+.timer-display {
+  font: 700 clamp(1.6rem, 2.6vw, 2.5rem)/1 'Space Mono', monospace;
+  color: var(--ink);
+  font-variant-numeric: tabular-nums;
+  transition: color 0.3s ease;
+  order: 2;
+  backface-visibility: hidden;
+}
+
+.timer-display--warning {
+  color: var(--pen);
+}
+
+/* Bukan lagi warna ketiga: antara peringatan dan kritis yang berubah hanya denyut, satu
+   kali per detik yang benar-benar lewat, bukan kedipan 0,5 detik terus-menerus. */
+.timer-display--critical {
+  color: var(--pen);
+  animation: timerBeat 1s ease-in-out infinite;
+  will-change: opacity;
+}
+
+.timer-progress {
+  order: 1;
+  flex: 1;
+  min-width: 160px;
+  max-width: none;
+  height: 12px;
+  background: var(--md-sys-color-surface-container-highest);
+  border-radius: 0;
+  margin-top: 0;
+  overflow: hidden;
+  position: relative;
+}
+
+/* Satu celah per detik: --seg-count datang dari durasi soal, jadi rel ini benar-benar bisa
+   dihitung, bukan garis rambut dekoratif dengan jarak tetap. */
+.timer-progress::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: repeating-linear-gradient(
+    90deg,
+    transparent 0 calc(100% / var(--seg-count, 60) - 2px),
+    var(--paper) calc(100% / var(--seg-count, 60) - 2px) calc(100% / var(--seg-count, 60))
+  );
+  z-index: 1;
+}
+
+.timer-progress__bar {
+  height: 100%;
+  width: 100%;
+  background: var(--ink);
+  border-radius: 0;
+  transform-origin: left;
+  transition: transform 0.1s linear, background-color 0.3s ease;
+  backface-visibility: hidden;
+  will-change: transform;
+}
+
+.timer-progress__bar--warning,
+.timer-progress__bar--critical {
+  background: var(--pen);
+}
+
+@keyframes timerBeat {
+  0% { opacity: 1; }
+  14% { opacity: 0.62; }
+  100% { opacity: 1; }
+}
+
+/* Lembar soal: satu bidang putih di atas meja yang lebih gelap, dengan nomor soal di kolom
+   tepi seperti lembar ujian. Satu rel kiri saja; pilihan jawaban memakai baris, bukan
+   rel kedua. */
+.question-area {
+  position: relative;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: flex-start;
+  padding: clamp(14px, 2vh, 26px) clamp(16px, 3vw, 40px) 0 clamp(56px, 6vw, 104px);
+  gap: clamp(10px, 1.8vh, 20px);
+  background: var(--sheet);
+  border-top: 2px solid var(--ink);
+  overflow: hidden;
+  min-height: 0;
+}
+
+/* Nomor soalnya datang dari atribut data-num di App.tsx, bukan dari span kosong yang cuma
+   ada untuk keperluan gaya. */
+.question-area::before {
+  content: attr(data-num);
+  position: absolute;
+  left: clamp(16px, 3vw, 40px);
+  top: clamp(14px, 2vh, 26px);
+  font: 700 clamp(1rem, 1.4vw, 1.375rem)/1 'Space Mono', monospace;
+  color: var(--ink-soft);
+  font-variant-numeric: tabular-nums;
+}
+
+/* Rata kiri: teks rata tengah memindahkan titik mulai ke posisi berbeda untuk tiap soal,
+   rata kiri memberi satu tepi tetap yang dipegang mata selama 22 soal. Lebar baris 64
+   karakter, di bawah ambang 80. */
+.question-text {
+  font: var(--type-soal);
+  color: var(--md-sys-color-on-surface);
+  text-align: left;
+  max-width: min(64ch, 100%);
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+  letter-spacing: -0.01em;
+}
+
+/* Meta soal: label biasa, bukan chip pil berwarna. Latar berwarna untuk sebuah label
+   adalah permukaan yang tidak membawa informasi. */
+.question-meta {
+  display: flex;
+  align-items: baseline;
+  justify-content: flex-start;
+  flex-wrap: wrap;
+  gap: 16px;
+}
+
+.question-type-chip,
+.question-type-chip--multiple-choice,
+.question-type-chip--short-answer,
+.question-type-chip--timer {
+  display: inline;
+  padding: 0;
+  border: none;
+  border-radius: 0;
+  background: transparent;
+  color: var(--md-sys-color-on-surface-variant);
+  font: var(--md-sys-typescale-label-medium);
+  letter-spacing: 0;
+  white-space: nowrap;
+  font-variant-numeric: tabular-nums;
+}
+
+/* Answer Grid: satu kolom baris terpisah garis, bukan empat kartu identik. Empat pilihan
+   dibaca berurutan dari A ke D, jadi mata cukup punya satu tepi kiri untuk diikuti. */
+.answer-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 0;
+  width: 100%;
+  max-width: min(72ch, 100%);
+  border-top: 1px solid var(--rule);
+}
+
+@media (max-width: 768px) {
+  .answer-grid {
+    grid-template-columns: 1fr;
+  }
+
+  /* Mascots are desktop-only, fully removed from layout on mobile */
+  .mascot {
+    display: none;
+  }
+}
+
+/* Baris pilihan. Ini bukan tombol: tidak ada hover, tidak ada angkat 2px, tidak ada
+   bayangan. Yang memisahkan satu baris dari baris lain adalah satu garis. */
+.answer-card {
+  display: flex;
+  align-items: center;
+  gap: clamp(12px, 1.6vw, 22px);
+  padding: clamp(8px, 1.4vh, 16px) 0;
+  background: transparent;
+  border: none;
+  border-bottom: 1px solid var(--rule);
+  border-radius: 0;
+  cursor: default;
+  transition: opacity var(--md-sys-motion-duration-short4) var(--md-sys-motion-easing-standard),
+              background-color var(--md-sys-motion-duration-short4) var(--md-sys-motion-easing-standard);
+  backface-visibility: hidden;
+}
+
+/* Gelembung jawaban: satu-satunya bentuk bulat di aplikasi, dan satu-satunya tempat huruf
+   monospace muncul selain angka. Mengikuti lembar jawaban yang dibaca mesin. */
+.answer-card__letter {
+  width: clamp(34px, 3.4vw, 48px);
+  height: clamp(34px, 3.4vw, 48px);
+  border-radius: 50%;
+  background: var(--sheet);
+  border: 2px solid var(--ink-soft);
+  color: var(--ink);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font: 700 clamp(1rem, 1.4vw, 1.25rem)/1 'Space Mono', monospace;
+  flex-shrink: 0;
+}
+
+.answer-card__text {
+  font: var(--type-pilihan);
+  color: var(--md-sys-color-on-surface);
+}
+
+/* Baris yang ditandai: gelembung terisi pena, teks naik ke bobot 700, dan centang digambar
+   di ujung baris. Tiga tanda sekaligus, karena di mode harian warna saja tidak cukup
+   memberi tahu siswa mana jawaban yang benar. */
+.answer-card--reveal-correct {
+  background: var(--pen-wash);
+}
+
+.answer-card--reveal-correct .answer-card__letter,
+.answer-card--center .answer-card__letter {
+  background: var(--pen);
+  border-color: var(--pen);
+  color: var(--sheet);
+}
+
+.answer-card--reveal-correct .answer-card__text,
+.answer-card--center .answer-card__text {
+  font-weight: 700;
+}
+
+/* Centang pena di ujung baris. Digambar dari dua tepi yang diputar dan masuk dengan
+   gerakan menggambar, jadi ia menjawab "apa yang guru baru tandai". */
+.answer-card--reveal-correct::after,
+.answer-card--center::after {
+  content: '';
+  margin-left: auto;
+  flex-shrink: 0;
+  width: clamp(18px, 1.8vw, 26px);
+  height: clamp(9px, 0.9vw, 13px);
+  border-left: 3px solid var(--pen);
+  border-bottom: 3px solid var(--pen);
+  transform: rotate(-45deg);
+  animation: penMark 240ms var(--md-sys-motion-easing-decelerate) 120ms backwards;
+}
+
+@keyframes penMark {
+  from {
+    opacity: 0;
+    transform: rotate(-45deg) translate(-8px, 8px);
+  }
+  to {
+    opacity: 1;
+    transform: rotate(-45deg) translate(0, 0);
+  }
+}
+
+/* Kunci jawaban dibuka: satu baris naik ke tengah sebagai lembar bertanda pena. */
+.answer-card--center {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 1050;
+  min-width: min(80vw, 900px);
+  min-height: 80px;
+  padding: 24px 40px;
+  background: var(--sheet);
+  border: 3px solid var(--pen);
+  border-radius: 0;
+  animation: flyToCenter 0.5s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+  will-change: transform, opacity;
+  backface-visibility: hidden;
+}
+
+.answer-card--center .answer-card__letter {
+  font-size: clamp(1.2rem, 2vw, 1.6rem);
+  width: clamp(44px, 4vw, 56px);
+  height: clamp(44px, 4vw, 56px);
+}
+
+.answer-card--center .answer-card__text {
+  font-size: clamp(1.5rem, 3.2vw, 2.4rem);
+}
+
+@keyframes flyToCenter {
+  0% {
+    opacity: 0.7;
+    transform: translate(-50%, -50%) scale(0.85);
+  }
+  100% {
+    opacity: 1;
+    transform: translate(-50%, -50%) scale(1);
+  }
+}
+
+.answer-card--fade-out {
+  opacity: 0 !important;
+  transition: opacity 0.35s ease;
+  pointer-events: none;
+  backface-visibility: hidden;
+}
+
+.answer-grid--reveal {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 120px;
+}
+
+/* ===== Short Answer Card (Isian Singkat) ===== */
+/* Garis titik-titik adalah konvensi lembar ujian Indonesia, dan di sini ia menjawab
+   pertanyaan yang nyata: siswa menulis di kertasnya sendiri, jadi layar menunjukkan
+   seberapa panjang jawaban yang diminta. */
+.short-answer-card {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  width: 100%;
+  max-width: min(72ch, 100%);
+  min-height: clamp(80px, 12vh, 150px);
+  padding: clamp(14px, 2vh, 26px) 0;
+  background: transparent;
+  border: none;
+  border-top: 1px solid var(--rule);
+  border-radius: 0;
+  transition: border-color var(--md-sys-motion-duration-short4) var(--md-sys-motion-easing-standard);
+}
+
+.short-answer-card__placeholder {
+  display: flex;
+  align-items: baseline;
+  gap: clamp(12px, 1.6vw, 20px);
+  width: 100%;
+  color: var(--md-sys-color-on-surface-variant);
+  font: var(--type-pilihan);
+}
+
+.short-answer-card__hint {
+  flex: 1;
+  min-width: 120px;
+  border-bottom: 3px dotted var(--ink-soft);
+  padding-bottom: 6px;
+}
+
+/* Kunci dibuka: lembar ditandai pena, dan jawabannya ditulis dengan warna pena yang sama. */
+.short-answer-card--reveal {
+  border-top-color: var(--pen);
+  background: var(--pen-wash);
+}
+
+.short-answer-card__answer {
+  font: 700 clamp(1.75rem, 3.4vw, 3rem)/1.2 'Plus Jakarta Sans', sans-serif;
+  color: var(--pen);
+  text-align: left;
+  word-break: break-word;
+  animation: shortAnswerTextIn 0.4s var(--md-sys-motion-easing-emphasized) 0.15s both;
+}
+
+@keyframes shortAnswerReveal {
+  0% {
+    opacity: 0.7;
+    transform: scale(0.85);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@keyframes shortAnswerTextIn {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Garis bawah lembar: pemisah antara kertas dan krom guru, sekaligus satu-satunya penanda
+   kemajuan. Angka 07/22 di pita atas sudah memberi tahu posisi, jadi bilah tebal di bawah
+   hanya akan mengulang informasi yang sama. */
+.pres-progress {
+  width: 100%;
+  height: 3px;
+  background: var(--rule);
+  flex-shrink: 0;
+}
+
+.pres-progress__bar {
+  height: 100%;
+  width: 100%;
+  background: var(--ink);
+  transform-origin: left;
+  transition: transform var(--md-sys-motion-duration-medium2) var(--md-sys-motion-easing-standard);
+  backface-visibility: hidden;
+  will-change: transform;
+}
+
+/* ===== Overlays ===== */
+.overlay {
+  position: fixed;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  z-index: 1100;
+  animation: overlayFadeIn var(--md-sys-motion-duration-medium2) var(--md-sys-motion-easing-decelerate);
+  backface-visibility: hidden;
+  will-change: opacity;
+}
+
+@keyframes overlayFadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+/* Waktu habis: kertas diletakkan, papan kontras masuk. Warna papan dan teksnya datang dari
+   token --overlay-*, jadi tema terang dapat papan gelap (16,29:1) dan tema gelap dapat papan
+   terang (15,0:1) tanpa aturan kedua. Warna pena tidak dipakai di sini: di atas papan mana pun
+   ia di bawah 3:1. */
+.timeup-overlay {
+  background: var(--overlay-plate);
+}
+
+.timeup-overlay__text {
+  font: 800 clamp(2.5rem, 7vw, 5.5rem)/1.05 'Plus Jakarta Sans', sans-serif;
+  color: var(--overlay-ink);
+  animation: timeUpIn 0.3s var(--md-sys-motion-easing-decelerate);
+  letter-spacing: -0.02em;
+}
+
+@keyframes timeUpIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* Pergantian soal: selembar kertas kosong sekejap, lalu soal berikutnya. Warnanya kertas,
+   bukan tint, karena tint hanya menambah warna tanpa memberi arti. */
+.transition-overlay {
+  background: var(--paper);
+}
+
+.transition-overlay__content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+}
+
+/* Label kalimat biasa, bukan huruf besar dengan tracking lebar. */
+.transition-overlay__label {
+  font: var(--md-sys-typescale-label-large);
+  color: var(--md-sys-color-on-surface-variant);
+  animation: transitionSlide 0.4s var(--md-sys-motion-easing-decelerate);
+}
+
+.transition-overlay__number {
+  font: 700 clamp(2.5rem, 5vw, 4rem)/1 'Space Mono', monospace;
+  color: var(--ink);
+  font-variant-numeric: tabular-nums;
+  animation: transitionSlide 0.4s var(--md-sys-motion-easing-decelerate) 60ms both;
+}
+
+@keyframes transitionSlide {
+  from { opacity: 0; transform: translateY(12px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* Countdown 3-2-1: momen kontras kedua, dan hanya selama tiga detik. Papan yang sama dengan
+   overlay waktu habis, karena keduanya menjawab pertanyaan yang sama: lihat ke tengah layar. */
+.countdown-overlay {
+  background: var(--overlay-plate);
+}
+
+.countdown-overlay__number {
+  font: 700 clamp(3rem, 8vw, 6rem)/1 'Space Mono', monospace;
+  color: var(--overlay-ink);
+  animation: countdownIn 0.28s var(--md-sys-motion-easing-decelerate);
+}
+
+@keyframes countdownIn {
+  from { opacity: 0; transform: scale(1.12); }
+  to { opacity: 1; transform: scale(1); }
+}
+
+/* ===== Completion Screen ===== */
+.completion-screen {
+  position: fixed;
+  inset: 0;
+  background: var(--md-sys-color-surface);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  padding: 32px;
+  gap: 24px;
+  animation: overlayFadeIn var(--md-sys-motion-duration-medium4) var(--md-sys-motion-easing-decelerate);
+}
+
+/* Satu maskot, sekali, di layar selesai. Ini satu-satunya tempat karakter muncul, jadi ia
+   terbaca sebagai hadiah di akhir, bukan tontonan yang berjalan di atas soal. */
+.completion-mascot {
+  width: clamp(96px, 12vw, 148px);
+  height: auto;
+  image-rendering: auto;
+  animation: completionPop 0.5s var(--md-sys-motion-easing-decelerate);
+}
+
+@keyframes completionPop {
+  from { transform: scale(0); }
+  60% { transform: scale(1.15); }
+  to { transform: scale(1); }
+}
+
+.completion-title {
+  font: var(--md-sys-typescale-display-medium);
+  color: var(--md-sys-color-on-surface);
+  text-align: center;
+}
+
+.completion-subtitle {
+  font: var(--md-sys-typescale-body-large);
+  color: var(--md-sys-color-on-surface-variant);
+  text-align: center;
+  max-width: 400px;
+  line-height: 1.6;
+}
+
+.completion-actions {
+  display: flex;
+  gap: 12px;
+  margin-top: 12px;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+/* ===== Teacher Controls ===== */
+.teacher-controls {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 8px 16px;
+  background: transparent;
+  z-index: 1050;
+  gap: 8px;
+}
+
+.teacher-controls__group {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+/* Krom guru adalah instrumen, bukan kertas: sudut 4px, satu garis, tanpa isian warna.
+   44px adalah target jari minimum, bukan ukuran yang boleh dipangkas supaya barisnya rapi. */
+.control-btn {
+  width: 44px;
+  height: 44px;
+  border-radius: var(--md-sys-shape-corner-small);
+  background: transparent;
+  color: var(--ink);
+  border: 1px solid var(--rule);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: transform var(--md-sys-motion-duration-short3) var(--md-sys-motion-easing-standard),
+              background-color var(--md-sys-motion-duration-short3) var(--md-sys-motion-easing-standard),
+              border-color var(--md-sys-motion-duration-short3) var(--md-sys-motion-easing-standard),
+              color var(--md-sys-motion-duration-short3) var(--md-sys-motion-easing-standard);
+  backface-visibility: hidden;
+}
+
+.control-btn:hover {
+  border-color: var(--ink);
+  background: color-mix(in srgb, var(--ink) 6%, transparent);
+}
+
+.control-btn:active {
+  transform: scale(0.96);
+}
+
+/* Sakelar yang sedang menyala dipenuhi tinta: satu-satunya isian gelap di bar. */
+.control-btn--active {
+  background: var(--ink);
+  border-color: var(--ink);
+  color: var(--sheet);
+}
+
+.control-btn--danger {
+  color: var(--pen);
+  border-color: var(--pen);
+}
+
+.control-btn--danger:hover {
+  background: var(--pen-wash);
+  border-color: var(--pen);
+}
+
+.control-label {
+  font: var(--md-sys-typescale-label-medium);
+  color: var(--md-sys-color-on-surface-variant);
+  padding: 0 4px;
+}
+
+/* ===== Pause Overlay ===== */
+/* Kertas diletakkan begitu guru menjeda: penuh, tanpa blur dan tanpa transparansi, karena
+   overlay tembus pandang di proyektor jadi keruh, bukan jelas. Ikonnya tidak berdenyut:
+   yang bergerak di layar ini hanya timer, dan timer sedang berhenti. */
+.pause-overlay {
+  position: fixed;
+  inset: 0;
+  background: var(--paper);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  z-index: 1080;
+  animation: overlayFadeIn var(--md-sys-motion-duration-medium2) var(--md-sys-motion-easing-decelerate);
+}
+
+.pause-overlay__icon {
+  color: var(--ink);
+  margin-bottom: 20px;
+}
+
+.pause-overlay__text {
+  font: var(--md-sys-typescale-display-medium);
+  color: var(--md-sys-color-on-surface);
+  margin-bottom: 8px;
+}
+
+.pause-overlay__sub {
+  font: var(--md-sys-typescale-body-large);
+  color: var(--md-sys-color-on-surface-variant);
+  margin-bottom: 24px;
+  text-align: center;
+}
+
+/* ===== Answer Key Panel ===== */
+/* Panel kunci adalah lembar yang ditarik keluar dari tepi kanan: putih, satu tepi tinta, tanpa
+   bayangan. Ini juga bentuk yang sama dengan lembar cetaknya, jadi yang dilihat guru di layar
+   dan yang keluar dari printer adalah dokumen yang sama. */
+.answer-key-panel {
+  position: fixed;
+  top: 0;
+  right: 0;
+  width: min(420px, 92vw);
+  height: 100%;
+  background: var(--sheet);
+  border-left: 2px solid var(--ink);
+  z-index: 1200;
+  display: flex;
+  flex-direction: column;
+  animation: slideInRight var(--md-sys-motion-duration-medium2) var(--md-sys-motion-easing-decelerate);
+  overflow: hidden;
+}
+
+@keyframes slideInRight {
+  from { transform: translateX(100%); }
+  to { transform: translateX(0); }
+}
+
+.answer-key-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 16px 20px;
+  border-bottom: 1px solid var(--md-sys-color-outline-variant);
+}
+
+.answer-key-header__title {
+  font: var(--md-sys-typescale-title-large);
+  color: var(--md-sys-color-on-surface);
+}
+
+.answer-key-header__actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.answer-key-list {
+  flex: 1;
+  overflow-y: auto;
+  padding: 8px 20px;
+}
+
+.answer-key-item {
+  display: flex;
+  align-items: center;
+  padding: 10px 0;
+  border-bottom: 1px solid var(--md-sys-color-outline-variant);
+  gap: 12px;
+}
+
+.answer-key-item:last-child {
+  border-bottom: none;
+}
+
+.answer-key-item__num {
+  font: 600 1rem/1 'Space Mono', monospace;
+  color: var(--md-sys-color-on-surface-variant);
+  min-width: 32px;
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+
+/* Gelembung yang sama dengan layar presentasi, hanya lebih kecil. Guru dan siswa melihat
+   penanda yang sama, jadi tidak ada dua bahasa visual untuk satu hal. */
+.answer-key-item__letter {
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  background: var(--sheet);
+  border: 1.5px solid var(--ink-soft);
+  color: var(--ink);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font: 700 0.8125rem/1 'Space Mono', monospace;
+}
+
+/* Isian singkat: bukan gelembung, karena tidak ada huruf yang bisa digelembungkan. Nilainya
+   ditulis apa adanya, rata kiri, seperti kolom jawaban di lembar cetak. */
+.answer-key-item__letter--text {
+  width: auto;
+  max-width: 260px;
+  min-height: 0;
+  height: auto;
+  padding: 0;
+  border: none;
+  border-radius: 0;
+  background: transparent;
+  color: var(--ink);
+  display: block;
+  font: 600 0.9rem/1.35 'Plus Jakarta Sans', sans-serif;
+  text-align: left;
+  word-break: break-word;
+  white-space: normal;
+}
+
+/* ===== Backdrop / Dialog ===== */
+.backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(20, 24, 28, 0.55);
+  z-index: 1150;
+  animation: overlayFadeIn var(--md-sys-motion-duration-short4) var(--md-sys-motion-easing-standard);
+}
+
+/* Dialog adalah satu-satunya hal di aplikasi ini yang boleh terangkat dari halaman: ia
+   menutup layar dan tidak punya tempat lain untuk berada. */
+.dialog {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background: var(--sheet);
+  border: 2px solid var(--ink);
+  border-radius: 0;
+  padding: 24px;
+  max-width: 420px;
+  width: calc(100% - 32px);
+  z-index: 1200;
+  box-shadow: var(--md-sys-elevation-3);
+  animation: dialogEnter var(--md-sys-motion-duration-medium2) var(--md-sys-motion-easing-decelerate);
+}
+
+@keyframes dialogEnter {
+  from { opacity: 0; transform: translate(-50%, -46%); }
+  to { opacity: 1; transform: translate(-50%, -50%); }
+}
+
+.dialog__title {
+  font: var(--md-sys-typescale-headline-medium);
+  color: var(--md-sys-color-on-surface);
+  margin-bottom: 8px;
+}
+
+.dialog__body {
+  font: var(--md-sys-typescale-body-large);
+  color: var(--md-sys-color-on-surface-variant);
+  margin-bottom: 20px;
+  line-height: 1.6;
+}
+
+.dialog__actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+}
+
+/* ===== Responsive ===== */
+@media (max-width: 600px) {
+  .app-header {
+    padding: 10px 16px;
+  }
+
+  .app-header__title {
+    font-size: 1rem;
+  }
+
+  .setup-screen {
+    padding: 24px 16px;
+    gap: 20px;
+  }
+
+  .pres-header {
+    padding: 8px 16px 0;
+  }
+
+  .pres-title {
+    max-width: 55%;
+  }
+
+  /* Rel timer dan angkanya mengecil di sini: dia harus muat sebaris dengan judul kuis
+     di dalam 360px, dan sisa detik masih terbaca dari relnya. */
+  .timer-area {
+    padding: 8px 16px 6px;
+    gap: 10px;
+  }
+
+  .timer-display {
+    font-size: 1.375rem;
+  }
+
+  .timer-progress {
+    min-width: 90px;
+  }
+
+  .question-area {
+    padding: 12px 16px 0 44px;
+  }
+
+  .question-area::before {
+    left: 14px;
+    top: 12px;
+    font-size: 1rem;
+  }
+
+  .question-text {
+    font-size: clamp(1.2rem, 5.4vw, 1.9rem);
+  }
+
+  .answer-card {
+    padding: 10px 0;
+  }
+
+  .answer-card__letter {
+    width: 34px;
+    height: 34px;
+    font-size: 0.9375rem;
+  }
+
+  .answer-card__text {
+    font-size: clamp(1rem, 4.2vw, 1.25rem);
+  }
+
+  /* Panel kunci jadi lembar penuh dari atas: tepi kirinya tidak lagi berarti apa-apa
+     kalau lebarnya sudah 100%. */
+  .answer-key-panel {
+    width: 100%;
+    border-left: none;
+    border-top: 2px solid var(--ink);
+  }
+
+  /* Two rows instead of one: six or seven 44px buttons plus the mode label need about
+     400px in a single row, which gets clipped on a 360px phone. The mode label is
+     already visible on the setup screen, so it is the first thing to drop. */
+  .teacher-controls {
+    flex-direction: column;
+    align-items: center;
+    gap: 6px;
+    padding: 6px 12px;
+  }
+
+  .teacher-controls__group {
+    justify-content: center;
+  }
+
+  .control-label {
+    display: none;
+  }
+}
+
+/* ===== Scrollbar ===== */
+::-webkit-scrollbar {
+  width: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--md-sys-color-outline-variant);
+  border-radius: 0;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--md-sys-color-outline);
+}
+
+/* ===== Animations =====
+   `fade-in-up` sudah dihapus: ia muncul di 11 elemen layar setup sekaligus, dan animasi yang
+   dipasang ke semua hal berhenti menjawab pertanyaan "apa yang baru saja berubah".
+   Yang tersisa hanya gerak yang masuk akal di layar presentasi. */
+
+/* ===== Question Transition (enter / leave) =====
+   Every path that changes the question (countdown → first question, skip, time up,
+   auto-reveal in practice mode, restart) remounts the question nodes because they are
+   keyed by the question index. These animations ride on that remount.
+
+   Entry animations deliberately use `backface-visibility`-safe transforms and
+   `animation-fill-mode: backwards` (never `forwards`): once the animation finishes no
+   transform is left behind. A lingering transform on an ancestor would turn it into the
+   containing block for the `position: fixed` answer reveal (.answer-card--center),
+   which would break the fly-to-center effect. */
+@keyframes questionTextIn {
+  from { opacity: 0; transform: translateY(18px) scale(0.98); }
+  to { opacity: 1; transform: none; }
+}
+
+@keyframes questionAreaIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes answerCardIn {
+  from { opacity: 0; transform: translateY(22px); }
+  to { opacity: 1; transform: none; }
+}
+
+@keyframes questionLeave {
+  to { opacity: 0; transform: translateY(-14px); }
+}
+
+/* Opacity-only leave: used on .answer-grid, whose fixed-position child must not sit
+   inside a transformed ancestor while the question is on its way out. */
+@keyframes questionAreaLeave {
+  to { opacity: 0; }
+}
+
+@keyframes counterTick {
+  from { opacity: 0; transform: translateY(-6px); }
+  to { opacity: 1; transform: none; }
+}
+
+.question-enter {
+  animation: questionTextIn var(--md-sys-motion-duration-long2) var(--md-sys-motion-easing-decelerate) backwards;
+  backface-visibility: hidden;
+}
+
+.question-enter-up {
+  animation: questionAreaIn var(--md-sys-motion-duration-long2) var(--md-sys-motion-easing-decelerate) 60ms backwards;
+}
+
+.question-area-enter {
+  animation: questionAreaIn var(--md-sys-motion-duration-long2) var(--md-sys-motion-easing-decelerate) 120ms backwards;
+}
+
+.question-area-enter-sa {
+  animation: questionTextIn var(--md-sys-motion-duration-long2) var(--md-sys-motion-easing-decelerate) 120ms backwards;
+  backface-visibility: hidden;
+}
+
+/* Baris pilihan turun satu per satu, 40ms jaraknya, jadi mata jatuh dari A ke D tanpa
+   melihat empat baris melompat bersamaan. Guard :not() menjaga animasi kunci jawaban
+   (--center, --fade-out) tetap utuh. */
+.question-area-enter .answer-card:not(.answer-card--center):not(.answer-card--fade-out) {
+  animation: answerCardIn var(--md-sys-motion-duration-long2) var(--md-sys-motion-easing-decelerate) backwards;
+  backface-visibility: hidden;
+}
+
+.question-area-enter .answer-card:nth-child(1) { animation-delay: 40ms; }
+.question-area-enter .answer-card:nth-child(2) { animation-delay: 80ms; }
+.question-area-enter .answer-card:nth-child(3) { animation-delay: 120ms; }
+.question-area-enter .answer-card:nth-child(4) { animation-delay: 160ms; }
+
+.counter-tick {
+  animation: counterTick var(--md-sys-motion-duration-medium2) var(--md-sys-motion-easing-decelerate) backwards;
+}
+
+/* Leaving the screen: plays while the "Next Question" / "TIME'S UP" overlay is up.
+   These rules sit after the entry ones on purpose, and reset animation-delay so the
+   entry stagger never delays the exit. */
+.question-area--leaving .question-text,
+.question-area--leaving .question-meta {
+  animation: questionLeave var(--md-sys-motion-duration-medium2) var(--md-sys-motion-easing-accelerate) forwards;
+  animation-delay: 0ms;
+}
+
+.question-area--leaving .answer-grid {
+  animation: questionAreaLeave var(--md-sys-motion-duration-medium2) var(--md-sys-motion-easing-accelerate) forwards;
+  animation-delay: 0ms;
+}
+
+/* The extra :not() is load-bearing: it keeps this selector more specific than the entry
+   rule above, so leaving wins over `answerCardIn` (same commit, both match). Without it
+   the cards restart their entrance animation while the grid fades out and blink away. */
+.question-area--leaving .answer-card:not(.answer-card--center):not(.answer-card--fade-out),
+.question-area--leaving .short-answer-card {
+  animation: questionLeave var(--md-sys-motion-duration-medium2) var(--md-sys-motion-easing-accelerate) forwards;
+  animation-delay: 0ms;
+}
+
+/* ===== Setup Preview Panel ===== */
+.preview-section {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+}
+
+.preview-open-btn {
+  width: 100%;
+}
+
+.preview-section__hint {
+  font: var(--md-sys-typescale-body-medium);
+  color: var(--md-sys-color-on-surface-variant);
+  text-align: center;
+}
+
+.preview-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 1300;
+  background: var(--md-sys-color-surface);
+  display: flex;
+  flex-direction: column;
+  gap: clamp(10px, 1.5vh, 18px);
+  padding: clamp(12px, 2vh, 24px) clamp(16px, 3vw, 40px);
+  overflow: hidden;
+  animation: overlayFadeIn var(--md-sys-motion-duration-medium2) var(--md-sys-motion-easing-decelerate);
+}
+
+.preview-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+  flex-shrink: 0;
+}
+
+.preview-header__text {
+  min-width: 0;
+}
+
+.preview-header__title {
+  font: var(--md-sys-typescale-headline-medium);
+  color: var(--md-sys-color-on-surface);
+}
+
+.preview-header__meta {
+  font: var(--md-sys-typescale-body-medium);
+  color: var(--md-sys-color-on-surface-variant);
+  margin-top: 2px;
+}
+
+/* Catatan ini ditulis dengan pena, jadi warnanya pena. Tanpa latar dan tanpa kotak:
+   satu garis atas sudah memisahkannya dari isi. */
+.preview-note {
+  flex-shrink: 0;
+  align-self: flex-start;
+  padding: 8px 0 0;
+  border-top: 1px solid var(--pen);
+  border-radius: 0;
+  background: transparent;
+  color: var(--pen);
+  font: var(--md-sys-typescale-label-medium);
+}
+
+/* Centering uses `margin: auto` on the slide instead of `align-items: center`: with a
+   scrollable flex parent, vertical centering clips the top of an over-tall slide and
+   leaves it unreachable by scrolling. Auto margins collapse to 0 in that case. */
+.preview-body {
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+  display: flex;
+  justify-content: center;
+}
+
+/* Pratinjau memakai lembar yang sama dengan layar presentasi, hanya dibingkai: guru yang
+   memeriksa soal melihat apa yang akan dilihat kelas, bukan versi lain dari soal itu. */
+.preview-slide {
+  width: 100%;
+  max-width: 1100px;
+  margin: auto 0;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: clamp(10px, 1.6vh, 18px);
+  background: var(--sheet);
+  border: 2px solid var(--ink);
+  padding: clamp(16px, 2.4vh, 28px) clamp(16px, 2.4vw, 32px);
+}
+
+.preview-slide--next {
+  animation: previewSlideNext var(--md-sys-motion-duration-medium4) var(--md-sys-motion-easing-decelerate) backwards;
+  backface-visibility: hidden;
+}
+
+.preview-slide--prev {
+  animation: previewSlidePrev var(--md-sys-motion-duration-medium4) var(--md-sys-motion-easing-decelerate) backwards;
+  backface-visibility: hidden;
+}
+
+@keyframes previewSlideNext {
+  from { opacity: 0; transform: translateX(28px); }
+  to { opacity: 1; transform: none; }
+}
+
+@keyframes previewSlidePrev {
+  from { opacity: 0; transform: translateX(-28px); }
+  to { opacity: 1; transform: none; }
+}
+
+.preview-question-text {
+  font: var(--type-soal);
+  color: var(--md-sys-color-on-surface);
+  text-align: left;
+  max-width: min(64ch, 100%);
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+}
+
+.preview-answer {
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+  max-width: 100%;
+  padding: 10px 16px;
+  border-radius: 0;
+  border: 2px solid var(--pen);
+  background: var(--pen-wash);
+  color: var(--pen);
+  animation: previewAnswerIn var(--md-sys-motion-duration-medium3) var(--md-sys-motion-easing-decelerate) backwards;
+}
+
+@keyframes previewAnswerIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: none; }
+}
+
+.preview-answer__label {
+  font: var(--md-sys-typescale-label-medium);
+  color: var(--md-sys-color-on-surface-variant);
+}
+
+.preview-answer__value {
+  font: var(--md-sys-typescale-title-medium);
+  word-break: break-word;
+}
+
+.preview-footer {
+  flex-shrink: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  padding-top: 12px;
+  border-top: 1px solid var(--md-sys-color-outline-variant);
+}
+
+.preview-footer__nav {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+  width: 100%;
+}
+
+.preview-counter {
+  font: 700 1.1rem/1 'Space Mono', monospace;
+  color: var(--md-sys-color-on-surface-variant);
+  font-variant-numeric: tabular-nums;
+  min-width: 96px;
+  text-align: center;
+}
+
+.preview-footer__actions {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 16px;
+}
+
+.preview-hint {
+  font: var(--md-sys-typescale-label-medium);
+  color: var(--md-sys-color-on-surface-variant);
+}
+
+@media (max-width: 768px) {
+  .preview-footer__nav {
+    gap: 8px;
+  }
+
+  .preview-hint {
+    display: none;
+  }
+}
+
+/* ===== Reduced Motion
+ =====
+   Gerak di aplikasi ini: masuknya soal, tanda pena, denyut timer kritis, dan fade antar
+   layar. Semua dilipat jadi statis tanpa kehilangan informasi, dan tidak ada yang boleh
+   berhenti di keadaan 0% sebuah keyframe (karena itu delay-nya ikut dinolkan). */
+@media (prefers-reduced-motion: reduce) {
+  /* Stop the endless loop rather than running it once: a single pass would leave the
+     critical timer parked at the wrong opacity. */
+  .timer-display--critical {
+    animation: none;
+  }
+
+  /* Everything else renders instantly at its final state. The negative delay matters:
+     keyframes with `both` fill (question entry, reveals, the pen mark) would otherwise
+     hold elements invisible for the whole delay. */
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-delay: -0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+/* ===== Printable Answer Key =====
+   The sheet is rendered into document.body through a portal. Printing hides the whole app
+   (#root) and shows only the sheet, so no visibility or absolute-position trick is needed. */
+.print-sheet {
+  display: none;
+}
+
+@media print {
+  /* Lembar kunci jawaban selalu keluar sebagai tinta di atas kertas putih, apa pun tema yang
+     sedang dipakai di layar. Tanpa ini, guru yang menyalakan tema gelap lalu menekan Cetak
+     akan mendapat teks terang di atas kertas putih, yaitu lembar yang kosong. */
+  :root,
+  :root[data-theme='dark'] {
+    color-scheme: light;
+    --paper: #F4F5F1;
+    --sheet: #FFFFFF;
+    --ink: #14181C;
+    --ink-soft: #5A6168;
+    --rule: #9AA096;
+    --pen: #B4231C;
+    --pen-wash: #F4E4E1;
+  }
+
+  html,
+  body,
+  #root {
+    height: auto !important;
+    width: auto !important;
+    overflow: visible !important;
+    background: var(--sheet);
+  }
+
+  #root {
+    display: none !important;
+  }
+
+  .print-sheet {
+    display: block !important;
+    color: var(--ink);
+  }
+
+  .print-sheet__head {
+    border-bottom: 2px solid var(--ink);
+    padding-bottom: 8px;
+    margin-bottom: 12px;
+  }
+
+  /* Kalimat biasa, bukan huruf besar bertracking: lembar ini dokumen kelas, bukan sampul. */
+  .print-sheet__brand {
+    font: 600 9.5pt/1.2 'Plus Jakarta Sans', sans-serif;
+  }
+
+  .print-sheet__title {
+    font: 700 18pt/1.15 'Plus Jakarta Sans', sans-serif;
+    margin: 2px 0 4px;
+  }
+
+  .print-sheet__meta {
+    font: 500 10pt/1.4 'Plus Jakarta Sans', sans-serif;
+  }
+
+  .print-sheet__warning {
+    font: 700 10pt/1.4 'Plus Jakarta Sans', sans-serif;
+    margin-top: 4px;
+  }
+
+  .print-sheet__table {
+    width: 100%;
+    border-collapse: collapse;
+    font: 500 9.5pt/1.35 'Plus Jakarta Sans', sans-serif;
+  }
+
+  .print-sheet__table th,
+  .print-sheet__table td {
+    border: 1px solid var(--ink);
+    padding: 3px 6px;
+    text-align: left;
+    vertical-align: top;
+  }
+
+  /* Tanpa isian abu di kepala tabel: garis bawah yang lebih tebal sudah cukup memisahkan
+     kepala dari isi, dan latar abu hanya menambah tinta yang tidak perlu di kertas. */
+  .print-sheet__table th {
+    background: transparent;
+    border-bottom: 1.5pt solid var(--ink);
+  }
+
+  /* A question split across two pages is unreadable on paper. */
+  .print-sheet__table tr {
+    break-inside: avoid;
+    page-break-inside: avoid;
+  }
+
+  .print-sheet__cell--num {
+    width: 30px;
+    text-align: center;
+  }
+
+  .print-sheet__cell--type {
+    width: 46px;
+  }
+
+  .print-sheet__cell--answer {
+    width: 30%;
+    font-weight: 700;
+  }
+}
+
+@page {
+  margin: 14mm;
+}
+

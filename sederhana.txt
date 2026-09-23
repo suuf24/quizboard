@@ -1,0 +1,86 @@
+================================================================================
+QUIZBOARD: APLIKASI KUIS KELAS SEDERHANA YANG BISA DIPAKAI TANPA INTERNET
+================================================================================
+
+NAMA LENGKAP    : [Nama Lengkap Anda — tanpa gelar]
+ALAMAT EMAIL    : [email@domain.ac.id]
+
+--------------------------------------------------------------------------------
+ABSTRAK
+--------------------------------------------------------------------------------
+Kuis digital seperti Kahoot! memang seru dan membuat siswa semangat, tapi kebanyakan aplikasi seperti itu berbayar, harus online, dan setiap siswa harus punya HP atau laptop. Padahal tidak semua sekolah punya fasilitas itu. Karena itu, penelitian ini membuat QuizBoard: aplikasi kuis sederhana yang cukup dijalankan dari satu laptop guru, tanpa internet, tanpa daftar akun, dan tanpa biaya. Caranya gampang: guru menulis soal di file teks biasa (.txt), lalu aplikasi menampilkannya satu per satu di proyektor lengkap dengan hitungan waktu. Siswa menjawab secara lisan atau di buku, jadi tidak perlu perangkat tambahan. Hasilnya, QuizBoard bisa membaca file soal campuran (pilihan ganda dan isian singkat), menampilkan kuis dengan timer, membuka jawaban untuk pembahasan, dan mencetak kunci jawaban untuk guru. Semua fitur sudah diuji dan berjalan dengan baik. QuizBoard membuktikan bahwa kuis kelas yang seru dan berguna untuk belajar tidak harus mahal dan tidak harus online.
+
+Kata kunci: kuis kelas, aplikasi pembelajaran, tanpa internet, file teks
+
+--------------------------------------------------------------------------------
+1. PENDAHULUAN
+--------------------------------------------------------------------------------
+1.1 Latar Belakang
+Kuis singkat di tengah pelajaran adalah cara yang bagus untuk mengecek pemahaman siswa. Penelitian Black dan Wiliam (1998) menunjukkan bahwa guru yang rutin mengecek pemahaman siswa lalu menyesuaikan cara mengajarnya bisa meningkatkan hasil belajar siswa secara signifikan. Selain itu, menjawab soal dengan mengingat pelajaran (bukan membaca ulang catatan) ternyata membuat ingatan siswa lebih kuat, sebagaimana dibuktikan Roediger dan Karpicke (2006).
+
+Sayangnya, kuis di kelas sering malas dilakukan karena ribet: guru harus mencetak lembar soal, lalu mengoreksinya satu per satu. Kuis digital seperti Kahoot! bisa jadi solusi karena seru dan otomatis. Penelitian memang membuktikan kuis digital membuat siswa lebih semangat dan lebih terlibat (Wang & Tahir, 2020; Licorish et al., 2018). Tetapi ada tiga masalah: pertama, aplikasi kuis populer itu berbayar atau fiturnya dibatasi; kedua, butuh internet yang stabil; ketiga, setiap siswa harus punya HP atau laptop. Di banyak sekolah Indonesia, justru internet dan perangkat itulah yang jadi kendala.
+
+Ada satu hal penting yang sering dilupakan: untuk kuis harian, guru sebenarnya tidak butuh aplikasi yang menilai jawaban otomatis dan mencatat skor setiap siswa. Siswa bisa menjawab langsung secara lisan atau di buku, dan guru yang menilai. Yang guru butuhkan hanyalah layar besar untuk menampilkan soal dengan bagus, plus hitungan waktu supaya kelasnya hidup.
+
+Dari pikiran itulah QuizBoard dibuat: aplikasi kuis yang cukup pakai satu laptop guru dan proyektor. Guru menulis soal di file teks biasa (format .txt yang bisa dibuat di Notepad), membuka aplikasinya, dan kuis langsung bisa dimulai. Tidak perlu internet, tidak perlu daftar akun, tidak perlu perangkat siswa, dan tidak ada data siswa yang dikirim ke mana pun.
+
+1.2 Tujuan
+Tujuan penelitian ini ada empat. Pertama, membuat aplikasi kuis kelas yang bisa jalan tanpa internet dari satu laptop guru. Kedua, membuat format soal yang sangat sederhana, yaitu file teks biasa, yang bisa diisi soal pilihan ganda dan isian singkat sekaligus dalam satu file. Ketiga, menyediakan fitur yang berguna untuk guru: mode latihan (jawaban bisa dibuka untuk dibahas) dan mode harian (jawaban tetap disembunyikan), timer yang bisa diatur, urutan soal dan jawaban yang bisa diacak, serta kunci jawaban yang bisa dicetak. Keempat, menguji bahwa semua fitur itu benar-benar berjalan.
+
+1.3 Landasan Teori
+Ada tiga ide utama yang jadi dasar QuizBoard. Pertama, asesmen formatif, yaitu kebiasaan guru mengecek pemahaman siswa selama proses belajar dan memakai hasilnya untuk mengarahkan pelajaran berikutnya; Black dan Wiliam (1998) membuktikan cara ini sangat efektif. QuizBoard mendukungnya lewat mode latihan yang bisa membuka jawaban langsung untuk dibahas di depan kelas. Kedua, retrieval practice atau efek tes: Roediger dan Karpicke (2006) membuktikan bahwa siswa yang sering diminta mengingat materi akan lebih lama mengingatnya. QuizBoard memudahkan guru mengadakan kuis kapan saja karena soalnya tinggal satu file teks yang bisa dipakai ulang terus. Ketiga, teknologi akan dipakai orang kalau memang berguna dan gampang dipakai (Davis, 1989). QuizBoard sengaja dibuat sesederhana mungkin: satu file teks, satu klik, langsung jalan. Unsur seru seperti timer, maskot, dan suara juga dipakai secukupnya, karena penelitian gamifikasi (Hamari et al., 2014; Zainuddin et al., 2020) menunjukkan unsur permainan membantu belajar kalau mendukung tujuan pembelajaran, bukan sekadar hiasan.
+
+--------------------------------------------------------------------------------
+2. METODE PENELITIAN
+--------------------------------------------------------------------------------
+Penelitian ini adalah penelitian pengembangan (research and development), yaitu membuat sebuah produk lalu mengujinya. Tahapannya sebagai berikut. Pertama, mencari tahu masalah guru dalam mengadakan kuis: butuh internet, mahal, siswa harus pakai perangkat, dan prosesnya ribet. Kedua, merancang solusinya: format file teks untuk soal, dan tampilan satu soal per layar penuh dengan huruf besar supaya terbaca sampai baris belakang. Ketiga, membuat aplikasinya dengan React 19 dan TypeScript (teknologi pembuat aplikasi web) lewat alat bantu Vite, tanpa library tampilan tambahan supaya ringan. Keempat, menguji semua fiturnya satu per satu (pengujian black-box, yaitu mengecek apakah setiap fitur berjalan sesuai yang diharapkan). Kelima, menuliskan hasilnya.
+
+Cara kerja aplikasinya begini. Guru menulis soal di file teks dengan aturan sederhana: judul kuis di baris "Title:", lalu nomor soal, opsi A sampai D (untuk pilihan ganda), dan "Answer:" berisi kunci jawaban. Untuk soal isian singkat, cukup tulis "Answer:" berisi jawabannya saja tanpa opsi; kalau jawabannya bisa lebih dari satu (misal "Newton" atau "N"), tulis dipisah tanda |. Baris yang diawali tanda # dianggap catatan dan dilewati. Kalau ada format yang salah, aplikasi memberi tahu nomor soal yang salah supaya guru langsung bisa membetulkannya. Soal-soal lama yang hanya pilihan ganda juga tetap bisa dibaca.
+
+--------------------------------------------------------------------------------
+3. HASIL DAN PEMBAHASAN
+--------------------------------------------------------------------------------
+3.1 Hasil Pengembangan
+Hasilnya adalah QuizBoard, aplikasi web yang berjalan sepenuhnya di laptop guru. Alurnya empat langkah: masukkan file soal, atur pengaturan, jalankan kuis, selesai.
+
+Pada layar impor, guru tinggal menyeret file .txt ke aplikasi (atau memilih file lewat tombol). Aplikasi membaca semua soal dan mengeceknya; kalau ada yang salah format, muncul pesan jelas yang menyebut nomor soalnya. Ada juga tombol "Try Demo" untuk mencoba kuis contoh tanpa perlu membuat file.
+
+Pada layar pengaturan, guru bisa melihat pratinjau semua soal, mencetak kunci jawaban, lalu memilih mode harian (jawaban tidak pernah ditampilkan, cocok untuk penilaian) atau mode latihan (jawaban bisa dibuka, cocok untuk belajar). Guru juga bisa mengatur waktu per tipe soal, mengacak urutan soal dan opsi jawaban, serta mengatur suara. Kalau aplikasi ditutup di tengah jalan, posisi kuis tersimpan dan bisa dilanjutkan nanti.
+
+Saat kuis berjalan, satu soal tampil memenuhi layar dengan tulisan besar, lengkap dengan nomor soal dan timer. Soal pilihan ganda tampil sebagai empat kartu opsi. Soal isian singkat tampil sebagai kotak isian kosong bertanda "Jawabanmu?", karena siswa menjawab lisan atau di buku. Ada label kecil "Pilihan Ganda" atau "Isian Singkat" supaya kelas tahu cara menjawab. Di bawah ada bar kendali guru: jeda, lewati soal, buka jawaban, kunci jawaban, mute, layar penuh, dan keluar. Ada juga tombol pintas keyboard. Kalau waktu habis di mode latihan, jawaban muncul otomatis dengan animasi; di mode harian, aplikasi langsung pindah ke soal berikutnya tanpa membocorkan jawaban.
+
+3.2 Hasil Pengujian
+Sembilan kriteria pengujian dinyatakan lulus semuanya: file soal lama tetap terbaca, file campuran terbaca dengan urutan yang benar, soal isian tampil benar, jawaban bisa dibuka dan ditutup di mode latihan, jawaban tetap tersembunyi di mode harian, pengacakan hanya berlaku untuk pilihan ganda, pesan error jelas menyebut nomor soal, catatan # diabaikan, dan kuis demo berjalan mulus dari awal sampai akhir. Ukuran aplikasi yang sudah dipadatkan hanya sekitar 72 kB (gzip), sangat ringan untuk laptop sekolah yang speknya biasa saja.
+
+3.3 Pembahasan
+Hasil ini menunjukkan bahwa kuis kelas yang seru dan bermanfaat tidak harus mahal atau online. Hampir semua manfaat kuis digital — suasana kelas yang hidup, umpan balik langsung, kebiasaan mengecek pemahaman — bisa didapat hanya dengan satu laptop guru, file teks, dan proyektor. Soal dalam bentuk teks biasa juga punya keuntungan lain: gampang dibagikan ke rekan guru, gampang diedit, dan tidak terikat aplikasi tertentu.
+
+QuizBoard memang tidak menilai otomatis dan tidak mencatat skor siswa. Itu memang pilihan yang disengaja: untuk kuis harian, penilaian tetap di tangan guru lewat jawaban siswa lisan/di buku dan kunci jawaban cetak. Justru karena fiturnya sedikit dan kebutuhannya minim, aplikasi ini mudah dipakai guru mana pun tanpa pelatihan khusus. Ini sesuai dengan teori penerimaan teknologi Davis (1989): teknologi yang gampang dipakai akan lebih cepat diterima.
+
+Keterbatasan penelitian ini: pengujian baru sebatas fitur (belum mengukur dampaknya ke nilai siswa lewat eksperimen), jenis soal baru pilihan ganda dan isian singkat, dan belum ada survei pengalaman guru dalam jumlah besar.
+
+--------------------------------------------------------------------------------
+4. KESIMPULAN DAN SARAN
+--------------------------------------------------------------------------------
+4.1 Kesimpulan
+QuizBoard berhasil dibuat dan berfungsi baik. Guru cukup menulis soal di file teks, lalu aplikasi menampilkannya di layar besar dengan timer, tanpa internet, tanpa akun, tanpa perangkat siswa, dan tanpa biaya. Soal campuran pilihan ganda dan isian singkat bisa dibaca dengan benar, dan jika ada kesalahan format, aplikasi menunjuk soal nomor berapa yang salah. Semua sembilan kriteria pengujian lulus, dan aplikasinya ringan (sekitar 72 kB) sehingga bisa jalan di laptop sekolah biasa. Desainnya juga sejalan dengan teori: mendukung asesmen formatif (Black & Wiliam, 1998), memudahkan latihan mengingat yang memperkuat ingatan (Roediger & Karpicke, 2006), dan sederhana untuk dipakai (Davis, 1989).
+
+4.2 Saran
+Untuk penelitian selanjutnya, sebaiknya diuji dampak QuizBoard ke hasil belajar siswa lewat eksperimen sebelum-sesudah. Untuk aplikasinya, bisa dikembangkan: jenis soal baru seperti benar/salah dan menjodohkan, rekap penilaian guru ke file, mode tim antar kelompok, dan jawaban isian yang lebih toleran terhadap beda ejaan. Untuk guru, disarankan memakai mode latihan untuk latihan rutin dan mode harian untuk penilaian, serta menyimpan file soal sebagai koleksi yang bisa dipakai ulang tahun depan.
+
+--------------------------------------------------------------------------------
+DAFTAR PUSTAKA
+--------------------------------------------------------------------------------
+Black, P., & Wiliam, D. (1998). Assessment and classroom learning. Assessment in Education: Principles, Policy & Practice, 5(1), 7-74. https://doi.org/10.1080/0969595980050102
+
+Davis, F. D. (1989). Perceived usefulness, perceived ease of use, and user acceptance of information technology. MIS Quarterly, 13(3), 319-340. https://doi.org/10.2307/249008
+
+Hamari, J., Koivisto, J., & Sarsa, H. (2014). Does gamification work? — A literature review of empirical studies on gamification. Proceedings of the 47th Hawaii International Conference on System Sciences (HICSS), 3025-3034. https://doi.org/10.1109/HICSS.2014.377
+
+Licorish, S. A., Owen, H. E., George, J. L., & Daniel, B. K. (2018). Students' perception of Kahoot!'s influence on teaching and learning: A game-based technology assessment tool. Smart Learning Environments, 5, Article 9. https://doi.org/10.1186/s41039-018-0078-8
+
+Roediger, H. L., III, & Karpicke, J. D. (2006). Test-enhanced learning: Taking memory tests improves long-term retention. Psychological Science, 17(3), 249-255. https://doi.org/10.1111/j.1467-9280.2006.01693.x
+
+Wang, A. I., & Tahir, R. (2020). The effect of using Kahoot! for learning — A literature review. Computers & Education, 149, Article 103818. https://doi.org/10.1016/j.compedu.2020.103818
+
+Zainuddin, Z., Chu, S. K. W., Shujahat, M., & Perera, C. J. (2020). The impact of gamification on learning and instruction: A systematic review of empirical evidence. Educational Research Review, 30, Article 100326. https://doi.org/10.1016/j.edurev.2020.100326

@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="id">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="./favicon.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="Classroom Quiz Player: alat bantu guru untuk presentasi kuis di kelas" />
+    <title>QuizBoard - Classroom Quiz Player</title>
+    <script>
+      /* Tema dipasang sebelum paint pertama, supaya sesi yang dilanjutkan langsung ke layar
+         presentasi tidak berkedip putih lalu gelap. Key-nya sama dengan src/storage.ts; kalau
+         storage diblokir (mode privat), aplikasi berjalan dengan tema terang. */
+      try {
+        if (localStorage.getItem('quizboard.theme.v1') === 'dark') {
+          document.documentElement.dataset.theme = 'dark';
+        }
+      } catch (e) {
+        /* tidak ada yang perlu dilakukan: tema terang adalah nilai awalnya */
+      }
+    </script>
+  </head>
+  <body>
+    <div id="root"></div>
+    <script type="module" src="/src/main.tsx"></script>
+  </body>
+</html>
