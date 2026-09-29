@@ -79,6 +79,13 @@
   --type-mesin: 700 clamp(1.25rem, 1.9vw, 2rem)/1 'Space Mono', monospace;
   --type-label: 600 0.8125rem/1.4 'Plus Jakarta Sans', sans-serif;
 
+  /* Tinggi bar kontrol guru, yang duduk di atas area soal karena bar itu `position: fixed`.
+     Area soal menyisakan ruang setinggi ini di bawah isinya: panggung gambar yang fleksibel akan
+     memakai seluruh sisa ruang, dan tanpa ruang yang disisihkan ia mendorong baris opsi ke bawah
+     bar. 68px = 60px tinggi bar satu baris (terukur pada 1440x900) + 8px jarak; versi dua barisnya
+     ada di media query 768px. */
+  --kontrol-tinggi: 68px;
+
   /* Elevasi: hanya panel yang menutup layar yang naik. Kartu memakai garis, bukan bayangan. */
   --md-sys-elevation-1: none;
   --md-sys-elevation-2: 0 10px 30px rgba(20,24,28,0.16);
@@ -254,6 +261,117 @@
   color: var(--md-sys-color-on-surface-variant);
 }
 
+/* Dua cara memasukkan soal: berkas, atau teks yang ditempel dari layar AI. Sakelarnya duduk
+   12px di atas lembarnya, jadi ia terbaca sebagai satu kontrol dengan isi di bawahnya, bukan
+   sebagai baris tersendiri. */
+.import-entry {
+  width: 100%;
+  max-width: 520px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+}
+
+/* Bentuknya mengikuti pilihan Mode di layar Siap: baris terpilih ditandai pena, bukan blok warna
+   baru. Di sini barisnya dibagi dua kolom supaya tetap setinggi satu baris. */
+.import-modes {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  width: 100%;
+  border: 2px solid var(--ink);
+  border-radius: 0;
+}
+
+.import-mode {
+  padding: 11px 16px;
+  background: transparent;
+  border-radius: 0;
+  font: var(--md-sys-typescale-label-large);
+  color: var(--md-sys-color-on-surface-variant);
+  transition: background-color var(--md-sys-motion-duration-short4) var(--md-sys-motion-easing-standard);
+}
+
+.import-mode + .import-mode {
+  border-left: 2px solid var(--ink);
+}
+
+.import-mode:hover {
+  background: color-mix(in srgb, var(--ink) 5%, transparent);
+}
+
+/* Dua penanda, bukan satu: latar pen-wash dan garis bawah pena. Warna saja tidak cukup untuk
+   mengatakan "yang ini sedang dipakai". */
+.import-mode--selected {
+  background: var(--pen-wash);
+  color: var(--md-sys-color-on-surface);
+  box-shadow: inset 0 -3px 0 var(--pen);
+}
+
+/* Panel tempel memakai lembar yang sama dengan drop zone, karena keduanya mengisi slot yang
+   sama di layar ini. Kotak teksnya lebih dalam dari teks soal mana pun, jadi ia memakai latar
+   meja supaya tetap terlihat sebagai ruang isian, bukan sebagai isi. */
+.paste-panel {
+  width: 100%;
+  max-width: 520px;
+  border: 2px solid var(--ink);
+  border-radius: 0;
+  padding: 24px;
+  background: var(--sheet);
+  text-align: left;
+}
+
+.paste-panel__label {
+  display: block;
+  font: var(--md-sys-typescale-title-medium);
+  color: var(--md-sys-color-on-surface);
+}
+
+.paste-panel__hint {
+  font: var(--md-sys-typescale-label-medium);
+  color: var(--md-sys-color-on-surface-variant);
+  margin-top: 4px;
+  margin-bottom: 12px;
+}
+
+.paste-panel__text {
+  display: block;
+  width: 100%;
+  min-height: 180px;
+  padding: 12px;
+  background: var(--paper);
+  color: var(--md-sys-color-on-surface);
+  border: 1px solid var(--ink-soft);
+  border-radius: 0;
+  font: var(--md-sys-typescale-body-medium);
+  resize: vertical;
+}
+
+.paste-panel__text:focus {
+  border-color: var(--ink);
+}
+
+.paste-panel__actions {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  flex-wrap: wrap;
+  margin-top: 12px;
+}
+
+.paste-panel__summary {
+  font: var(--md-sys-typescale-label-medium);
+  color: var(--md-sys-color-on-surface-variant);
+  font-variant-numeric: tabular-nums;
+}
+
+.paste-panel__buttons {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
 /* Drop Zone: lembar kosong di atas meja. Kertas tidak bersudut bulat dan tidak bergaris
    putus, jadi ini kotak putih dengan tepi tinta, bukan widget unggah. */
 .drop-zone {
@@ -308,12 +426,41 @@
   margin-top: 12px;
 }
 
-/* Import actions */
+/* Import actions, plus satu baris keterangan dan pintu masuk ke prompt AI. Semuanya satu
+   kelompok supaya jarak di dalamnya rapat (12px) sementara jaraknya ke lembar impor tetap 32px,
+   seperti irama sisa layar ini. */
+.import-aside {
+  width: 100%;
+  max-width: 520px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+}
+
 .import-actions {
   display: flex;
   gap: 12px;
   flex-wrap: wrap;
   justify-content: center;
+}
+
+.import-aside__hint {
+  font: var(--md-sys-typescale-label-medium);
+  color: var(--md-sys-color-on-surface-variant);
+  text-align: center;
+}
+
+/* Baris status sesudah tombol Buat soal ditekan. Isinya menyebut apa yang benar-benar terjadi,
+   termasuk saat peramban menolak clipboard. Garis tipis di kiri, bukan blok warna: ini kabar,
+   bukan peringatan. */
+.import-aside__note {
+  align-self: stretch;
+  border-left: 3px solid var(--rule);
+  padding: 2px 0 2px 10px;
+  font: var(--md-sys-typescale-label-medium);
+  color: var(--md-sys-color-on-surface);
+  text-align: left;
 }
 
 /* Resume Card: baris buku besar, bukan kartu. Dua garis mendatar sudah cukup memisahkan
@@ -345,6 +492,16 @@
   font-variant-numeric: tabular-nums;
 }
 
+/* Sesi yang tersimpan tanpa gambar harus mengatakannya sendiri. Tanpa baris ini, guru membuka
+   sesi lama dan menemukan soal bergambar yang gambarnya kosong tanpa penjelasan. */
+.resume-card__note {
+  margin-top: 10px;
+  padding-top: 8px;
+  border-top: 1px solid var(--pen);
+  font: var(--md-sys-typescale-label-medium);
+  color: var(--pen);
+}
+
 .resume-card__actions {
   display: flex;
   flex-wrap: wrap;
@@ -356,6 +513,15 @@
   max-width: 520px;
   width: 100%;
   text-align: center;
+}
+
+/* Membaca berkas soal dan mengecilkan gambar butuh waktu pada foto besar. Satu baris status lebih
+   jujur daripada layar yang diam tanpa penjelasan; tanpa spinner, karena tidak ada durasi yang
+   bisa dijanjikan. */
+.import-progress {
+  padding: 28px 0;
+  font: var(--md-sys-typescale-title-medium);
+  color: var(--md-sys-color-on-surface-variant);
 }
 
 .import-success {
@@ -579,6 +745,37 @@
   font: var(--md-sys-typescale-title-medium);
   color: var(--md-sys-color-on-surface);
   margin-bottom: 12px;
+}
+
+/* Baris gambar di layar Siap: satu keadaan yang bisa dibaca sekilas ("3 dari 9 gambar belum
+   dipasang") plus satu pintu masuk ke daftarnya. Tidak ada blok warna peringatan: yang salah di
+   sini adalah satu bagian kuis, bukan seluruh layar. */
+.media-section {
+  width: 100%;
+}
+
+.media-summary {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 12px;
+  padding: 12px 0;
+  border-top: 1px solid var(--rule);
+  border-bottom: 1px solid var(--rule);
+}
+
+.media-summary__text {
+  flex: 1;
+  min-width: min(100%, 22rem);
+  font: var(--md-sys-typescale-body-medium);
+  color: var(--md-sys-color-on-surface);
+}
+
+.media-summary__warning {
+  padding-top: 10px;
+  font: var(--md-sys-typescale-label-medium);
+  color: var(--pen);
 }
 
 /* Daftar bernomor, bukan dua kartu besar. Baris terpilih ditandai centang pena di kolom
@@ -1051,7 +1248,7 @@
   flex-direction: column;
   align-items: flex-start;
   justify-content: flex-start;
-  padding: clamp(14px, 2vh, 26px) clamp(16px, 3vw, 40px) 0 clamp(56px, 6vw, 104px);
+  padding: clamp(14px, 2vh, 26px) clamp(16px, 3vw, 40px) var(--kontrol-tinggi) clamp(56px, 6vw, 104px);
   gap: clamp(10px, 1.8vh, 20px);
   background: var(--sheet);
   border-top: 2px solid var(--ink);
@@ -1082,6 +1279,99 @@
   word-wrap: break-word;
   overflow-wrap: break-word;
   letter-spacing: -0.01em;
+}
+
+/* ===== Panggung gambar soal =====
+   Satu baris fleksibel di antara teks soal dan baris opsi. Tingginya adalah sisa ruang yang
+   benar-benar tersedia, bukan angka vh yang menebak: dari situ potret tinggi tidak mendorong opsi
+   keluar layar, dan lanskap lebar tidak melewati tepi kolom. Lantai 16vh menjaga gambar tidak
+   pernah menghilang saat teks soalnya panjang. */
+.question-figure {
+  flex: 1 1 auto;
+  min-height: clamp(96px, 16vh, 200px);
+  display: flex;
+  align-items: center;
+  gap: clamp(10px, 1.6vw, 24px);
+  width: 100%;
+  max-width: min(72ch, 100%);
+}
+
+/* Satu gambar memakai seluruh panggung; dua atau tiga gambar membagi ruangnya rata. Pembagian ini
+   yang menjaga "ada dua gambar" tidak berarti dua gambar kecil, selama jumlahnya masih tiga
+   (batas yang ditegakkan parser). */
+.question-figure__frame {
+  flex: 1 1 0;
+  min-width: 0;
+  height: 100%;
+  display: flex;
+  align-items: center;
+}
+
+/* Seluruh bidang gambar bisa diklik, bukan cuma ikon kecil: di depan kelas sasaran kliknya harus
+   sebesar gambarnya. */
+.question-figure__zoom {
+  display: block;
+  width: 100%;
+  height: 100%;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  cursor: zoom-in;
+}
+
+.question-figure__zoom:focus-visible {
+  outline: 3px solid var(--pen);
+  outline-offset: 3px;
+}
+
+/* `contain`, bukan `cover`: rasio asli dijaga, tidak ada bagian yang dipotong atau digepengkan.
+   Lebar dan tinggi 100% membuat gambar kecil ikut membesar sampai batas panggung (keterbacaan
+   dari baris belakang menang atas kemurnian piksel) dan gambar besar menyusut; ujung atasnya
+   sendiri sudah dijaga batas 1600 px saat impor. Tanpa bingkai dan tanpa latar: pemisahnya sudah
+   latar lembar, dan bingkai hanya menambah garis yang tidak membawa informasi. */
+.question-figure__zoom img,
+.question-figure__image {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  object-position: left center;
+}
+
+/* Dua gambar dibaca sebagai satu pasangan, jadi masing-masing dipusatkan di bagiannya sendiri;
+   satu gambar tetap menempel ke tepi kiri yang sama dengan teks soal. */
+.question-figure--multi .question-figure__frame img {
+  object-position: center;
+}
+
+/* Papan keterangan menggantikan gambar yang belum dipasang atau gagal dimuat. Garis putus-putus
+   adalah satu-satunya penanda tempat kosong di aplikasi ini, dan itu disengaja: isinya bukan
+   gambar, jadi bentuknya juga tidak boleh tampak seperti gambar. */
+.question-figure__fallback {
+  width: 100%;
+  max-width: 32rem;
+  min-height: 96px;
+  max-height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: center;
+  gap: 4px;
+  padding: 12px 16px;
+  border: 1px dashed var(--rule);
+}
+
+.question-figure__fallback-title {
+  font: var(--md-sys-typescale-title-medium);
+  color: var(--ink-soft);
+}
+
+/* Nama berkas atau alamatnya ditulis apa adanya, dalam huruf mesin: itu satu-satunya petunjuk
+   yang bisa dipakai guru untuk memperbaiki gambarnya. */
+.question-figure__fallback-source {
+  font: 600 0.875rem/1.3 'Space Mono', monospace;
+  color: var(--ink-soft);
+  word-break: break-all;
 }
 
 /* Meta soal: label biasa, bukan chip pil berwarna. Latar berwarna untuk sebuah label
@@ -1675,6 +1965,129 @@
   font-variant-numeric: tabular-nums;
 }
 
+/* Satu thumbnail kecil per soal bergambar. Ukurannya tetap, bukan auto-fit: di daftar padat ini
+   guru hanya perlu tahu "soal yang mana", dan gambar yang tumbuh sendiri akan mengacak tinggi
+   baris daftar. Panggung auto-fit tetap dipakai di tempat yang memang untuk dilihat kelas. */
+.answer-key-item__thumb {
+  flex-shrink: 0;
+  width: 56px;
+  height: 40px;
+  object-fit: contain;
+  background: var(--paper);
+  border: 1px solid var(--rule);
+}
+
+/* ===== Panel gambar (layar Siap) =====
+   Bentuknya memakai lembar samping yang sama dengan panel kunci jawaban; yang berbeda hanya isi
+   barisnya, jadi tidak ada permukaan baru yang perlu dipelajari guru. */
+.media-panel__hint {
+  margin: 0 0 10px;
+  font: var(--md-sys-typescale-body-medium);
+  color: var(--md-sys-color-on-surface-variant);
+}
+
+.media-panel__note,
+.media-panel__notes,
+.media-panel__failures {
+  margin: 12px 0 0;
+  font: var(--md-sys-typescale-label-medium);
+  color: var(--md-sys-color-on-surface-variant);
+}
+
+.media-panel__note {
+  padding-top: 8px;
+  border-top: 1px solid var(--pen);
+  color: var(--pen);
+}
+
+.media-panel__notes,
+.media-panel__failures {
+  padding-left: 18px;
+}
+
+.media-panel__failures {
+  color: var(--pen);
+}
+
+.media-panel__notes li,
+.media-panel__failures li {
+  margin-bottom: 4px;
+  word-break: break-word;
+}
+
+.media-item {
+  display: flex;
+  gap: 12px;
+  padding: 12px 0;
+  border-top: 1px solid var(--rule);
+}
+
+.media-item__num {
+  font: 600 1rem/1 'Space Mono', monospace;
+  color: var(--md-sys-color-on-surface-variant);
+  min-width: 32px;
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+
+.media-item__body {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.media-item__question {
+  font: var(--md-sys-typescale-body-medium);
+  color: var(--md-sys-color-on-surface);
+}
+
+.media-item__row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.media-item__thumb {
+  flex-shrink: 0;
+  width: 72px;
+  height: 48px;
+  object-fit: contain;
+  background: var(--paper);
+  border: 1px solid var(--rule);
+}
+
+.media-item__thumb--empty {
+  border-style: dashed;
+}
+
+.media-item__meta {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.media-item__source {
+  font: 600 0.8125rem/1.3 'Space Mono', monospace;
+  color: var(--ink);
+  word-break: break-all;
+}
+
+.media-item__status {
+  font: var(--md-sys-typescale-label-medium);
+  color: var(--md-sys-color-on-surface-variant);
+}
+
+.media-item__actions {
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
 /* Gelembung yang sama dengan layar presentasi, hanya lebih kecil. Guru dan siswa melihat
    penanda yang sama, jadi tidak ada dua bahasa visual untuk satu hal. */
 .answer-key-item__letter {
@@ -1798,8 +2211,14 @@
     min-width: 90px;
   }
 
+  /* Bar kontrol pindah ke dua baris di lebar ini, jadi tingginya juga naik: 106px terukur pada
+     390x844 + 8px jarak. */
+  :root {
+    --kontrol-tinggi: 114px;
+  }
+
   .question-area {
-    padding: 12px 16px 0 44px;
+    padding: 12px 16px var(--kontrol-tinggi) 44px;
   }
 
   .question-area::before {
@@ -1974,6 +2393,42 @@
   animation-delay: 0ms;
 }
 
+/* ===== Zoom gambar =====
+   Papan penuh dengan gambar sebesar mungkin. Warnanya memakai token papan kontras
+   (--overlay-plate /--overlay-ink), jadi di tema terang papannya gelap dan di tema gelap papannya
+   terang: "lihat ke tengah" tetap terbaca, dan tayangan soal di belakangnya benar-benar hilang.
+   Ini satu-satunya tempat gambar boleh diperbesar melewati ukuran aslinya, karena aksinya
+   sengaja dan sebentar saja: guru sedang menunjukkan satu detail ke seluruh kelas. */
+.zoom-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 1250;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+  padding: clamp(16px, 4vh, 48px) clamp(16px, 4vw, 64px);
+  background: var(--overlay-plate);
+  cursor: zoom-out;
+  animation: overlayFadeIn var(--md-sys-motion-duration-medium2) var(--md-sys-motion-easing-decelerate);
+  backface-visibility: hidden;
+}
+
+.zoom-overlay__image {
+  width: 100%;
+  min-height: 0;
+  flex: 1;
+  object-fit: contain;
+}
+
+.zoom-overlay__hint {
+  flex-shrink: 0;
+  font: var(--md-sys-typescale-label-medium);
+  color: var(--overlay-ink);
+  font-variant-numeric: tabular-nums;
+}
+
 /* ===== Setup Preview Panel ===== */
 .preview-section {
   width: 100%;
@@ -2097,6 +2552,15 @@
   overflow-wrap: break-word;
 }
 
+/* Lembar pratinjau tingginya mengikuti isi, jadi persentase tidak punya acuan untuk diukur:
+   panggung gambar di sini diberi tinggi pasti. 26vh dipilih supaya satu layar tetap
+   memperlihatkan teks soal, gambar, dan keempat opsi sekaligus. */
+.preview-slide .question-figure {
+  flex: 0 0 auto;
+  height: clamp(160px, 26vh, 320px);
+  min-height: 0;
+}
+
 .preview-answer {
   display: inline-flex;
   align-items: center;
@@ -2171,6 +2635,16 @@
 
   .preview-hint {
     display: none;
+  }
+
+  /* Baris gambar di panel: di lebar 390px, thumbnail, nama berkas, dan dua tombol tidak muat
+     sebaris. Nama berkasnya tetap di atas, tombolnya turun ke barisnya sendiri. */
+  .media-item__row {
+    flex-wrap: wrap;
+  }
+
+  .media-item__actions {
+    width: 100%;
   }
 }
 
@@ -2304,6 +2778,26 @@
   .print-sheet__cell--answer {
     width: 30%;
     font-weight: 700;
+  }
+
+  /* Gambar ikut tercetak, dibatasi 46 mm supaya satu baris tabel tetap muat satu halaman.
+     Tinggi dibatasi tanpa melebarkan gambar: rasionya dijaga oleh width/height auto, jadi tidak
+     ada gambar yang gepeng di atas kertas. Barisnya sendiri sudah `break-inside: avoid`. */
+  .print-sheet__figure {
+    margin-top: 3px;
+  }
+
+  .print-sheet__figure img {
+    width: auto;
+    height: auto;
+    max-width: 100%;
+    max-height: 46mm;
+  }
+
+  /* Keterangan ini tercetak hanya untuk gambar yang memang tidak tersedia, jadi ia tidak pernah
+     muncul di lembar yang gambarnya lengkap. */
+  .print-sheet__figure--missing {
+    font-style: italic;
   }
 }
 

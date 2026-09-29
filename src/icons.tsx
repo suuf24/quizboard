@@ -152,6 +152,25 @@ export function IconFolder({ size = 20, className }: IconProps) {
   );
 }
 
+export function IconImage({ size = 20, className }: IconProps) {
+  return (
+    <svg {...svgProps(size, className)} {...STROKE}>
+      <path d="M3.5 5.5h17v13h-17z" />
+      <path d="M3.5 15.4 9 10.2l4.6 4.4 2.6-2.3 4.3 3.6" />
+      <circle cx="15.7" cy="9.2" r="1.4" />
+    </svg>
+  );
+}
+
+export function IconExternal({ size = 20, className }: IconProps) {
+  return (
+    <svg {...svgProps(size, className)} {...STROKE}>
+      <path d="M13.5 4.5h6v6M19.5 4.5 11 13" />
+      <path d="M18.5 14.5v5h-14v-14h5" />
+    </svg>
+  );
+}
+
 export function IconDownload({ size = 20, className }: IconProps) {
   return (
     <svg {...svgProps(size, className)} {...STROKE}>

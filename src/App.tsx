@@ -1,11 +1,23 @@
 import { useState, useEffect, useRef, useCallback, useMemo, type CSSProperties } from 'react';
 import { createPortal } from 'react-dom';
 import './App.css';
-import type { Quiz, QuizConfig, QuizMode, PresentationState, AppScreen, ParseResult, Question, Theme } from './types';
+import type { Quiz, QuizConfig, QuizMode, PresentationState, AppScreen, ParseResult, Question, QuestionImage, Theme } from './types';
 import { parseQuizTemplate, shuffleArray } from './parser.js';
 import { demoQuiz } from './demo.js';
 import { clearSession, describeSavedAt, loadSession, loadTheme, saveSession, saveTheme } from './storage.js';
+import { SOAL_PROMPT, chatGptPlainUrl, chatGptPrefillUrl, copyText } from './soal-prompt.js';
 import type { SavedSession } from './storage.js';
+import {
+  ImageReadError,
+  attachLocalImages,
+  collectFromDataTransfer,
+  describeResize,
+  formatBytes,
+  imagesOf,
+  normalizeImage,
+  splitSelection,
+  withImageAt,
+} from './images.js';
 import {
   initAudio,
   playQuizStart,
@@ -24,8 +36,10 @@ import {
   IconCollapse,
   IconDownload,
   IconExpand,
+  IconExternal,
   IconEye,
   IconFolder,
+  IconImage,
   IconKey,
   IconMute,
   IconNext,
@@ -148,6 +162,12 @@ function QuizPreview({
 
           <div className="preview-question-text">{question.text}</div>
 
+          <QuestionFigure
+            key={`preview-figure-${index}`}
+            images={imagesOf(question)}
+            questionNumber={index + 1}
+          />
+
           {question.type === 'multiple-choice' ? (
             <div className="answer-grid">
               {question.options.map((opt, i) => (
@@ -259,12 +279,234 @@ function AnswerKeySheet({ title, questions }: { title: string; questions: Questi
                   ? `${String.fromCharCode(65 + question.correctAnswer)}. ${question.options[question.correctAnswer]}`
                   : question.acceptedAnswers.join(' / ')}
               </td>
-              <td>{question.text}</td>
+              <td>
+                {question.text}
+                {/* Gambar tanpa isi tetap dicetak sebagai satu baris keterangan: lembar kunci yang
+                    diam-diam kehilangan gambarnya akan terbaca sebagai soal yang lain. */}
+                {question.images?.map((image, imageIndex) =>
+                  image.src !== '' ? (
+                    <div className="print-sheet__figure" key={`print-image-${imageIndex}`}>
+                      <img src={image.src} alt={image.alt} />
+                    </div>
+                  ) : (
+                    <div
+                      className="print-sheet__figure print-sheet__figure--missing"
+                      key={`print-image-${imageIndex}`}
+                    >
+                      Gambar tidak tersedia: {image.source}
+                    </div>
+                  )
+                )}
+              </td>
             </tr>
           ))}
         </tbody>
       </table>
     </section>
+  );
+}
+
+// ===== QUESTION FIGURE =====
+interface QuestionFigureProps {
+  images: QuestionImage[];
+  questionNumber: number;
+  /** Kalau ada, gambar bisa diklik supaya dibuka besar. Presentasi memakainya, pratinjau tidak. */
+  onZoom?: (image: QuestionImage) => void;
+}
+
+/**
+ * Panggung gambar soal. Tingginya bukan angka tetap: ia mengisi sisa ruang antara teks soal dan
+ * baris opsi, jadi potret tinggi tidak mendorong opsi keluar layar dan gambar kecil tetap terbaca
+ * dari baris belakang. Alasan lengkapnya ada di komentar `.question-figure` di App.css.
+ *
+ * Gambar yang belum dipasang atau gagal dimuat diganti papan keterangan, bukan ikon gambar rusak:
+ * di depan kelas, satu kotak kosong tanpa penjelasan adalah teka-teki, sedangkan tulisan yang
+ * menyebut nama berkasnya memberi tahu guru apa yang harus dilakukan.
+ */
+function QuestionFigure({ images, questionNumber, onZoom }: QuestionFigureProps) {
+  // Nomor gambar yang gagal dimuat. Komponen ini dipasang dengan key per soal, jadi daftarnya
+  // selalu mulai kosong saat soal berganti.
+  const [failed, setFailed] = useState<number[]>([]);
+
+  if (images.length === 0) return null;
+
+  const markFailed = (index: number) => {
+    setFailed((prev) => (prev.includes(index) ? prev : [...prev, index]));
+  };
+
+  return (
+    <div className={`question-figure${images.length > 1 ? ' question-figure--multi' : ''}`}>
+      {images.map((image, index) => (
+        <div className="question-figure__frame" key={`${image.source}-${index}`}>
+          {image.src && !failed.includes(index) ? (
+            onZoom ? (
+              <button
+                type="button"
+                className="question-figure__zoom"
+                onClick={() => onZoom(image)}
+                // Spasi dan Enter juga pintasan jeda; klik pada gambar tidak boleh ikut menjeda.
+                onKeyDown={(event) => {
+                  if (event.key === ' ' || event.key === 'Enter') event.stopPropagation();
+                }}
+                title="Perbesar gambar (G)"
+                aria-label={`Perbesar gambar soal ${questionNumber}`}
+              >
+                <img src={image.src} alt={image.alt} draggable={false} onError={() => markFailed(index)} />
+              </button>
+            ) : (
+              <img
+                className="question-figure__image"
+                src={image.src}
+                alt={image.alt}
+                draggable={false}
+                onError={() => markFailed(index)}
+              />
+            )
+          ) : (
+            <div className="question-figure__fallback">
+              <div className="question-figure__fallback-title">
+                {image.src ? 'Gambar tidak bisa dimuat' : 'Gambar belum dipasang'}
+              </div>
+              <div className="question-figure__fallback-source">{image.source}</div>
+            </div>
+          )}
+        </div>
+      ))}
+    </div>
+  );
+}
+
+// ===== MEDIA PANEL (GAMBAR) =====
+interface MediaPanelProps {
+  questions: Question[];
+  failures: string[];
+  notes: string[];
+  note: string | null;
+  busy: boolean;
+  onPick: (questionIndex: number, imageIndex: number) => void;
+  onRemove: (questionIndex: number, imageIndex: number) => void;
+  onClose: () => void;
+}
+
+function describeImageStatus(image: QuestionImage): string {
+  if (image.origin === 'remote') return 'alamat online';
+  return image.src !== '' ? 'berkas lokal, siap tampil' : 'belum dipasang';
+}
+
+/**
+ * Daftar gambar kuis. Bentuknya sama dengan panel kunci jawaban (lembar samping dengan daftar
+ * yang bisa digulir) karena tugasnya sama: satu daftar panjang yang dibaca sambil kuis masih di
+ * layar Siap, tanpa menutupi seluruh layar.
+ */
+function MediaPanel({ questions, failures, notes, note, busy, onPick, onRemove, onClose }: MediaPanelProps) {
+  const rows = questions
+    .map((question, index) => ({ question, index }))
+    .filter((row) => imagesOf(row.question).length > 0);
+
+  // Thumbnail yang gagal dimuat jatuh ke kotak kosong yang sama dengan gambar yang belum
+  // dipasang, jadi tidak ada ikon gambar rusak di daftar ini.
+  const [failedThumbs, setFailedThumbs] = useState<string[]>([]);
+
+  return (
+    <>
+      <div className="backdrop" onClick={onClose} />
+      <div className="answer-key-panel media-panel" role="dialog" aria-modal="true" aria-labelledby="media-panel-title">
+        <div className="answer-key-header">
+          <div className="answer-key-header__title" id="media-panel-title">
+            Gambar soal
+          </div>
+          <div className="answer-key-header__actions">
+            <button className="btn btn--icon-only" onClick={onClose} aria-label="Tutup daftar gambar">
+              <IconClose />
+            </button>
+          </div>
+        </div>
+
+        <div className="answer-key-list">
+          <p className="media-panel__hint">
+            Nama berkas di baris Image: dicocokkan dengan berkas yang dipilih saat impor. Gambar yang
+            belum ada bisa dipasang di sini, dan pilihan itu ikut tersimpan di sesi terakhir.
+          </p>
+
+          {rows.length === 0 ? (
+            <p className="media-panel__hint">Belum ada soal yang memuat gambar di kuis ini.</p>
+          ) : (
+            rows.map(({ question, index }) => (
+              <div className="media-item" key={index}>
+                <div className="media-item__num">{String(index + 1).padStart(2, '0')}</div>
+                <div className="media-item__body">
+                  <div className="media-item__question">
+                    {question.text.length > 70 ? `${question.text.slice(0, 70)}…` : question.text}
+                  </div>
+                  {imagesOf(question).map((image, imageIndex) => {
+                    const thumbKey = `${index}-${imageIndex}`;
+                    const thumbVisible = image.src !== '' && !failedThumbs.includes(thumbKey);
+
+                    return (
+                      <div className="media-item__row" key={`${image.source}-${imageIndex}`}>
+                        {thumbVisible ? (
+                          <img
+                            className="media-item__thumb"
+                            src={image.src}
+                            alt=""
+                            onError={() =>
+                              setFailedThumbs((prev) => (prev.includes(thumbKey) ? prev : [...prev, thumbKey]))
+                            }
+                          />
+                        ) : (
+                          <div className="media-item__thumb media-item__thumb--empty" aria-hidden="true" />
+                        )}
+                        <div className="media-item__meta">
+                          <div className="media-item__source">{image.source}</div>
+                          <div className="media-item__status">{describeImageStatus(image)}</div>
+                        </div>
+                        {image.origin === 'local' && (
+                          <div className="media-item__actions">
+                            <button
+                              className="btn btn--outlined btn--small"
+                              onClick={() => onPick(index, imageIndex)}
+                              disabled={busy}
+                            >
+                              {image.src !== '' ? 'Ganti' : 'Pilih berkas'}
+                            </button>
+                            {image.src !== '' && (
+                              <button
+                                className="btn btn--text btn--small"
+                                onClick={() => onRemove(index, imageIndex)}
+                              >
+                                Lepas
+                              </button>
+                            )}
+                          </div>
+                        )}
+                      </div>
+                    );
+                  })}
+                </div>
+              </div>
+            ))
+          )}
+
+          {note && <p className="media-panel__note">{note}</p>}
+
+          {notes.length > 0 && (
+            <ul className="media-panel__notes">
+              {notes.map((item) => (
+                <li key={item}>{item}</li>
+              ))}
+            </ul>
+          )}
+
+          {failures.length > 0 && (
+            <ul className="media-panel__failures">
+              {failures.map((item) => (
+                <li key={item}>{item}</li>
+              ))}
+            </ul>
+          )}
+        </div>
+      </div>
+    </>
   );
 }
 
@@ -335,6 +577,25 @@ function App() {
   // yang sama sebelum paint pertama, jadi layar pertama tidak berkedip putih.
   const [theme, setTheme] = useState<Theme>(() => loadTheme() ?? 'light');
   const [parseResult, setParseResult] = useState<ParseResult | null>(null);
+  // Catatan sesudah tombol "Buat soal" ditekan. Isinya berbeda menurut apa yang benar-benar
+  // berhasil: prompt terisi di ChatGPT, prompt tersalin ke clipboard, atau keduanya.
+  const [soalNote, setSoalNote] = useState<string | null>(null);
+  // Dua cara memasukkan soal. "Tempel teks" ada karena hasil ChatGPT berupa teks di layar, bukan
+  // berkas, jadi memaksa guru menyimpannya dulu ke .txt hanya menambah satu langkah yang bisa gagal.
+  const [importMode, setImportMode] = useState<'file' | 'paste'>('file');
+  const [pastedText, setPastedText] = useState('');
+  // Kotak tempel yang difokuskan sesudah "Buat soal" memindahkan layar ke mode tempel, supaya
+  // Ctrl+V guru langsung masuk ke kotaknya, bukan ke tombol sakelarnya.
+  const pasteInputRef = useRef<HTMLTextAreaElement | null>(null);
+
+  // --- Gambar ---
+  const [importing, setImporting] = useState(false);
+  const [imageFailures, setImageFailures] = useState<string[]>([]);
+  const [imageResizes, setImageResizes] = useState<string[]>([]);
+  const [showMediaPanel, setShowMediaPanel] = useState(false);
+  const [mediaNote, setMediaNote] = useState<string | null>(null);
+  const [mediaBusy, setMediaBusy] = useState(false);
+  const [zoomedImage, setZoomedImage] = useState<QuestionImage | null>(null);
 
   // --- Presentation state ---
   const [presState, setPresState] = useState<PresentationState>('idle');
@@ -368,6 +629,8 @@ function App() {
   const exitDialogCancelRef = useRef<HTMLButtonElement>(null);
   const answerKeyOpenerRef = useRef<HTMLButtonElement>(null);
   const answerKeyCloseRef = useRef<HTMLButtonElement>(null);
+  const mediaInputRef = useRef<HTMLInputElement>(null);
+  const pendingSlotRef = useRef<{ question: number; image: number } | null>(null);
 
   // --- Derived ---
   const questions = useMemo(() => quiz?.questions ?? [], [quiz]);
@@ -389,36 +652,188 @@ function App() {
     : null;
 
   // ===== FILE HANDLING =====
-  const handleFile = useCallback((file: File) => {
-    const reader = new FileReader();
-    reader.onload = (e) => {
-      const text = e.target?.result as string;
+  /**
+   * Satu pintu masuk untuk semua cara impor: berkas soal beserta gambarnya, atau satu folder yang
+   * berisi keduanya. Gambar dicocokkan lewat nama berkas di baris Image:; nama yang tidak ketemu
+   * tidak menggagalkan impor, karena layar Siap punya tempat untuk memasangnya satu per satu.
+   */
+  const handleImport = useCallback(async (files: File[]) => {
+    const selection = splitSelection(files);
+    if (!selection.template) {
+      setParseResult({
+        success: false,
+        error:
+          'Belum ada berkas soal yang dipilih. Pilih berkas .txt berisi soal; berkas gambarnya boleh dipilih sekaligus.',
+      });
+      return;
+    }
+
+    setImporting(true);
+    setImageFailures([]);
+    setImageResizes([]);
+    setMediaNote(null);
+
+    try {
+      const text = await selection.template.text();
       const result = parseQuizTemplate(text);
-      setParseResult(result);
-      if (result.success && result.quiz) {
-        setQuiz(result.quiz);
-        setTimeout(() => setScreen('setup'), 1500);
+      if (!result.success || !result.quiz) {
+        setParseResult(result);
+        return;
       }
-    };
-    reader.readAsText(file);
+
+      const attached = await attachLocalImages(result.quiz.originalQuestions, selection.images);
+      const imported: Quiz = {
+        ...result.quiz,
+        questions: attached.questions,
+        originalQuestions: attached.questions,
+      };
+
+      setImageFailures(attached.report.failed);
+      setImageResizes([
+        ...attached.report.resized,
+        // Berkas yang bukan .txt dan bukan gambar disebut, bukan dibuang diam-diam: guru yang
+        // salah menyeret satu dokumen lain perlu tahu kenapa dokumen itu tidak muncul.
+        ...(selection.skipped > 0
+          ? [`${selection.skipped} berkas dilewati karena bukan berkas .txt dan bukan gambar.`]
+          : []),
+      ]);
+      setQuiz(imported);
+      setParseResult({ success: true, quiz: imported });
+      setTimeout(() => setScreen('setup'), 1500);
+    } catch {
+      setParseResult({
+        success: false,
+        error: 'Berkas ini belum bisa dibaca. Periksa berkasnya sebentar, lalu impor ulang.',
+      });
+    } finally {
+      setImporting(false);
+    }
   }, []);
 
-  const handleDrop = useCallback((e: React.DragEvent) => {
-    e.preventDefault();
-    e.stopPropagation();
-    const file = e.dataTransfer.files[0];
-    if (file) handleFile(file);
-  }, [handleFile]);
+  /**
+   * Impor dari teks yang ditempel. Jalurnya sengaja lebih pendek dari impor berkas: tidak ada
+   * berkas gambar yang ikut, jadi tidak ada yang perlu dicocokkan. Baris `Image:` yang menunjuk
+   * alamat online tetap jalan, sedangkan yang menunjuk nama berkas lokal muncul di layar Siap
+   * sebagai gambar yang belum dipasang, lengkap dengan panel untuk memasangnya.
+   */
+  const importPastedText = useCallback(() => {
+    setImageFailures([]);
+    setImageResizes([]);
+    setMediaNote(null);
+
+    // Kotak kosong tidak pernah sampai ke sini: tombolnya mati selama belum ada teks, dan baris
+    // "Belum ada teks." di sampingnya mengatakan kenapa.
+    const result = parseQuizTemplate(pastedText.trim());
+    if (!result.success || !result.quiz) {
+      setParseResult(result);
+      return;
+    }
+
+    setQuiz(result.quiz);
+    setParseResult({ success: true, quiz: result.quiz });
+    setPastedText('');
+    setTimeout(() => setScreen('setup'), 1500);
+  }, [pastedText]);
+
+  /* Kotak yang menerima satu blok teks tidak memberi tanda apa pun bahwa tempelannya masuk, jadi
+     angka ini yang memberi tanda itu sebelum guru menekan Baca soal. */
+  const pasteSummary = useMemo(() => {
+    const text = pastedText.trim();
+    if (text === '') return 'Belum ada teks.';
+    const lines = text.split('\n').filter((line) => line.trim() !== '').length;
+    return `${lines} baris, ${text.length} karakter.`;
+  }, [pastedText]);
+
+  const handleDrop = useCallback(
+    (e: React.DragEvent) => {
+      e.preventDefault();
+      e.stopPropagation();
+      // Entri folder harus diambil saat event masih berjalan, jadi pengumpulan berkas dimulai
+      // lebih dulu, baru hasilnya diimpor.
+      void collectFromDataTransfer(e.dataTransfer).then((files) => {
+        if (files.length > 0) void handleImport(files);
+      });
+    },
+    [handleImport]
+  );
 
   const handleDragOver = useCallback((e: React.DragEvent) => {
     e.preventDefault();
     e.stopPropagation();
   }, []);
 
-  const handleFileInput = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (file) handleFile(file);
-  }, [handleFile]);
+  const handleFileInput = useCallback(
+    (e: React.ChangeEvent<HTMLInputElement>) => {
+      const files = e.target.files ? Array.from(e.target.files) : [];
+      // Dikosongkan supaya berkas yang sama bisa dipilih lagi setelah impornya gagal.
+      e.target.value = '';
+      if (files.length > 0) void handleImport(files);
+    },
+    [handleImport]
+  );
+
+  // ===== MEDIA PANEL (GAMBAR) =====
+  /** Slot yang sedang menunggu berkas, diisi sebelum dialog berkas dibuka. */
+  const pickImageFile = useCallback((questionIndex: number, imageIndex: number) => {
+    pendingSlotRef.current = { question: questionIndex, image: imageIndex };
+    mediaInputRef.current?.click();
+  }, []);
+
+  const handleMediaFileInput = useCallback(async (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    const slot = pendingSlotRef.current;
+    event.target.value = '';
+    pendingSlotRef.current = null;
+    if (!file || !slot) return;
+
+    setMediaBusy(true);
+    setMediaNote(null);
+    try {
+      const result = await normalizeImage(file);
+      const patch = { src: result.src };
+      setQuiz((prev) =>
+        prev
+          ? {
+              ...prev,
+              questions: withImageAt(prev.questions, slot.question, slot.image, patch),
+              originalQuestions: withImageAt(prev.originalQuestions, slot.question, slot.image, patch),
+            }
+          : prev
+      );
+      setImageFailures((prev) => prev.filter((item) => !item.startsWith(`${file.name}:`)));
+      setMediaNote(
+        result.scaled
+          ? describeResize(file.name, result)
+          : `${file.name} dipakai apa adanya (${formatBytes(result.finalBytes)}).`
+      );
+    } catch (error) {
+      const reason =
+        error instanceof ImageReadError ? error.message : 'berkas ini tidak bisa dibaca sebagai gambar';
+      setImageFailures((prev) => [
+        ...prev.filter((item) => !item.startsWith(`${file.name}:`)),
+        `${file.name}: ${reason}.`,
+      ]);
+    } finally {
+      setMediaBusy(false);
+    }
+  }, []);
+
+  /**
+   * Melepas gambar dari soal tanpa menghapus slotnya: nama berkasnya tetap tertulis, jadi guru tahu
+   * apa yang harus dipasang kembali, dan sesi yang tersimpan ikut mengecil.
+   */
+  const removeImage = useCallback((questionIndex: number, imageIndex: number) => {
+    setMediaNote(null);
+    setQuiz((prev) =>
+      prev
+        ? {
+            ...prev,
+            questions: withImageAt(prev.questions, questionIndex, imageIndex, { src: '' }),
+            originalQuestions: withImageAt(prev.originalQuestions, questionIndex, imageIndex, { src: '' }),
+          }
+        : prev
+    );
+  }, []);
 
   const loadDemo = useCallback(() => {
     const demo = { ...demoQuiz };
@@ -463,6 +878,7 @@ function App() {
     setShowCorrectAnswer(false);
     setShowAnswerKey(false);
     setShowPreview(false);
+    setZoomedImage(null);
     setPresState('countdown');
     setScreen('presentation');
     setCountdownValue(3);
@@ -617,6 +1033,8 @@ function App() {
     }
 
     const nextDuration = durationForQuestion(questions[currentQ + 1] ?? null, config);
+    // Gambar yang sedang diperbesar tidak boleh ikut ke soal berikutnya.
+    setZoomedImage(null);
     setCurrentQ((prev) => prev + 1);
     setRemainingTime(nextDuration);
     endTimeRef.current = Date.now() + nextDuration * 1000;
@@ -633,6 +1051,7 @@ function App() {
     if (intervalRef.current) clearInterval(intervalRef.current);
     // Leaving the pause flag set would stop the next question's timer from ever starting.
     setIsPaused(false);
+    setZoomedImage(null);
     setPresState('transitioning');
     if (config.soundEnabled && config.soundTransitions) {
       playTransition(config.volume);
@@ -676,6 +1095,7 @@ function App() {
       document.exitFullscreen().catch(() => {});
     }
     setIsFullscreen(false);
+    setZoomedImage(null);
     setPresState('idle');
     setScreen('setup');
     setShowExitDialog(false);
@@ -686,6 +1106,7 @@ function App() {
 
   const restartQuiz = useCallback(() => {
     if (intervalRef.current) clearInterval(intervalRef.current);
+    setZoomedImage(null);
     setCurrentQ(0);
     setRemainingTime(durationForQuestion(questions[0] ?? null, config));
     setIsPaused(false);
@@ -724,8 +1145,17 @@ function App() {
 
       const key = e.key.toLowerCase();
 
-      // Escape unwinds one layer at a time: the exit dialog, then the answer key, and only
-      // then the presentation shortcuts. It never opens a new layer on top of an open one.
+      // Escape unwinds one layer at a time: the zoomed picture, then the exit dialog, then the
+      // answer key, and only then the presentation shortcuts. It never opens a new layer on top
+      // of an open one, and no shortcut reaches the quiz while a layer is up.
+      if (zoomedImage) {
+        if (key === 'escape') {
+          e.preventDefault();
+          setZoomedImage(null);
+        }
+        return;
+      }
+
       if (showExitDialog) {
         if (key === 'escape') {
           e.preventDefault();
@@ -748,6 +1178,15 @@ function App() {
           e.preventDefault();
           toggleFullscreen();
           break;
+        case 'g': {
+          // Hanya gambar yang benar-benar ada yang bisa dibuka; tanpa itu tombolnya diam.
+          const first = imagesOf(currentQuestion).find((image) => image.src !== '');
+          if (first) {
+            e.preventDefault();
+            setZoomedImage(first);
+          }
+          break;
+        }
         case 'escape':
           if (presState === 'question-active' || presState === 'time-warning' || isPaused) {
             setShowExitDialog(true);
@@ -775,6 +1214,8 @@ function App() {
     screen,
     presState,
     isPaused,
+    zoomedImage,
+    currentQuestion,
     showExitDialog,
     showAnswerKey,
     toggleFullscreen,
@@ -816,6 +1257,22 @@ function App() {
     return () => window.removeEventListener('keydown', handlePreviewKey);
   }, [screen, showPreview, previewGo, closePreview]);
 
+  // Panel gambar di layar Siap juga modal: Esc menutupnya dan tidak ada pintasan lain yang aktif
+  // selama ia terbuka.
+  useEffect(() => {
+    if (screen !== 'setup' || !showMediaPanel) return;
+
+    const handleMediaKey = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') {
+        e.preventDefault();
+        setShowMediaPanel(false);
+      }
+    };
+
+    window.addEventListener('keydown', handleMediaKey);
+    return () => window.removeEventListener('keydown', handleMediaKey);
+  }, [screen, showMediaPanel]);
+
   // Fullscreen change listener
   useEffect(() => {
     const handler = () => setIsFullscreen(!!document.fullscreenElement);
@@ -837,19 +1294,26 @@ function App() {
   // ===== SAVED SESSION =====
   // One slot: the quiz last open, its config, and where the teacher was. remainingTime is left
   // out on purpose, otherwise the 250ms timer tick would write to storage four times a second.
+  //
+  // Ada jeda 500 ms karena soal bergambar membawa datanya sendiri: tanpa jeda ini, setiap langkah
+  // slider volume akan menulis ulang seluruh gambar ke localStorage.
   useEffect(() => {
     if (!quiz) return;
-    saveSession({
-      quiz,
-      config,
-      currentQuestion: currentQ,
-      wasPresenting:
-        screen === 'presentation' &&
-        (presState === 'question-active' ||
-          presState === 'time-warning' ||
-          presState === 'answer-reveal' ||
-          isPaused),
-    });
+    const timeout = setTimeout(() => {
+      saveSession({
+        quiz,
+        config,
+        currentQuestion: currentQ,
+        wasPresenting:
+          screen === 'presentation' &&
+          (presState === 'question-active' ||
+            presState === 'time-warning' ||
+            presState === 'answer-reveal' ||
+            isPaused),
+      });
+    }, 500);
+
+    return () => clearTimeout(timeout);
   }, [quiz, config, currentQ, screen, presState, isPaused]);
 
   const resumeSavedSession = useCallback(
@@ -913,6 +1377,12 @@ function App() {
 
 # Baris yang diawali # adalah komentar, abaikan saja
 
+# Gambar: tulis di baris Image: sesudah baris soal. Isinya boleh alamat online
+#   (Image: https://...) atau nama berkas gambar di PC yang kamu pilih bersama
+#   berkas .txt ini saat impor (Image: diagram.png). Nama berkasnya dicocokkan
+#   otomatis, jadi huruf besar-kecil tidak masalah. Teks sesudah tanda | jadi
+#   deskripsi gambar untuk pembaca layar. Maksimal 3 gambar per soal.
+
 # Soal pilihan ganda: 4 opsi A-D + Answer: huruf
 1. Organ tubuh utama yang berfungsi dalam sistem pernapasan manusia adalah?
 A. Jantung
@@ -928,15 +1398,26 @@ C. Pernapasan
 D. Pembuangan
 Answer: C
 
+# Soal bergambar. Baris Image: di bawah ini sengaja dikomentari supaya template ini
+# bisa langsung diimpor tanpa berkas gambar apa pun. Hapus tanda # di depannya
+# kalau kamu sudah punya gambarnya.
+3. Perhatikan gambar berikut. Bagian yang ditunjuk anak panah adalah?
+# Image: alveolus.png | Diagram alveolus di dalam paru-paru
+A. Bronkus
+B. Alveolus
+C. Trakea
+D. Diafragma
+Answer: B
+
 # Soal isian singkat: tanpa opsi, langsung Answer: teks jawaban
-3. Lambang kimia air adalah...
+4. Lambang kimia air adalah...
 Answer: H2O
 
 # Beberapa jawaban alternatif dipisah tanda | (salah satu saja sudah benar)
-4. Satuan turunan SI untuk gaya adalah...
+5. Satuan turunan SI untuk gaya adalah...
 Answer: Newton | N
 
-5. Bagian saluran pernapasan yang terletak di tenggorokan adalah?
+6. Bagian saluran pernapasan yang terletak di tenggorokan adalah?
 A. Bronkus
 B. Trakea
 C. Alveoli
@@ -949,6 +1430,35 @@ Answer: B`;
     a.download = 'quiz-template.txt';
     a.click();
     URL.revokeObjectURL(url);
+  }, []);
+
+  // ===== BUAT SOAL DENGAN AI =====
+  /* Tombol ini keluar dari aplikasi: ia membuka ChatGPT dengan prompt pembuat soal, dan sekaligus
+     memindahkan layar impor ke kotak Tempel teks, karena hasilnya berupa teks di layar ChatGPT,
+     bukan berkas. Dua jalur prompt dikerjakan sekaligus dengan sengaja. Prompt di alamat `?q=`
+     adalah jalur satu klik, dan clipboard adalah jaring pengamannya: kalau kolom pesan ChatGPT
+     ternyata kosong, prompt yang sudah tersalin tinggal ditempel guru.
+     Urutannya penting. Tabnya dibuka lebih dulu, sebelum penyalinan ditunggu, supaya peramban
+     masih menghitungnya sebagai aksi klik dan tidak memblokirnya sebagai pop-up. */
+  const createSoalWithAi = useCallback(() => {
+    const prefilled = chatGptPrefillUrl();
+    window.open(prefilled ?? chatGptPlainUrl(), '_blank', 'noopener,noreferrer');
+
+    setImportMode('paste');
+    // Kotak tempelnya baru ada sesudah render mode tempel, jadi fokusnya menunggu satu putaran.
+    setTimeout(() => pasteInputRef.current?.focus(), 0);
+
+    void copyText(SOAL_PROMPT).then((copied) => {
+      if (prefilled && copied) {
+        setSoalNote('Tab ChatGPT sudah terbuka dengan prompt terisi, dan kotak Tempel teks sudah dibuka di sini. Kalau kolom pesan ChatGPT kosong, tempel dengan Ctrl+V, karena prompt ini juga sudah tersalin.');
+      } else if (prefilled) {
+        setSoalNote('Tab ChatGPT sudah terbuka dengan prompt terisi. Kalau kolom pesannya kosong, coba tekan Buat soal sekali lagi.');
+      } else if (copied) {
+        setSoalNote('Prompt sudah tersalin. Tempel di kolom pesan ChatGPT dengan Ctrl+V, lalu kirim.');
+      } else {
+        setSoalNote('Prompt belum bisa tersalin otomatis, dan tab ChatGPT terbuka tanpa prompt terisi. Coba tekan Buat soal sekali lagi.');
+      }
+    });
   }, []);
 
   // ===== RENDER: IMPORT SCREEN =====
@@ -973,7 +1483,7 @@ Answer: B`;
               </p>
             </div>
 
-            {!parseResult && savedSession && (
+            {!parseResult && !importing && savedSession && (
               <div className="resume-card">
                 <div className="resume-card__body">
                   <div className="resume-card__title">Lanjutkan kuis terakhir</div>
@@ -982,6 +1492,12 @@ Answer: B`;
                     {Math.min(savedSession.currentQuestion + 1, savedSession.quiz.questions.length)}.{' '}
                     Terakhir dibuka {describeSavedAt(savedSession.savedAt)}.
                   </div>
+                  {savedSession.imagesOmitted && (
+                    <div className="resume-card__note">
+                      Gambar soal tidak ikut tersimpan karena ukuran sesi. Impor ulang berkas soal
+                      beserta gambarnya supaya gambar kembali.
+                    </div>
+                  )}
                 </div>
                 <div className="resume-card__actions">
                   <button className="btn btn--primary" onClick={() => resumeSavedSession(true)}>
@@ -997,55 +1513,144 @@ Answer: B`;
               </div>
             )}
 
-            {!parseResult ? (
+            {importing ? (
+              <div className="import-result">
+                <div className="import-progress" role="status">
+                  Membaca berkas soal dan menyiapkan gambar…
+                </div>
+              </div>
+            ) : !parseResult ? (
               <>
-                <div
-                  className="drop-zone"
-                  onDrop={handleDrop}
-                  onDragOver={handleDragOver}
-                  onClick={() => document.getElementById('file-input')?.click()}
-                  role="button"
-                  tabIndex={0}
-                  aria-label="Tarik berkas soal ke sini, atau klik untuk memilih berkas"
-                  onKeyDown={(e) => {
-                    if (e.key === 'Enter' || e.key === ' ') {
-                      document.getElementById('file-input')?.click();
-                    }
-                  }}
-                >
-                  <div className="drop-zone__text">
-                    Tarik berkas soal ke sini
+                <div className="import-entry">
+                  <div className="import-modes" role="group" aria-label="Cara memasukkan soal">
+                    <button
+                      className={`import-mode ${importMode === 'file' ? 'import-mode--selected' : ''}`}
+                      onClick={() => setImportMode('file')}
+                      aria-pressed={importMode === 'file'}
+                    >
+                      Unggah berkas
+                    </button>
+                    <button
+                      className={`import-mode ${importMode === 'paste' ? 'import-mode--selected' : ''}`}
+                      onClick={() => setImportMode('paste')}
+                      aria-pressed={importMode === 'paste'}
+                    >
+                      Tempel teks
+                    </button>
                   </div>
-                  <div className="drop-zone__or">atau</div>
-                  <button className="btn btn--primary" onClick={(e) => { e.stopPropagation(); document.getElementById('file-input')?.click(); }}>
-                    <IconFolder size={18} /> Pilih berkas
-                  </button>
-                  <div className="drop-zone__hint">
-                    Berkas .txt: nomor. soal, opsi (a) sampai (d), lalu Answer: huruf kunci
-                  </div>
-                  <input
-                    id="file-input"
-                    type="file"
-                    accept=".txt"
-                    style={{ display: 'none' }}
-                    onChange={handleFileInput}
-                  />
+
+                  {importMode === 'file' ? (
+                    <div
+                      className="drop-zone"
+                      onDrop={handleDrop}
+                      onDragOver={handleDragOver}
+                      onClick={() => document.getElementById('file-input')?.click()}
+                      role="button"
+                      tabIndex={0}
+                      aria-label="Tarik berkas soal ke sini, atau klik untuk memilih berkas"
+                      onKeyDown={(e) => {
+                        if (e.key === 'Enter' || e.key === ' ') {
+                          document.getElementById('file-input')?.click();
+                        }
+                      }}
+                    >
+                      <div className="drop-zone__text">
+                        Tarik berkas soal ke sini
+                      </div>
+                      <div className="drop-zone__or">atau</div>
+                      <button className="btn btn--primary" onClick={(e) => { e.stopPropagation(); document.getElementById('file-input')?.click(); }}>
+                        <IconFolder size={18} /> Pilih berkas
+                      </button>
+                      <div className="drop-zone__hint">
+                        Berkas .txt: nomor. soal, opsi (a) sampai (d), lalu Answer: huruf kunci. Gambar
+                        ikut dipilih sekaligus, dicocokkan lewat baris Image:. Folder yang berisi
+                        keduanya juga bisa diseret ke sini.
+                      </div>
+                      <input
+                        id="file-input"
+                        type="file"
+                        accept=".txt,image/*"
+                        multiple
+                        style={{ display: 'none' }}
+                        onChange={handleFileInput}
+                      />
+                    </div>
+                  ) : (
+                    // Berkas yang diseret ke panel ini tetap diimpor, jadi guru yang sengaja pindah
+                    // ke tab ini tidak perlu kembali dulu untuk melepas berkasnya.
+                    <div className="paste-panel" onDrop={handleDrop} onDragOver={handleDragOver}>
+                      <label className="paste-panel__label" htmlFor="paste-input">
+                        Tempel hasil dari AI di sini
+                      </label>
+                      <div className="paste-panel__hint">
+                        Tempel seluruh hasilnya apa adanya, termasuk baris Title: dan Answer:.
+                      </div>
+                      <textarea
+                        id="paste-input"
+                        ref={pasteInputRef}
+                        className="paste-panel__text"
+                        value={pastedText}
+                        onChange={(e) => setPastedText(e.target.value)}
+                        spellCheck={false}
+                        aria-describedby="paste-summary"
+                      />
+                      <div className="paste-panel__actions">
+                        {/* Tanpa `role="status"`: pembaca layar tidak perlu mendengar ulang hitungan
+                            baris setiap kali satu huruf diketik. Angka itu dibaca saat kotaknya
+                            difokuskan, karena kotak itu menunjuk ke sini lewat aria-describedby. */}
+                        <span className="paste-panel__summary" id="paste-summary">
+                          {pasteSummary}
+                        </span>
+                        <div className="paste-panel__buttons">
+                          {pastedText.trim() !== '' && (
+                            <button className="btn btn--text btn--small" onClick={() => setPastedText('')}>
+                              Kosongkan
+                            </button>
+                          )}
+                          <button
+                            className="btn btn--primary"
+                            onClick={importPastedText}
+                            disabled={pastedText.trim() === ''}
+                          >
+                            <IconCheck size={18} /> Baca soal
+                          </button>
+                        </div>
+                      </div>
+                    </div>
+                  )}
                 </div>
 
-                <div className="import-actions">
-                  <button className="btn btn--outlined" onClick={downloadTemplate}>
-                    <IconDownload size={18} /> Unduh template
-                  </button>
-                  <button className="btn btn--outlined" onClick={loadDemo}>
-                    <IconPlay size={18} /> Coba contoh
-                  </button>
+                <div className="import-aside">
+                  <div className="import-actions">
+                    <button className="btn btn--outlined" onClick={createSoalWithAi}>
+                      <IconExternal size={18} /> Buat soal
+                    </button>
+                    <button className="btn btn--outlined" onClick={downloadTemplate}>
+                      <IconDownload size={18} /> Unduh template
+                    </button>
+                    <button className="btn btn--outlined" onClick={loadDemo}>
+                      <IconPlay size={18} /> Coba contoh
+                    </button>
+                  </div>
+
+                  <p className="import-aside__hint">
+                    Buat soal membuka tab ChatGPT dengan prompt pembuat soal, lalu memindahkan layar
+                    ini ke kotak Tempel teks. Jawab pertanyaannya satu per satu, tekan tombol salin
+                    di code block hasilnya, lalu tempel di situ dan klik Baca soal.
+                  </p>
+
+                  {soalNote && (
+                    <p className="import-aside__note" role="status">
+                      {soalNote}
+                    </p>
+                  )}
                 </div>
               </>
             ) : parseResult.success ? (
               <div className="import-result">
                 <div className="import-success">
                   <div className="import-success__icon"><IconCheck size={32} /></div>
-                  <div className="import-success__title">Berkas berhasil dibaca</div>
+                  <div className="import-success__title">Soal berhasil dibaca</div>
                   <div className="import-success__subtitle">
                     {quiz?.questions.length} soal siap ditampilkan
                   </div>
@@ -1055,11 +1660,15 @@ Answer: B`;
               <div className="import-result">
                 <div className="import-error">
                   <div className="import-error__icon"><IconAlert size={32} /></div>
-                  <div className="import-error__title">Berkas ini belum bisa dibaca</div>
+                  <div className="import-error__title">Soal ini belum bisa dibaca</div>
                   <div className="import-error__message">{parseResult.error}</div>
                   <div className="import-error__list">
                     <li>Soal pilihan ganda punya 4 opsi (A, B, C, D) + Answer: huruf</li>
                     <li>Soal isian singkat cukup Answer: teks jawaban (alternatif dipisah |)</li>
+                    <li>
+                      Gambar ditulis di baris Image: berisi alamat online atau nama berkas gambar
+                      lokal, maksimal 3 gambar per soal
+                    </li>
                     <li>Ikuti format template</li>
                   </div>
                   <div style={{ display: 'flex', gap: '8px', justifyContent: 'center', flexWrap: 'wrap' }}>
@@ -1083,6 +1692,12 @@ Answer: B`;
   if (screen === 'setup' && quiz) {
     const hasMultipleChoice = quiz.questions.some((q) => q.type === 'multiple-choice');
     const hasShortAnswer = quiz.questions.some((q) => q.type === 'short-answer');
+    // Layar Siap selalu memakai urutan asli berkas, sama seperti pratinjau dan lembar cetak, jadi
+    // nomor baris di panel gambar sama dengan nomor soal yang diingat guru.
+    const imageSlots = quiz.originalQuestions.flatMap((question) => imagesOf(question));
+    const imageMissingCount = imageSlots.filter(
+      (image) => image.origin === 'local' && image.src === ''
+    ).length;
 
     return (
       <div className="app-shell">
@@ -1106,6 +1721,34 @@ Answer: B`;
               <h1 className="setup-header__title">{quiz.title}</h1>
               <div className="setup-header__count">{quiz.questions.length} soal</div>
             </div>
+
+            {/* Gambar: baris tenang saat semuanya siap, baris yang meminta perhatian saat ada yang
+                belum dipasang. Soal bergambar tanpa gambarnya adalah soal yang tidak bisa dijawab,
+                jadi kekurangannya harus terlihat sebelum kuis dimulai, bukan di tengah presentasi. */}
+            {(imageSlots.length > 0 || imageFailures.length > 0) && (
+              <div className="media-section">
+                <div className="section-label">Gambar</div>
+                <div className="media-summary">
+                  <div className="media-summary__text">
+                    {imageSlots.length === 0
+                      ? 'Berkas gambar ikut terpilih, tetapi belum ada baris Image: di soal.'
+                      : imageMissingCount > 0
+                        ? `${imageMissingCount} dari ${imageSlots.length} gambar belum dipasang. Soal seperti ini belum bisa dijawab siswa.`
+                        : `${imageSlots.length} gambar siap ditampilkan.`}
+                  </div>
+                  <button className="btn btn--outlined btn--small" onClick={() => setShowMediaPanel(true)}>
+                    <IconImage size={18} />
+                    {imageMissingCount > 0 ? 'Lengkapi gambar' : 'Periksa gambar'}
+                  </button>
+                </div>
+                {imageFailures.length > 0 && (
+                  <div className="media-summary__warning">
+                    {imageFailures.length} berkas gambar tidak bisa dibaca. Rinciannya ada di panel
+                    Gambar.
+                  </div>
+                )}
+              </div>
+            )}
 
             {/* Mode Selection */}
             <div className="mode-section">
@@ -1339,6 +1982,29 @@ Answer: B`;
 
         {answerKeySheet}
 
+        {/* Panel gambar hanya ada di layar Siap: guru memutuskan di sini, bukan saat presentasi
+            sudah berjalan di depan kelas. */}
+        {showMediaPanel && (
+          <MediaPanel
+            questions={quiz.originalQuestions}
+            failures={imageFailures}
+            notes={imageResizes}
+            note={mediaNote}
+            busy={mediaBusy}
+            onPick={pickImageFile}
+            onRemove={removeImage}
+            onClose={() => setShowMediaPanel(false)}
+          />
+        )}
+
+        <input
+          ref={mediaInputRef}
+          type="file"
+          accept="image/*"
+          style={{ display: 'none' }}
+          onChange={handleMediaFileInput}
+        />
+
         {showPreview && (
           <QuizPreview
             title={quiz.title}
@@ -1361,6 +2027,8 @@ Answer: B`;
   // ===== RENDER: PRESENTATION MODE =====
   if (screen === 'presentation' && quiz) {
     const isAnswerRevealed = showCorrectAnswer && currentQuestion;
+    const currentFigures = imagesOf(currentQuestion);
+    const hasFigure = currentFigures.some((image) => image.src !== '');
 
     return (
       <>
@@ -1414,7 +2082,7 @@ Answer: B`;
           {/* Question */}
           {(presState === 'question-active' || presState === 'time-warning' || presState === 'time-up' || presState === 'answer-reveal' || presState === 'transitioning' || showCorrectAnswer) && currentQuestion && (
             <div
-              className={`question-area${presState === 'transitioning' || presState === 'time-up' ? ' question-area--leaving' : ''}`}
+              className={`question-area${hasFigure ? ' question-area--figure' : ''}${presState === 'transitioning' || presState === 'time-up' ? ' question-area--leaving' : ''}`}
               data-num={`${currentQ + 1}.`}
             >
               <div className="question-meta question-enter-up" key={`meta-${currentQ}`}>
@@ -1428,6 +2096,12 @@ Answer: B`;
               <div className="question-text question-enter" key={`q-${currentQ}`}>
                 {currentQuestion.text}
               </div>
+              <QuestionFigure
+                key={`figure-${currentQ}`}
+                images={currentFigures}
+                questionNumber={currentQ + 1}
+                onZoom={setZoomedImage}
+              />
               {currentQuestion.type === 'multiple-choice' ? (
                 <div className={`answer-grid question-area-enter ${presState === 'answer-reveal' ? 'answer-grid--reveal' : ''}`} key={`a-${currentQ}`}>
                   {currentQuestion.options.map((opt, i) => {
@@ -1574,6 +2248,21 @@ Answer: B`;
 
         {answerKeySheet}
 
+        {/* Zoom gambar. Satu-satunya tempat gambar boleh diperbesar melewati ukuran aslinya,
+            karena aksinya sengaja dan sebentar: guru sedang menunjukkan satu detail ke kelas. */}
+        {zoomedImage && (
+          <div
+            className="zoom-overlay"
+            role="dialog"
+            aria-modal="true"
+            aria-label="Gambar soal diperbesar"
+            onClick={() => setZoomedImage(null)}
+          >
+            <img className="zoom-overlay__image" src={zoomedImage.src} alt={zoomedImage.alt} draggable={false} />
+            <div className="zoom-overlay__hint">Soal {currentQ + 1} · klik atau Esc untuk menutup</div>
+          </div>
+        )}
+
         {/* Exit Dialog */}
         {showExitDialog && (
           <>
@@ -1626,6 +2315,19 @@ Answer: B`;
                         ? String.fromCharCode(65 + q.correctAnswer)
                         : q.acceptedAnswers.join(' / ')}
                     </div>
+                    {/* Satu thumbnail per soal bergambar, hanya yang pertama: di daftar padat ini
+                        guru cuma perlu mengenali soalnya. Kalau gambarnya gagal dimuat ia
+                        menghilang, bukan berubah jadi ikon rusak di depan kelas. */}
+                    {imagesOf(q)[0]?.src ? (
+                      <img
+                        className="answer-key-item__thumb"
+                        src={imagesOf(q)[0].src}
+                        alt=""
+                        onError={(event) => {
+                          event.currentTarget.style.visibility = 'hidden';
+                        }}
+                      />
+                    ) : null}
                     <div style={{ font: 'var(--md-sys-typescale-body-medium)', color: 'var(--md-sys-color-on-surface)', flex: 1, lineHeight: 1.4 }}>
                       {q.text.length > 60 ? q.text.substring(0, 60) + '…' : q.text}
                     </div>

@@ -1,9 +1,26 @@
 export type QuestionType = 'multiple-choice' | 'short-answer';
 
+/**
+ * Satu gambar milik soal. `origin` memisahkan dua jalan yang berbeda: gambar online dipakai
+ * langsung dari alamatnya, sedangkan gambar lokal harus dibaca dari berkas di PC guru lebih dulu
+ * (jadi ia bisa berstatus belum dipasang). Penyimpanan berkasnya ada di `src/images.ts`.
+ */
+export interface QuestionImage {
+  /** Apa yang ditulis guru di template: nama berkas atau alamat online. */
+  source: string;
+  origin: 'local' | 'remote';
+  /** '' kalau berkas lokalnya belum dipasang; Data URL untuk lokal, URL untuk online. */
+  src: string;
+  /** Deskripsi gambar (teks setelah tanda |), '' kalau guru tidak menulisnya. */
+  alt: string;
+}
+
 export interface BaseQuestion {
   id: number;
   type: QuestionType;
   text: string;
+  /** Opsional supaya soal tanpa gambar tidak perlu menulis field kosong di mana-mana. */
+  images?: QuestionImage[];
 }
 
 export interface MultipleChoiceQuestion extends BaseQuestion {

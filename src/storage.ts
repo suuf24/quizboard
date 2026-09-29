@@ -1,4 +1,4 @@
-import type { Quiz, QuizConfig, Question, Theme } from './types.js';
+import type { Quiz, QuizConfig, Question, QuestionImage, Theme } from './types.js';
 
 /**
  * One-slot session store: the quiz that was last open, its configuration, and the question the
@@ -9,6 +9,13 @@ import type { Quiz, QuizConfig, Question, Theme } from './types.js';
 
 const STORAGE_KEY = 'quizboard.session.v1';
 const SESSION_VERSION = 1;
+
+/**
+ * Plafon ukuran JSON sesi, di bawah kuota localStorage (5 MB) yang dihitung per karakter.
+ * Gambar lokal yang ikut ke dalam sesi adalah satu-satunya hal yang bisa mendekati batas ini,
+ * dan itulah alasan pengecilan gambar di `src/images.ts` ada.
+ */
+const MAX_SESSION_CHARS = 3_000_000;
 
 /**
  * Tema disimpan terpisah dari sesi kuis, bukan sebagai bagian `QuizConfig`.
@@ -25,6 +32,8 @@ export interface SavedSession {
   config: Partial<QuizConfig>;
   currentQuestion: number;
   wasPresenting: boolean;
+  /** true kalau sebagian gambar tidak ikut tersimpan karena ukurannya. Dibaca kartu lanjutkan. */
+  imagesOmitted?: boolean;
 }
 
 let storageBlocked = false;
@@ -71,6 +80,36 @@ function isQuestion(value: unknown): value is Question {
   return false;
 }
 
+/**
+ * Gambar yang bentuknya aneh dibuang satu per satu. Satu entri rusak tidak boleh menggagalkan
+ * seluruh sesi: guru lebih butuh posisi soalnya kembali daripada gambar yang gagal dibaca.
+ */
+function readImages(value: unknown): QuestionImage[] {
+  if (!Array.isArray(value)) return [];
+
+  const images: QuestionImage[] = [];
+  for (const entry of value) {
+    if (typeof entry !== 'object' || entry === null) continue;
+    const raw = entry as Record<string, unknown>;
+    if (typeof raw.source !== 'string' || typeof raw.src !== 'string') continue;
+    if (raw.origin !== 'local' && raw.origin !== 'remote') continue;
+
+    images.push({
+      source: raw.source,
+      origin: raw.origin,
+      src: raw.src,
+      alt: typeof raw.alt === 'string' ? raw.alt : '',
+    });
+  }
+  return images;
+}
+
+function sanitizeQuestion(question: Question): Question {
+  if (question.images === undefined) return question;
+  const images = readImages(question.images);
+  return { ...question, images: images.length > 0 ? images : undefined };
+}
+
 /** Whitelist known config keys with a type check each, so a stale or edited payload cannot leak in. */
 function pickConfig(value: unknown): Partial<QuizConfig> {
   if (typeof value !== 'object' || value === null) return {};
@@ -96,18 +135,68 @@ function pickConfig(value: unknown): Partial<QuizConfig> {
   return config;
 }
 
-export function saveSession(session: Omit<SavedSession, 'version' | 'savedAt'>): void {
-  if (!storageAvailable()) return;
-  try {
-    const payload: SavedSession = {
-      ...session,
-      version: SESSION_VERSION,
-      savedAt: Date.now(),
+export interface SaveOutcome {
+  saved: boolean;
+  /** true kalau gambar lokal harus dilepas supaya sesi tetap muat disimpan. */
+  imagesOmitted: boolean;
+}
+
+/**
+ * Versi paling ringan dari kuis: isi berkas gambar lokal dilepas, nama berkasnya tetap ada.
+ * Kalau sesi harus disimpan dalam bentuk ini, guru tetap melihat gambar mana yang perlu dipasang
+ * ulang lewat panel Gambar, jadi kehilangannya kelihatan dan bisa diperbaiki, bukan hilang diam.
+ */
+function stripLocalImageData(quiz: Quiz): Quiz {
+  const strip = (question: Question): Question => {
+    const images = question.images;
+    if (!images || !images.some((image) => image.origin === 'local' && image.src !== '')) return question;
+    return {
+      ...question,
+      images: images.map((image) => (image.origin === 'local' ? { ...image, src: '' } : image)),
     };
-    window.localStorage.setItem(STORAGE_KEY, JSON.stringify(payload));
-  } catch {
-    storageBlocked = true;
+  };
+
+  return {
+    ...quiz,
+    questions: quiz.questions.map(strip),
+    originalQuestions: quiz.originalQuestions.map(strip),
+  };
+}
+
+/**
+ * Menyimpan sesi, dan kalau terlalu besar, menyimpannya dalam bentuk yang lebih ringan.
+ * Perilaku lama (satu galat kuota langsung memblokir semua penulisan berikutnya) membuat sesi
+ * tidak pernah tersimpan lagi walau guru kemudian menghapus gambarnya.
+ */
+export function saveSession(session: Omit<SavedSession, 'version' | 'savedAt'>): SaveOutcome {
+  if (!storageAvailable()) return { saved: false, imagesOmitted: false };
+
+  const base = { ...session, version: SESSION_VERSION, savedAt: Date.now() };
+  const candidates: SavedSession[] = [
+    { ...base, imagesOmitted: session.imagesOmitted === true },
+    { ...base, quiz: stripLocalImageData(base.quiz), imagesOmitted: true },
+  ];
+
+  for (const payload of candidates) {
+    let json: string;
+    try {
+      json = JSON.stringify(payload);
+    } catch {
+      continue;
+    }
+    if (json.length > MAX_SESSION_CHARS) continue;
+
+    try {
+      window.localStorage.setItem(STORAGE_KEY, json);
+      return { saved: true, imagesOmitted: payload.imagesOmitted === true };
+    } catch {
+      // Kemungkinan besar kuota penuh: coba kandidat yang lebih ringan. Akses storage yang
+      // diblokir sudah tertangkap storageAvailable(), jadi di sini tidak ada gunanya memblokir
+      // penyimpanan untuk sisa aplikasi.
+    }
   }
+
+  return { saved: false, imagesOmitted: false };
 }
 
 export function loadSession(): SavedSession | null {
@@ -129,19 +218,21 @@ export function loadSession(): SavedSession | null {
     const quiz = parsed.quiz as Partial<Quiz> | undefined;
     if (!quiz || typeof quiz.title !== 'string') return null;
 
-    const questions = quiz.questions;
-    if (!Array.isArray(questions) || questions.length === 0 || !questions.every(isQuestion)) return null;
+    const stored = quiz.questions;
+    if (!Array.isArray(stored) || stored.length === 0 || !stored.every(isQuestion)) return null;
+    const questions: Question[] = stored.map(sanitizeQuestion);
 
     const storedOriginal = quiz.originalQuestions;
     const originalQuestions =
       Array.isArray(storedOriginal) && storedOriginal.length > 0 && storedOriginal.every(isQuestion)
-        ? storedOriginal
+        ? storedOriginal.map(sanitizeQuestion)
         : questions;
 
     return {
       version: SESSION_VERSION,
       savedAt: typeof parsed.savedAt === 'number' ? parsed.savedAt : Date.now(),
       quiz: { title: quiz.title, questions, originalQuestions },
+      imagesOmitted: parsed.imagesOmitted === true,
       config: pickConfig(parsed.config),
       currentQuestion:
         typeof parsed.currentQuestion === 'number' && parsed.currentQuestion >= 0

@@ -92,6 +92,124 @@ Keputusan yang menyertainya:
    baik memakai tema terang; tema gelap untuk ruangan remang atau proyektor yang memantulkan
    cahaya. Copy di UI menyebut ini apa adanya, tanpa klaim.
 
+## Gambar soal
+
+Ditambahkan 2026-09-25. Soal boleh membawa gambar, dari berkas di PC guru atau dari alamat online,
+dan gambarnya harus pas di slide tanpa guru mengatur ukuran apa pun.
+
+Aturannya: **gambar mengisi sisa ruang yang tersedia, dan rasio aslinya tidak pernah diubah**.
+Panggung gambar adalah satu baris fleksibel di antara teks soal dan baris opsi; tingginya bukan
+angka `vh` yang ditebak, melainkan sisa ruang yang benar-benar ada di layar itu.
+
+| Keputusan | Nilai | Alasan |
+|---|---|---|
+| Tinggi panggung | `flex: 1` dengan lantai `clamp(96px, 16vh, 200px)` | Potret tinggi tidak mendorong opsi keluar layar, dan teks soal yang panjang tidak membuat gambar menghilang |
+| Skala gambar | `object-fit: contain` | Rasio asli dijaga: tidak ada gambar gepeng atau terpotong, tanpa ruang kosong di dalam gambar |
+| Gambar kecil | ikut membesar sampai batas panggung | Keterbacaan dari baris belakang menang atas kemurnian piksel; ujung atasnya dijaga batas 1600 px saat impor |
+| Satu gambar | memakai seluruh panggung, tepi kiri sejajar teks soal | Satu tepi tetap yang dipegang mata, sama seperti aturan teks soal |
+| Dua atau tiga gambar | berbagi ruang rata, masing-masing dipusatkan di bagiannya | Dua diagram dibaca sebagai satu pasangan; batasnya tiga karena di atas itu satu slide tidak lagi terbaca |
+| Bingkai | tidak ada | Latar lembar sudah jadi bidang pemisah, dan bingkai hanya menambah garis yang tidak membawa informasi |
+| Ruang bar kontrol | `--kontrol-tinggi` (68px, 114px di ponsel) disisihkan di bawah area soal | Bar kontrol `position: fixed`; tanpa ruang itu panggung yang fleksibel mendorong opsi ke bawah bar |
+| Zoom | klik gambar atau `G` membuka papan penuh bertoken `--overlay-plate` | Satu-satunya tempat gambar boleh diperbesar melewati ukuran aslinya, karena aksinya sengaja dan sebentar |
+| Animasi gambar | tidak ada | MOTION 2: kemunculan gambar tidak menjawab perubahan apa pun, dan menambahkannya berarti menambah satu kontrak reduced-motion lagi |
+| Pratinjau | tinggi pasti `clamp(160px, 26vh, 320px)` | Lembar pratinjau setinggi isi, jadi persentase tidak punya acuan untuk diukur |
+| Batas impor | sisi terpanjang 1600 px, WebP mutu 0,90; berkas di bawah 400 KB dipakai apa adanya | Proyektor kelas 1080p dan cetak 15 cm tidak butuh lebih, kuota sesi 5 MB adalah batas kerasnya, dan berkas yang sudah benar tidak perlu digenerasi ulang |
+| Thumbnail di kunci jawaban dan panel gambar | ukuran tetap (56x40 dan 72x48) | Daftar padat dibaca untuk mencari nomor, bukan untuk memeriksa gambar; ukuran yang mengikuti isi akan mengacak tinggi baris |
+| Lembar cetak | gambar di dalam sel tabel, tinggi maksimal 46 mm | Satu baris tetap satu halaman, dan kunci jawaban bergambar lebih berguna saat mengoreksi |
+| Gambar tidak tersedia | papan keterangan berisi sebab dan nama berkas atau alamatnya | Di depan kelas, kotak kosong adalah teka-teki; tulisan yang menyebut nama berkasnya memberi tahu guru apa yang harus dilakukan |
+
+Keputusan yang menyertainya:
+
+1. **Nama berkas, bukan unggahan.** Guru menulis nama berkas di template dan memilih berkasnya saat
+   impor. Tidak ada unggahan ke mana pun, karena aplikasi ini memang tidak punya server.
+2. **Gambar lokal jadi Data URL.** Itu satu-satunya cara gambar ikut bertahan di sesi tersimpan.
+   Kalau sesi melebihi kuota, gambar dilepas dengan jujur: nama berkasnya tetap tercatat, dan kartu
+   "Lanjutkan kuis terakhir" mengatakan gambarnya perlu dipasang ulang.
+3. **Gambar online yang gagal bukan bencana.** Alamat yang mati berubah jadi papan keterangan,
+   bukan ikon gambar rusak, dan guru bisa memperbaikinya di layar Siap sebelum kelas dimulai.
+4. **Satu gambar contoh ikut aplikasi** (`public/contoh-gambar.svg`) supaya "Coba contoh" tetap
+   bekerja tanpa internet. Diagramnya skematis (kotak dan anak panah), bukan gambar anatomi
+   bikinan sendiri, jadi tidak ada isi pelajaran yang diklaim secara salah.
+5. **Panggung fleksibel tidak boleh menutup bar kontrol.** Bar itu `position: fixed` di atas area
+   soal, jadi tingginya disisihkan sebagai `--kontrol-tinggi`; tanpa itu baris opsi soal bergambar
+   berakhir di bawah bar (terukur pada 1366x768 sebelum diperbaiki).
+
+## Membuat soal dengan AI
+
+Ditambahkan 2026-09-28. Guru yang belum punya berkas soal bisa mulai dari ChatGPT, bukan dari
+lembar kosong. Tombol "Buat soal" di layar impor membuka tab baru dengan prompt pembuat soal yang
+sudah terisi, dan keluarannya sudah berbentuk berkas yang bisa diimpor di layar yang sama.
+
+| Keputusan | Nilai | Alasan |
+|---|---|---|
+| Tempat tombol | baris aksi layar impor, urutan pertama, `btn--outlined` | Satu tombol primary per layar tetap dipegang "Pilih berkas" di lembar impor; tombol ini jalan kedua untuk guru yang belum punya berkas sama sekali |
+| Ikon | panah keluar dari kotak | Tombol ini meninggalkan QuizBoard, dan ikonnya mengatakan itu sebelum diklik |
+| Jalur prefill | alamat `https://chatgpt.com/?q=<prompt>` | Satu klik, tanpa langkah tempel |
+| Jaring pengaman | prompt juga disalin ke clipboard | Prefill bergantung pada layanan pihak lain; clipboard tidak |
+| Urutan aksi | tab dibuka lebih dulu, clipboard ditunggu sesudahnya | Sesudah `await`, peramban berhenti menghitungnya sebagai aksi klik dan memblokirnya sebagai pop-up |
+| Prompt di UI | tidak ada kotak prompt di layar impor | Guru tidak perlu memeriksa atau menyalin prompt sendiri: prefill dan clipboard dikerjakan otomatis, dan kotak 17 KB itu hanya menambah tinggi layar. Konsekuensinya, saat clipboard ditolak peramban, jalan satu-satunya adalah menekan "Buat soal" lagi, dan baris statusnya menyebut itu |
+| Sesudah "Buat soal" ditekan | mode impor pindah sendiri ke "Tempel teks", dan kotak tempelnya difokuskan | Hasil ChatGPT berupa teks di layar, bukan berkas, jadi tab "Unggah berkas" adalah pilihan yang salah untuk langkah berikutnya. Fokus dipindah ke kotaknya supaya Ctrl+V guru langsung masuk, bukan berhenti di tombol sakelar |
+| Batas panjang alamat | 30.000 karakter, diukur bukan ditebak | Uji 2026-09-28 di peramban: alamat `?q=` sepanjang 19.954 karakter dilayani normal (tanpa 414) dan isinya masih terbawa saat halaman dialihkan ke halaman masuk akun. Uji yang sama diulang untuk prompt yang tumbuh: alamat 20.494 karakter tetap normal, dan alamat tepat 30.000 karakter juga normal, jadi angka batasnya berdiri di atas bukti. Prompt sekarang 17.883 karakter |
+| Status sesudah klik | satu baris yang menyebut apa yang benar-benar terjadi | Ada empat keadaan berbeda (prefill dan clipboard berhasil, salah satu gagal), dan pesan sukses palsu lebih buruk daripada tidak ada pesan sama sekali |
+| Tempat prompt | `src/soal-prompt.ts`, modul sendiri | 17 KB teks adalah data yang dikirim ke luar, bukan tata letak; mengubah prompt tidak perlu menyentuh layar |
+| Jarak di layar impor | kelompok `.import-aside` dengan gap 12px di dalam, gap 32px dari lembar impor | Baris tombol, keterangan, dan status adalah satu urusan; tanpa pengelompokan, irama 32px layar itu memecahnya jadi tiga baris yang saling menjauh |
+| Dua cara memasukkan soal | sakelar "Unggah berkas" / "Tempel teks" 12px di atas lembar impor | Hasil AI ada di layar, bukan di berkas, jadi memaksa guru menyimpannya dulu menambah satu langkah yang bisa gagal. Sakelarnya rapat ke lembarnya karena keduanya satu kontrol |
+| Penanda tab terpilih | latar `pen-wash` ditambah garis bawah pena | Mengikuti pilihan Mode di layar Siap, dan warna sendirian tidak cukup untuk mengatakan "yang ini sedang dipakai" |
+| Kotak tempel | latar meja (`paper`), bukan latar lembar, dan `resize: vertical` | Kotak yang lebih dalam dari teks soal mana pun harus terbaca sebagai ruang isian; menambah tinggi kotak tidak boleh menggeser tombolnya keluar layar |
+| Umpan balik tempelan | baris "14 baris, 377 karakter." di sebelah tombol | Satu blok teks besar nyaris tidak mengubah tampilan kotaknya, jadi angka itu yang memastikan tempelannya masuk sebelum guru menekan Baca soal |
+| Tombol Baca soal | mati selama kotaknya kosong, dengan alasan tertulis di sampingnya | Tombol mati tanpa penjelasan adalah teka-teki; baris "Belum ada teks." menjelaskannya tanpa pesan galat |
+
+Keputusan yang menyertainya:
+
+1. **Prompt dari pemilik produk jadi dasar, kalimatnya tidak dirombak.** Keluarannya sudah cocok
+   dengan parser (`Answer: A/B/C/D` untuk pilihan ganda, `Answer: teks` untuk isian). Promptnya
+   diganti 2026-09-28 dengan versi yang lebih pendek: 21 seksi, hanya pilihan ganda dan isian, tanpa
+   bagian uraian.
+2. **Aturan output ditulis sebagai satu code block, blok templatenya dipakai persis.** Permintaan
+   pemilik produk: hasil akhir harus seperti source code dengan template yang ia berikan. Pada hari
+   yang sama permintaan itu diperjelas lagi menjadi satu code block berisi teks soal, dan label
+   konfirmasi di dalam prompt ikut berbunyi "YA = generate code block hasil soal" di dua tempat.
+   Karena model cenderung memecah teks panjang jadi beberapa blok dan menambah kalimat pengantar
+   walau sudah dilarang sekali, kalimat penegasnya ditambahkan di tempat yang sudah ada (seksi 12
+   template output final, daftar WAJIB seksi 18, aturan final seksi 21) plus dua butir di daftar
+   periksa internal seksi 20. Blok template dari pemilik produk disalin tanpa satu karakter diubah
+   dan tetap muncul dua kali (seksi 12 dan 19) supaya terbaca di dua konteks. Sisa sebutan soal
+   uraian (empat tempat) dihapus sekalian, karena aplikasi hanya punya pilihan ganda dan isian
+   (`src/types.ts`) dan template baru tidak memuat uraian. Pagar code block yang dibawa keluaran
+   ChatGPT tetap aman: diuji 2026-09-28 dengan pagar berpenanda txt, dengan pagar tanpa penanda,
+   dan dengan kalimat pembuka di atas pagar, ketiganya terbaca sebagai 3 soal yang sama.
+3. **Aturan `Image:` tidak diminta ke AI.** Soal bergambar tetap ditambahkan guru di berkasnya,
+   karena AI tidak bisa menyediakan berkas gambarnya: baris `Image:` yang menunjuk nama berkas yang
+   tidak ada hanya memindahkan pekerjaan guru ke layar Siap, bukan menghilangkannya.
+4. **Prompt ikut masuk bundel.** Teksnya 17,1 KB mentah (sekitar 6 KB gzip) dan ikut terbawa ke
+   `index.js`.
+   Memuatnya sebagai potongan terpisah akan menghemat pemuatan pertama, tetapi `window.open` harus
+   dipanggil sebelum ada `await`, jadi memuat potongan itu lebih dulu justru membatalkan tombolnya.
+5. **Dua pesan galat parser diterjemahkan ke bahasa Indonesia.** Sebelumnya "Question 3 has an
+   issue" dan "No questions found" satu-satunya sisa bahasa Inggris di jalur impor, dan jalur tempel
+   membuat galat format jauh lebih sering muncul. Aturan voice produk sudah mewajibkan pesan galat
+   berbahasa Indonesia yang menyebut nomor soalnya (F-15), jadi keduanya kini mengikuti aturan itu.
+   Sisa pekerjaan bahasa di layar lain tetap terbuka (F-16).
+6. **Judul hasil impor tidak lagi menyebut berkas.** "Berkas berhasil dibaca" menjadi "Soal berhasil
+   dibaca", karena jalur tempel tidak punya berkas untuk disebut.
+7. **Kotak prompt di layar impor dihapus.** Diputuskan 2026-09-28: `<details>` "Lihat prompt yang
+   dibuka di ChatGPT" beserta tombol "Salin prompt" tidak lagi ditampilkan, dan `.prompt-view*`
+   ikut dibuang dari `App.css`. Yang hilang bersamanya adalah jalan salin manual saat prefill dan
+   clipboard dua-duanya gagal; dua baris status untuk keadaan itu diubah menjadi ajakan menekan
+   "Buat soal" sekali lagi, karena itu satu-satunya jalan yang tersisa. Perilaku fokus ke kotak
+   tempel bergantung pada `setTimeout(..., 0)`: kotaknya baru ada sesudah state mode berganti, jadi
+   fokus tidak boleh dipanggil di render yang sama.
+8. **Aturan variasi soal masuk supaya hasilnya tidak monoton.** Permintaan pemilik produk
+   2026-09-28: soal yang dihasilkan tidak boleh terasa membosankan. Aturannya ditulis sebagai
+   subbagian "Variasi soal" di dalam seksi 5, bukan seksi baru, supaya penomoran 21 seksi yang
+   sudah dipakai di dokumen ini tidak bergeser. Isinya tujuh butir singkat: kalimat pembuka tidak
+   terulang, bentuk soal berganti (definisi, contoh, penerapan, sebab akibat, perbandingan, urutan,
+   perhitungan), konteks berganti, panjang kalimat bervariasi, isian tidak seragam, dua soal
+   berurutan tidak memakai contoh atau angka yang sama, dan kata kerja pertanyaannya berganti. Dua
+   butir di daftar periksa internal seksi 20 (nomor 38 dan 39) menagih aturan itu sebelum output
+   ditampilkan. Permintaan ini menambah 823 karakter, karena itu alamat prefill diukur dan diuji
+   ulang (lihat baris "Batas panjang alamat" di tabel atas).
+
 ## Tipografi
 
 | Peran | Font | Alasan |

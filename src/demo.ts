@@ -151,6 +151,25 @@ export const demoQuiz: Quiz = {
       options: ['Alveoli', 'Bronkus', 'Rambut hidung dan lendir', 'Diafragma'],
       correctAnswer: 2,
     },
+    // Satu soal bergambar di contoh, supaya guru bisa melihat fitur gambarnya bekerja tanpa harus
+    // menyiapkan berkas sendiri. Gambarnya ikut aplikasi (`public/contoh-gambar.svg`), bukan link
+    // luar: contoh harus tetap jalan di kelas tanpa internet. Diagramnya skematis, kotak dan anak
+    // panah, jadi tidak ada gambar anatomi bikinan sendiri yang bisa salah isi.
+    {
+      id: 23,
+      type: 'multiple-choice',
+      text: 'Perhatikan diagram berikut. Bagian bertanda * di dalam paru-paru disebut?',
+      options: ['Bronkus', 'Alveolus', 'Trakea', 'Diafragma'],
+      correctAnswer: 1,
+      images: [
+        {
+          source: 'contoh-gambar.svg',
+          origin: 'local',
+          src: './contoh-gambar.svg',
+          alt: 'Diagram skematis rongga dada: satu kantung kecil di dalam paru-paru ditunjuk anak panah',
+        },
+      ],
+    },
   ],
   get questions() {
     return this.originalQuestions;
@@ -161,6 +180,11 @@ export function getDemoTemplate(): string {
   let template = `Title: IPA - Sistem Pernapasan Manusia\n\n`;
   demoQuiz.originalQuestions.forEach((q) => {
     template += `${q.id}. ${q.text}\n`;
+    if (q.images && q.images.length > 0) {
+      q.images.forEach((image) => {
+        template += `Image: ${image.source}${image.alt ? ` | ${image.alt}` : ''}\n`;
+      });
+    }
     if (q.type === 'multiple-choice') {
       template += `A. ${q.options[0]}\n`;
       template += `B. ${q.options[1]}\n`;

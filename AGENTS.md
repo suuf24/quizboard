@@ -17,9 +17,12 @@ Stack: React 19 + TypeScript + Vite. No UI library, no CSS framework. Every styl
 - `src/App.tsx` - all three screens (import, setup, presentation) and the preview panel
 - `src/App.css` - tokens first, then one section per screen, responsive and reduced-motion last
 - `src/parser.ts` - quiz template parser, surfaces every error as a `ParseResult`
+- `src/images.ts` - question images: file-name matching, local files to Data URLs, auto-downscale
 - `src/storage.ts` - one-slot saved session in `localStorage` (quiz, config, position)
 - `src/audio.ts` - WebAudio cues, no audio files
 - `src/demo.ts` - sample quiz used by "Try Demo"
+- `src/soal-prompt.ts` - the ready-made AI question-writer prompt, the ChatGPT URL built from it,
+  and the clipboard helpers
 - `public/*.gif` - decorative mascot GIFs (see the audit, finding F-08)
 
 The printable answer key is a portal into `document.body` (`AnswerKeySheet` in `src/App.tsx`), shown
