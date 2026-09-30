@@ -1,0 +1,70 @@
+TAHAP PENGUMPULAN & ANALISIS DATA DALAM PENELITIAN
+
+Judul Penelitian
+Penggunaan Daily Assessment Berbasis QuizBoard untuk Meningkatkan Fokus Siswa pada Pembelajaran
+
+Orientasi Fokus Penelitian
+Fokus penelitian ini adalah bagaimana daily assessment yang diberikan secara rutin lewat QuizBoard bisa membuat siswa lebih bertahan dalam perhatian dan lebih konsisten mengerjakan tugas ulangan harian. Fokus di sini diartikan sebagai kemampuan siswa untuk mempertahankan perhatian terhadap tugas yang diberikan, tidak mudah terhenti, dan tetap mengerjakan sampai selesai.
+
+Definisi Operasional Fokus
+- Fokus ditinjau dari lama waktu siswa memperhatikan layar soal sebelum berganti aktivitas.
+- Fokus ditinjau dari konsistensi mengerjakan seri soal: apakah siswa menyelesaikan daily assessment sampai akhir atau berhenti di tengah.
+- Fokus ditinjau dari frekuensi gangguan perhatian: jawaban terburu-buru yang tidak sesuai pola, atau tanda-tanda attention drop selama sesi berlangsung.
+
+Alasan Digunakannya QuizBoard Sebagai Medium
+QuizBoard dipilih karena bentuknya yang berupa soal-soal singkat, terstruktur, dan dapat diselesaikan dalam jangka waktu pendek. Sifatnya yang seperti kuis harian cocok dipakai sebagai daily assessment yang tidak memakan waktu lama tetapi tetap memberikan rangsangan perhatian berulang. Pengulangan sesi singkat itu sendiri diharapkan bisa membiasakan siswa untuk tetap mengarahkan perhatian dalam periode waktu tertentu.
+
+Desain Daily Assessment dalam Penelitian
+- Sesi daily assessment diberikan dalam durasi singkat, sekitar 10–15 menit per sesi.
+- Sesi bisa dipakai di awal pelajaran sebagai pemanasan perhatian, atau di akhir sebagai penutup yang menegaskan kembali konsentrasi.
+- Soal disusun agar berjenjang dari mudah sampai agak menantang, supaya tidak langsung membosankan dan tidak langsung membebani.
+- Setiap sesi memiliki keterbatasan waktu agar siswa bekerja dalam frame perhatian yang relatif seragam.
+
+Cara Mengumpulkan Data Fokus
+Data dikumpulkan dari beberapa sumber sekaligus supaya gambaran fokus tidak hanya berasal dari satu hal.
+- Catatan waktu perhatian: mencatat berapa lama siswa tampak terlibat dalam sesi sebelum terjadi pergeseran perhatian.
+- Catatan konsistensi penyelesaian: apakah siswa menyelesaikan seluruh seri soal daily assessment.
+- Catatan perilaku perhatian: frekuensi atau tanda-tanda berkurangnya fokus selama sesi berlangsung.
+- Data hasil kuis: sebagai pembanding apakah peningkatan perhatian juga dibarengi dengan kecenderungan hasil yang lebih stabil, bukan sebagai satu-satunya ukuran fokus.
+
+Alur Pengumpulan Data
+- Sebelum penelitian berjalan, ditetapkan dulu what akan diamati dari fokus dan bagaimana cara mencatatnya.
+- Saat sesi berlangsung, pengamat atau guru mencatat perhatian dan konsistensi berdasarkan indikator yang sudah disepakati.
+- Setelah sesi, diambil pula hasil kuis sebagai pelengkap, supaya ada hubungan antara pola perhatian dan hasil daily assessment.
+- Catatan dikumpulkan berulang kali agar bisa dibandingkan antar sesi dan dilihat kecenderungannya.
+
+Analisis Data Fokus
+- Data dikelompokkan berdasarkan siklus atau periode daily assessment.
+- Perhatian dan konsistensi dilihat dari perubahan antar sesi: apakah durasi perhatian memanjang, apakah penyelesaian lebih lengkap, atau apakah gangguan perhatian lebih sedikit.
+- Hasil kuis digunakan untuk melihat apakah pola perhatian yang membaik juga disertai kecenderungan hasil yang lebih baik atau lebih stabil.
+- Analisis dilakukan secara deskriptif supaya mudah dibaca pola perubahan fokus dari waktu ke waktu.
+
+Indikator Keberhasilan Fokus
+- Siswa semakin lama mempertahankan perhatian dalam sesi daily assessment.
+- Siswa semakin konsisten menyelesaikan seri soal sampai akhir.
+- Penurunan tanda-tanda perhatian yang terfragmentasi atau hilang di tengah sesi.
+- Kecenderungan hasil daily assessment yang lebih stabil dan membaik seiring berjalannya sesi.
+
+Peran Daily Assessment dalam Meningkatkan Fokus
+Daily assessment memberi kesempatan perhatian yang berulang dan terukur. Soal-soal singkat yang muncul rutin membuat siswa terbiasa kembali memusatkan perhatian dalam waktu terbatas. Jika sesi dilakukan secara teratur, siswa mendapat latihan perhatian yang konsisten, dan guru mendapat informasi singkat tentang kondisi fokus siswa setiap harinya. Dengan kata lain, daily assessment berfungsi sekaligus sebagai latihan fokus dan sebagai pemantau perkembangan fokus siswa.
+
+Batasan dan Catatan dalam Penelitian
+- Fokus dalam penelitian ini tidak diartikan sebagai perhatian yang sempurna, melainkan sebagai kecenderungan membaiknya ketahanan perhatian dan konsistensi mengerjakan.
+- Hasil fokus bisa dipengaruhi faktor lain di luar QuizBoard, seperti kondisi kelas, suasana, dan kesiapan siswa pada saat sesi.
+- Oleh karena itu data fokus dibaca sebagai pola, bukan sebagai ukuran mutlak.
+
+Konteks Implementasi yang Disarankan
+- Daily assessment paling baik diterapkan dalam situasi di mana durasinya bisa dikontrol dan dilakukan hampir setiap hari atau sesering mungkin.
+- Guru dapat menyesuaikan tingkat kesulitan soal sesuai respons siswa, tanpa meninggalkan tujuan utama yaitu melatih keterbatasan waktu perhatian dan konsistensi penyelesaian.
+- QuizBoard digunakan sebagai alat bantu daily assessment, bukan sebagai pengganti proses pembelajaran secara keseluruhan.
+
+Ruang Lingkup Penelitian
+Penelitian ini berfokus pada:
+- Pengaruh teraturnya daily assessment berbasis QuizBoard terhadap kemampuan siswa mempertahankan perhatian.
+- Pola konsistensi siswa dalam menyelesaikan kuis harian.
+- Tanda-tanda peningkatan fokus yang bisa diamati dari durasi perhatian dan kelengkapan penyelesaian tugas.
+
+Penelitian ini tidak berfokus hanya pada nilai hasil kuis, melainkan pada bagaimana fokus siswa berubah seiring berjalannya sesi daily assessment yang diberikan secara rutin.
+
+Catatan Penempatan dalam KTI
+Pembahasan dalam penelitian ini dapat ditempatkan sebagai bagian dari analisis hasil, pembahasan fokus siswa, atau pembahasan manfaat daily assessment dalam QuizBoard terhadap proses pembelajaran, tergantung struktur KTI yang sedang disusun.
