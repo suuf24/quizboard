@@ -6,6 +6,7 @@ import { parseQuizTemplate, shuffleArray } from './parser.js';
 import { demoQuiz } from './demo.js';
 import { clearSession, describeSavedAt, loadSession, loadTheme, saveSession, saveTheme } from './storage.js';
 import { SOAL_PROMPT, chatGptPlainUrl, chatGptPrefillUrl, copyText } from './soal-prompt.js';
+import { fetchPastebinText, pastebinRawUrl } from './pastebin.js';
 import type { SavedSession } from './storage.js';
 import {
   ImageReadError,
@@ -54,6 +55,13 @@ import {
    layar soal setiap 17 detik, dengan gerak 14 detik yang menyimpang dari dial MOTION 2 dan
    isi yang sebagian besar karakter milik pihak lain. */
 const COMPLETION_MASCOT = '/mascot.gif';
+
+/* ===== TRANSISI GANTI SOAL =====
+   Satu angka untuk seluruh pergantian soal: overlay "Soal berikutnya" ditahan selama ini, lalu
+   soal berikutnya masuk dengan animasi yang sama lamanya. Nilainya harus tetap sama dengan token
+   `--md-sys-motion-duration-long3` di App.css; kalau salah satu berubah sendirian, overlay dan
+   animasinya berhenti terasa sebagai satu gerakan. */
+const TRANSISI_SOAL_MS = 750;
 
 // ===== TIMER SETTINGS =====
 const TIMER_MIN = 5;
@@ -580,13 +588,21 @@ function App() {
   // Catatan sesudah tombol "Buat soal" ditekan. Isinya berbeda menurut apa yang benar-benar
   // berhasil: prompt terisi di ChatGPT, prompt tersalin ke clipboard, atau keduanya.
   const [soalNote, setSoalNote] = useState<string | null>(null);
-  // Dua cara memasukkan soal. "Tempel teks" ada karena hasil ChatGPT berupa teks di layar, bukan
+  // Tiga cara memasukkan soal. "Tempel teks" ada karena hasil ChatGPT berupa teks di layar, bukan
   // berkas, jadi memaksa guru menyimpannya dulu ke .txt hanya menambah satu langkah yang bisa gagal.
-  const [importMode, setImportMode] = useState<'file' | 'paste'>('file');
+  // "Tautan" ada untuk soal yang dibagikan guru lain lewat Pastebin: yang berpindah cukup alamatnya.
+  const [importMode, setImportMode] = useState<'file' | 'paste' | 'link'>('file');
   const [pastedText, setPastedText] = useState('');
   // Kotak tempel yang difokuskan sesudah "Buat soal" memindahkan layar ke mode tempel, supaya
   // Ctrl+V guru langsung masuk ke kotaknya, bukan ke tombol sakelarnya.
   const pasteInputRef = useRef<HTMLTextAreaElement | null>(null);
+
+  // --- Impor dari tautan (Pastebin) ---
+  const [linkInput, setLinkInput] = useState('');
+  const [linkBusy, setLinkBusy] = useState(false);
+  // Nada dipisah dari teksnya karena dua keadaan itu memang berbeda artinya: satu kabar jalan,
+  // satu galat. Kalimat sukses palsu lebih buruk daripada tidak ada kabar sama sekali.
+  const [linkStatus, setLinkStatus] = useState<{ tone: 'info' | 'error'; text: string } | null>(null);
 
   // --- Gambar ---
   const [importing, setImporting] = useState(false);
@@ -711,29 +727,87 @@ function App() {
   }, []);
 
   /**
+   * Satu jalur untuk semua teks soal, dari mana pun asalnya: hasil tempel maupun hasil ambil dari
+   * tautan. Parse, pembersihan sisa impor sebelumnya, dan perpindahan ke layar Siap karena itu
+   * hanya ada di satu tempat. Mengembalikan hasil parse apa adanya, jadi pemanggilnya bisa
+   * menampilkan galat yang menyebut soal nomor berapa.
+   */
+  const importFromText = useCallback((text: string): ParseResult => {
+    setImageFailures([]);
+    setImageResizes([]);
+    setMediaNote(null);
+
+    const result = parseQuizTemplate(text);
+    if (!result.success || !result.quiz) {
+      setParseResult(result);
+      return result;
+    }
+
+    setQuiz(result.quiz);
+    setParseResult({ success: true, quiz: result.quiz });
+    setTimeout(() => setScreen('setup'), 1500);
+    return result;
+  }, []);
+
+  /**
    * Impor dari teks yang ditempel. Jalurnya sengaja lebih pendek dari impor berkas: tidak ada
    * berkas gambar yang ikut, jadi tidak ada yang perlu dicocokkan. Baris `Image:` yang menunjuk
    * alamat online tetap jalan, sedangkan yang menunjuk nama berkas lokal muncul di layar Siap
    * sebagai gambar yang belum dipasang, lengkap dengan panel untuk memasangnya.
    */
   const importPastedText = useCallback(() => {
-    setImageFailures([]);
-    setImageResizes([]);
-    setMediaNote(null);
-
     // Kotak kosong tidak pernah sampai ke sini: tombolnya mati selama belum ada teks, dan baris
     // "Belum ada teks." di sampingnya mengatakan kenapa.
-    const result = parseQuizTemplate(pastedText.trim());
-    if (!result.success || !result.quiz) {
-      setParseResult(result);
+    const result = importFromText(pastedText.trim());
+    if (result.success) setPastedText('');
+  }, [pastedText, importFromText]);
+
+  /**
+   * Impor dari tautan Pastebin. Yang berpindah hanya teksnya, jadi konsekuensi gambarnya sama
+   * dengan jalur tempel: baris `Image:` berisi alamat online tetap jalan, nama berkas lokal
+   * menunggu dipasang di layar Siap.
+   *
+   * Tautannya tidak diambil langsung dari pastebin.com, karena pastebin.com tidak mengirim header
+   * CORS sama sekali. Jalur dan bukti pengujiannya ada di `src/pastebin.ts`.
+   */
+  const importFromLink = useCallback(async () => {
+    const rawUrl = pastebinRawUrl(linkInput);
+    if (!rawUrl) {
+      setLinkStatus({
+        tone: 'error',
+        text: 'Tautan ini bukan tautan Pastebin. Contoh yang benar: https://pastebin.com/raw/nic0NZze.',
+      });
       return;
     }
 
-    setQuiz(result.quiz);
-    setParseResult({ success: true, quiz: result.quiz });
-    setPastedText('');
-    setTimeout(() => setScreen('setup'), 1500);
-  }, [pastedText]);
+    setLinkBusy(true);
+    setLinkStatus({ tone: 'info', text: 'Mengambil teks dari tautan…' });
+
+    const fetched = await fetchPastebinText(rawUrl);
+    setLinkBusy(false);
+
+    if (!fetched.ok) {
+      setLinkStatus({ tone: 'error', text: fetched.error });
+      return;
+    }
+
+    const result = importFromText(fetched.text);
+    if (!result.success) {
+      // Teksnya berhasil diambil tapi isinya bukan template yang sah, jadi galat parse yang
+      // menyebut soal nomor berapa tetap ditampilkan apa adanya, bukan ditelan pesan umum.
+      setLinkStatus({
+        tone: 'error',
+        text: `Teks dari tautan ini belum bisa dibaca. ${result.error ?? ''}`.trim(),
+      });
+      return;
+    }
+
+    setLinkInput('');
+    setLinkStatus({
+      tone: 'info',
+      text: `Soal dari tautan berhasil dibaca: ${result.quiz?.questions.length ?? 0} soal.`,
+    });
+  }, [linkInput, importFromText]);
 
   /* Kotak yang menerima satu blok teks tidak memberi tanda apa pun bahwa tempelannya masuk, jadi
      angka ini yang memberi tanda itu sebelum guru menekan Baca soal. */
@@ -995,7 +1069,7 @@ function App() {
             }
             setTimeout(() => {
               goToNextQuestion();
-            }, 800);
+            }, TRANSISI_SOAL_MS);
           }, 4000);
         } else {
           // Daily mode: TIME'S UP overlay, then next question
@@ -1003,7 +1077,7 @@ function App() {
           if (config.soundEnabled && config.soundTimeUp) {
             playTimeUp(config.volume);
           }
-          // Wait for mascot exit animation (0.75s) then transition
+          // "Waktu habis" dibaca guru dan kelas dulu, baru berpindah soal.
           setTimeout(() => {
             setPresState('transitioning');
             if (config.soundEnabled && config.soundTransitions) {
@@ -1011,8 +1085,8 @@ function App() {
             }
             setTimeout(() => {
               goToNextQuestion();
-            }, 800);
-          }, 750);
+            }, TRANSISI_SOAL_MS);
+          }, TRANSISI_SOAL_MS);
         }
         return;
       }
@@ -1058,7 +1132,7 @@ function App() {
     }
     setTimeout(() => {
       goToNextQuestion();
-    }, 500);
+    }, TRANSISI_SOAL_MS);
   }, [goToNextQuestion, config]);
 
   const togglePause = useCallback(() => {
@@ -1537,9 +1611,64 @@ Answer: B`;
                     >
                       Tempel teks
                     </button>
+                    <button
+                      className={`import-mode ${importMode === 'link' ? 'import-mode--selected' : ''}`}
+                      onClick={() => setImportMode('link')}
+                      aria-pressed={importMode === 'link'}
+                    >
+                      Tautan
+                    </button>
                   </div>
 
-                  {importMode === 'file' ? (
+                  {importMode === 'link' ? (
+                    // Tautan Pastebin: yang dibutuhkan guru cuma satu baris alamat. Kotak teks besar
+                    // tidak dipakai di sini, karena tidak ada yang perlu ditempel guru sendiri.
+                    <div className="link-panel">
+                      <label className="link-panel__label" htmlFor="link-input">
+                        Tautan Pastebin
+                      </label>
+                      <div className="link-panel__hint">
+                        Tempel tautan Pastebin yang berisi berkas soal, contoh:
+                        https://pastebin.com/raw/nic0NZze. Pastenya harus publik.
+                      </div>
+                      <input
+                        id="link-input"
+                        type="url"
+                        className="link-panel__input"
+                        value={linkInput}
+                        onChange={(e) => setLinkInput(e.target.value)}
+                        onKeyDown={(e) => {
+                          if (e.key === 'Enter' && linkInput.trim() !== '' && !linkBusy) {
+                            void importFromLink();
+                          }
+                        }}
+                        placeholder="https://pastebin.com/raw/nic0NZze"
+                        spellCheck={false}
+                        autoComplete="off"
+                        disabled={linkBusy}
+                        aria-describedby="link-status"
+                      />
+                      <div className="link-panel__actions">
+                        <button
+                          className="btn btn--primary"
+                          onClick={() => void importFromLink()}
+                          disabled={linkInput.trim() === '' || linkBusy}
+                        >
+                          {linkBusy ? 'Mengambil…' : 'Ambil soal'}
+                        </button>
+                        {/* Satu baris untuk semua keadaan: sedang mengambil, berhasil, atau
+                            gagal. Warnanya ikut nada, dan teksnya mengatakan apa yang benar-benar
+                            terjadi, termasuk kewajiban pastenya publik. */}
+                        <span
+                          className={`link-panel__status${linkStatus?.tone === 'error' ? ' link-panel__status--error' : ''}`}
+                          id="link-status"
+                          role="status"
+                        >
+                          {linkStatus?.text ?? 'Belum ada tautan.'}
+                        </span>
+                      </div>
+                    </div>
+                  ) : importMode === 'file' ? (
                     <div
                       className="drop-zone"
                       onDrop={handleDrop}
@@ -2026,7 +2155,15 @@ Answer: B`;
 
   // ===== RENDER: PRESENTATION MODE =====
   if (screen === 'presentation' && quiz) {
-    const isAnswerRevealed = showCorrectAnswer && currentQuestion;
+    /* Satu syarat untuk semua bentuk reveal: tombol mata di bar kontrol dan reveal otomatis saat
+       waktu habis dua-duanya menyalakan `showCorrectAnswer`, jadi keduanya tampil sama.
+       Sebelum 2026-09-29 jalur pilihan ganda hanya membaca `presState === 'answer-reveal'`,
+       yang cuma dinyalakan jalur otomatis: tombol mata di mode latihan adalah tombol mati untuk
+       soal pilihan ganda (barisnya tidak pernah naik ke tengah), padahal README
+       menjanjikannya dan soal isian singkat sudah bekerja. Syaratnya kini disamakan dengan
+       jalur isian singkat, dan latar blur memakai syarat yang sama supaya latar itu tidak
+       pernah muncul tanpa jawaban di atasnya. */
+    const isAnswerRevealed = showCorrectAnswer && currentQuestion !== null;
     const currentFigures = imagesOf(currentQuestion);
     const hasFigure = currentFigures.some((image) => image.src !== '');
 
@@ -2103,14 +2240,14 @@ Answer: B`;
                 onZoom={setZoomedImage}
               />
               {currentQuestion.type === 'multiple-choice' ? (
-                <div className={`answer-grid question-area-enter ${presState === 'answer-reveal' ? 'answer-grid--reveal' : ''}`} key={`a-${currentQ}`}>
+                <div className={`answer-grid question-area-enter ${isAnswerRevealed ? 'answer-grid--reveal' : ''}`} key={`a-${currentQ}`}>
                   {currentQuestion.options.map((opt, i) => {
                     const letter = String.fromCharCode(65 + i);
                     const isCorrect = i === currentQuestion.correctAnswer;
                     return (
                       <div
                         key={i}
-                        className={`answer-card ${presState === 'answer-reveal' && isCorrect ? 'answer-card--center' : ''} ${presState === 'answer-reveal' && !isCorrect ? 'answer-card--fade-out' : ''}`}
+                        className={`answer-card ${isAnswerRevealed && isCorrect ? 'answer-card--center' : ''} ${isAnswerRevealed && !isCorrect ? 'answer-card--fade-out' : ''}`}
                       >
                         <div className="answer-card__letter">{letter}</div>
                         <div className="answer-card__text">{opt}</div>
@@ -2134,6 +2271,13 @@ Answer: B`;
               )}
             </div>
           )}
+
+          {/* Latar jawaban. Satu-satunya elemen ber-blur di aplikasi, dan alasannya ada di
+              DESIGN.md: kelas sedang membaca satu jawaban, bukan sepuluh baris soal sekaligus.
+              Letaknya di luar .question-area supaya ia tidak ikut terpotong `overflow: hidden`,
+              dan z-index-nya di bawah kartu jawaban (1050) serta bar kontrol guru (1050), jadi
+              guru masih bisa menekan tombol mata untuk menutup jawabannya lagi. */}
+          {isAnswerRevealed && <div className="reveal-backdrop" aria-hidden="true" />}
 
           {/* Progress bar */}
           <div className="pres-progress">

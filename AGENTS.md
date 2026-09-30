@@ -23,6 +23,8 @@ Stack: React 19 + TypeScript + Vite. No UI library, no CSS framework. Every styl
 - `src/demo.ts` - sample quiz used by "Try Demo"
 - `src/soal-prompt.ts` - the ready-made AI question-writer prompt, the ChatGPT URL built from it,
   and the clipboard helpers
+- `src/pastebin.ts` - the Pastebin link route: URL normalization, the CORS reader it goes through,
+  and the checks that stop a 404 page from being read as a quiz
 - `public/*.gif` - decorative mascot GIFs (see the audit, finding F-08)
 
 The printable answer key is a portal into `document.body` (`AnswerKeySheet` in `src/App.tsx`), shown

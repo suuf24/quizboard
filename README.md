@@ -145,13 +145,41 @@ Urutannya:
    `.txt` dan pakai tab "Unggah berkas".
 4. Periksa soalnya di "Preview Soal & Jawaban".
 
-Soal bisa masuk lewat dua jalur, dipilih dengan sakelar di atas lembar impor:
+Soal bisa masuk lewat tiga jalur, dipilih dengan sakelar di atas lembar impor:
 
 - **Unggah berkas** membawa berkas `.txt` beserta berkas gambarnya sekaligus.
 - **Tempel teks** menerima teks apa adanya, tanpa berkas. Jalur ini yang paling cepat sesudah
   memakai ChatGPT, tetapi tidak bisa membawa gambar lokal: baris `Image:` yang menunjuk nama berkas
   di PC muncul di layar Siap sebagai gambar yang belum dipasang, dan bisa dipasang dari panel gambar
   di layar itu.
+- **Tautan** mengambil soal dari satu alamat Pastebin, untuk soal yang dibagikan guru lain tanpa
+  berkas. Lihat bagian "Impor dari tautan Pastebin".
+
+## Impor dari tautan Pastebin
+
+Tab "Tautan" di layar impor menerima satu alamat Pastebin, lalu mengambil teks soalnya sendiri:
+
+```
+https://pastebin.com/raw/nic0NZze
+```
+
+Bentuk lain juga diterima dan disamakan ke bentuk di atas: `pastebin.com/<id>`, `pastebin.com/dl/<id>`,
+dengan atau tanpa `https://` dan `www.`.
+
+Yang perlu diketahui:
+
+- **Pastebin tidak bisa dibaca langsung dari peramban.** pastebin.com tidak mengirim header CORS
+  sama sekali, jadi `fetch` ke alamat raw-nya selalu ditolak peramban. Teksnya karena itu dibaca
+  lewat layanan pembaca `r.jina.ai`, dan alamat paste-nya dikirim ke layanan itu. Ini satu-satunya
+  bagian aplikasi yang mengirim sesuatu ke pihak ketiga; impor berkas dan impor tempel tetap tidak
+  keluar dari PC guru.
+- **Pastenya harus publik.** Paste privat tidak bisa dibaca, dan pesannya akan menyebut itu.
+- **Butuh internet.** Tanpa sambungan, jalur ini gagal dengan pesan yang jelas; tab "Tempel teks"
+  tetap jalan karena isinya dibaca di PC guru sendiri.
+- **Gambar lokal tidak ikut.** Sama seperti jalur tempel: baris `Image:` yang menunjuk nama berkas
+  di PC menunggu dipasang di layar Siap, sedangkan alamat gambar online tetap jalan.
+- Pengambilan dibatasi 15 detik. Kalau lewat batas itu, atau isi tautannya ternyata bukan soal,
+  barisnya menyebut apa yang salah, bukan pura-pura berhasil.
 
 Prompt-nya juga disalin ke clipboard sebagai cadangan. Kalau kolom pesan ChatGPT kosong sesudah
 tabnya terbuka, tempel dengan Ctrl+V. Kalau penyalinan itu pun ditolak peramban, tekan "Buat soal"
@@ -172,11 +200,13 @@ Dua hal yang perlu diketahui:
 
 Layar impor:
 
-- Sakelar "Unggah berkas" / "Tempel teks" memilih cara memasukkan soal.
+- Sakelar "Unggah berkas" / "Tempel teks" / "Tautan" memilih cara memasukkan soal.
 - "Unggah berkas": tarik dan lepas file `.txt`, atau klik "Pilih berkas" untuk memilih berkas soal
   beserta gambar yang dipakainya. Satu folder yang berisi keduanya juga bisa diseret langsung.
 - "Tempel teks": tempel hasil dari AI, atau teks soal dari mana pun, langsung ke kotaknya, lalu klik
   "Baca soal". Kotak itu menyebut jumlah baris dan karakter yang sudah masuk.
+- "Tautan": tempel alamat Pastebin berisi soal, lalu klik "Ambil soal" (tombol Enter juga jalan).
+  Pastenya harus publik. Lihat bagian "Impor dari tautan Pastebin".
 - "Coba contoh" memuat kuis contoh 23 soal IPA, termasuk satu soal bergambar.
 - "Buat soal" membuka tab ChatGPT dengan prompt pembuat soal terisi, untuk guru yang belum punya
   berkas soal. Lihat bagian "Membuat soal dengan AI".

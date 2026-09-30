@@ -113,6 +113,11 @@
   --md-sys-motion-duration-medium4: 400ms;
   --md-sys-motion-duration-long1: 450ms;
   --md-sys-motion-duration-long2: 500ms;
+  /* Satu tempo untuk pergantian soal: overlay ditahan selama ini, lalu soal berikutnya masuk
+     dengan animasi yang sama lamanya. Angkanya harus tetap sama dengan TRANSISI_SOAL_MS di
+     src/App.tsx; dua angka yang berbeda membuat gerakannya berhenti terasa sebagai satu
+     gerakan. */
+  --md-sys-motion-duration-long3: 750ms;
 }
 
 /* ===== Design Tokens: Tema Gelap =====
@@ -274,10 +279,11 @@
 }
 
 /* Bentuknya mengikuti pilihan Mode di layar Siap: baris terpilih ditandai pena, bukan blok warna
-   baru. Di sini barisnya dibagi dua kolom supaya tetap setinggi satu baris. */
+   baru. Di sini barisnya dibagi tiga kolom supaya tetap setinggi satu baris: tiga cara memasukkan
+   soal, dan labelnya karena itu dijaga pendek ("Tautan", bukan "Dari tautan"). */
 .import-modes {
   display: grid;
-  grid-template-columns: 1fr 1fr;
+  grid-template-columns: repeat(3, 1fr);
   width: 100%;
   border: 2px solid var(--ink);
   border-radius: 0;
@@ -306,6 +312,16 @@
   background: var(--pen-wash);
   color: var(--md-sys-color-on-surface);
   box-shadow: inset 0 -3px 0 var(--pen);
+}
+
+/* Di lebar ponsel, tiga label tidak lagi muat dengan padding 16px dan label-large. Keduanya turun
+   satu tingkat bersama-sama, jadi ketiga tab tetap sebaris dan tetap sama besar satu dengan yang
+   lain; diukur 2026-09-29 pada 390x844, "Unggah berkas" berhenti membungkus jadi dua baris. */
+@media (max-width: 480px) {
+  .import-mode {
+    padding: 11px 4px;
+    font: var(--md-sys-typescale-label-medium);
+  }
 }
 
 /* Panel tempel memakai lembar yang sama dengan drop zone, karena keduanya mengisi slot yang
@@ -370,6 +386,68 @@
   display: flex;
   align-items: center;
   gap: 8px;
+}
+
+/* Panel tautan memakai lembar yang sama dengan panel tempel, karena keduanya mengisi slot yang
+   sama. Bedanya satu: yang dibutuhkan jalur ini cuma satu baris alamat, bukan kotak teks dalam,
+   jadi tidak ada kotak besar yang menunggu isian yang tidak pernah datang. */
+.link-panel {
+  width: 100%;
+  max-width: 520px;
+  border: 2px solid var(--ink);
+  border-radius: 0;
+  padding: 24px;
+  background: var(--sheet);
+  text-align: left;
+}
+
+.link-panel__label {
+  display: block;
+  font: var(--md-sys-typescale-title-medium);
+  color: var(--md-sys-color-on-surface);
+}
+
+.link-panel__hint {
+  font: var(--md-sys-typescale-label-medium);
+  color: var(--md-sys-color-on-surface-variant);
+  margin-top: 4px;
+  margin-bottom: 12px;
+}
+
+/* Alamat, bukan angka: rata kiri dengan huruf biasa, dan latar meja supaya terbaca sebagai ruang
+   isian seperti kotak tempel di sebelahnya. */
+.link-panel__input {
+  display: block;
+  width: 100%;
+  padding: 10px 12px;
+  background: var(--paper);
+  color: var(--md-sys-color-on-surface);
+  border: 1px solid var(--ink-soft);
+  border-radius: 0;
+  font: var(--md-sys-typescale-body-medium);
+}
+
+.link-panel__input:focus {
+  border-color: var(--ink);
+}
+
+.link-panel__actions {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+  margin-top: 12px;
+}
+
+/* Baris status selalu ada, jadi tinggi panelnya tidak melompat saat pengambilan selesai. Nada
+   galat memakai warna pena, yang tetap di atas 6:1 di lembar terang maupun gelap. */
+.link-panel__status {
+  font: var(--md-sys-typescale-label-medium);
+  color: var(--md-sys-color-on-surface-variant);
+}
+
+.link-panel__status--error {
+  color: var(--md-sys-color-error);
 }
 
 /* Drop Zone: lembar kosong di atas meja. Kertas tidak bersudut bulat dan tidak bergaris
@@ -1513,6 +1591,9 @@
   transform: translate(-50%, -50%);
   z-index: 1050;
   min-width: min(80vw, 900px);
+  /* Di layar sempit, kartu selebar 80vw nyaris menyentuh tepi dan ujung baris jawaban jadi
+     tempat mata berhenti. Batas atas ini menyisakan jarak tepi, berapa pun lebar layarnya. */
+  max-width: calc(100vw - clamp(48px, 10vw, 200px));
   min-height: 80px;
   padding: 24px 40px;
   background: var(--sheet);
@@ -1558,6 +1639,45 @@
   min-height: 120px;
 }
 
+/* Latar jawaban: kertas di belakang kartu jawaban dibuat kabur supaya kelas membaca satu
+   jawaban, bukan sepuluh baris soal sekaligus. Ini satu-satunya elemen ber-blur di aplikasi
+   (dosis R-10: satu elemen), dan alasannya ditulis di DESIGN.md karena blur adalah keputusan
+   yang harus punya alasan, bukan hiasan.
+
+   Nilainya sengaja kuat: selubung 55% kertas plus blur 14px memisahkan kartu jawaban dari soal
+   di belakangnya sampai teks soal tidak lagi terbaca dari baris belakang, sedangkan kartu
+   jawabannya sendiri tetap berlatar pekat, jadi kontras huruf dan garis penanya tidak berubah
+   sama sekali.
+
+   z-index 1040 duduk di atas lembar soal tapi di bawah kartu jawaban (1050) dan bar kontrol guru
+   (1050): guru tetap bisa menekan tombol mata untuk menutup jawaban lagi tanpa mencari-cari.
+   pointer-events: none membuat lapisan ini tidak pernah menelan klik apa pun.
+
+   Peramban tanpa backdrop-filter hanya kehilangan blur-nya, bukan latarnya: selubung 55% itu
+   tetap memisahkan kartu dari soal di belakangnya. */
+.reveal-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 1040;
+  background: color-mix(in srgb, var(--paper) 55%, transparent);
+  /* Hanya bentuk standar yang ditulis. Prefiks -webkit- ikut ditulis semula, dan bundler
+     membuang bentuk standarnya begitu melihat prefiks itu: hasil build hanya menyisakan
+     -webkit-backdrop-filter, yang sudah tidak dikenali peramban ini (CSS.supports('-')
+     = false), sehingga blur-nya hilang tanpa jejak. Diukur 2026-09-29 di Chromium. */
+  backdrop-filter: blur(14px);
+  pointer-events: none;
+  animation: overlayFadeIn var(--md-sys-motion-duration-medium2) var(--md-sys-motion-easing-decelerate);
+}
+
+/* Jawaban isian singkat muncul di barisnya sendiri, bukan terbang ke tengah seperti kartu pilihan
+   ganda. Supaya ia ikut terbaca di atas latar blur, barisnya dinaikkan ke atas lapisan itu;
+   tanpa ini ia tertimbun di belakangnya. Dibatasi ke layar presentasi supaya panel pratinjau di
+   layar Siap, yang memakai kelas yang sama, tidak ikut berubah. */
+.presentation .short-answer-card--reveal {
+  position: relative;
+  z-index: 1050;
+}
+
 /* ===== Short Answer Card (Isian Singkat) ===== */
 /* Garis titik-titik adalah konvensi lembar ujian Indonesia, dan di sini ia menjawab
    pertanyaan yang nyata: siswa menulis di kertasnya sendiri, jadi layar menunjukkan
@@ -1593,10 +1713,15 @@
   padding-bottom: 6px;
 }
 
-/* Kunci dibuka: lembar ditandai pena, dan jawabannya ditulis dengan warna pena yang sama. */
+/* Kunci dibuka: lembar ditandai pena, dan jawabannya ditulis dengan warna pena yang sama.
+   Padding kiri-kanannya bukan hiasan: sebelum 2026-09-29 blok ini memakai padding mendatar 0,
+   jadi teks jawabannya menempel di tepi blok pen-wash dan terbaca terlalu mepet. Angkanya sama
+   kiri dan kanan supaya tepi blok tetap simetris di layar proyektor. */
 .short-answer-card--reveal {
   border-top-color: var(--pen);
   background: var(--pen-wash);
+  padding-left: clamp(16px, 2vw, 32px);
+  padding-right: clamp(16px, 2vw, 32px);
 }
 
 .short-answer-card__answer {
@@ -2336,20 +2461,20 @@
 }
 
 .question-enter {
-  animation: questionTextIn var(--md-sys-motion-duration-long2) var(--md-sys-motion-easing-decelerate) backwards;
+  animation: questionTextIn var(--md-sys-motion-duration-long3) var(--md-sys-motion-easing-decelerate) backwards;
   backface-visibility: hidden;
 }
 
 .question-enter-up {
-  animation: questionAreaIn var(--md-sys-motion-duration-long2) var(--md-sys-motion-easing-decelerate) 60ms backwards;
+  animation: questionAreaIn var(--md-sys-motion-duration-long3) var(--md-sys-motion-easing-decelerate) 60ms backwards;
 }
 
 .question-area-enter {
-  animation: questionAreaIn var(--md-sys-motion-duration-long2) var(--md-sys-motion-easing-decelerate) 120ms backwards;
+  animation: questionAreaIn var(--md-sys-motion-duration-long3) var(--md-sys-motion-easing-decelerate) 120ms backwards;
 }
 
 .question-area-enter-sa {
-  animation: questionTextIn var(--md-sys-motion-duration-long2) var(--md-sys-motion-easing-decelerate) 120ms backwards;
+  animation: questionTextIn var(--md-sys-motion-duration-long3) var(--md-sys-motion-easing-decelerate) 120ms backwards;
   backface-visibility: hidden;
 }
 
@@ -2357,14 +2482,17 @@
    melihat empat baris melompat bersamaan. Guard :not() menjaga animasi kunci jawaban
    (--center, --fade-out) tetap utuh. */
 .question-area-enter .answer-card:not(.answer-card--center):not(.answer-card--fade-out) {
-  animation: answerCardIn var(--md-sys-motion-duration-long2) var(--md-sys-motion-easing-decelerate) backwards;
+  animation: answerCardIn var(--md-sys-motion-duration-long3) var(--md-sys-motion-easing-decelerate) backwards;
   backface-visibility: hidden;
 }
 
-.question-area-enter .answer-card:nth-child(1) { animation-delay: 40ms; }
-.question-area-enter .answer-card:nth-child(2) { animation-delay: 80ms; }
-.question-area-enter .answer-card:nth-child(3) { animation-delay: 120ms; }
-.question-area-enter .answer-card:nth-child(4) { animation-delay: 160ms; }
+/* Guard :not() yang sama dengan aturan animasinya di atas ikut dipasang di sini. Tanpa itu
+   keterlambatannya ikut menempel ke kartu kunci jawaban (`flyToCenter`), dan barisnya sempat
+   terlihat di tempat asalnya selama 40-160ms sebelum terbang ke tengah. */
+.question-area-enter .answer-card:not(.answer-card--center):not(.answer-card--fade-out):nth-child(1) { animation-delay: 40ms; }
+.question-area-enter .answer-card:not(.answer-card--center):not(.answer-card--fade-out):nth-child(2) { animation-delay: 80ms; }
+.question-area-enter .answer-card:not(.answer-card--center):not(.answer-card--fade-out):nth-child(3) { animation-delay: 120ms; }
+.question-area-enter .answer-card:not(.answer-card--center):not(.answer-card--fade-out):nth-child(4) { animation-delay: 160ms; }
 
 .counter-tick {
   animation: counterTick var(--md-sys-motion-duration-medium2) var(--md-sys-motion-easing-decelerate) backwards;
@@ -2375,12 +2503,12 @@
    entry stagger never delays the exit. */
 .question-area--leaving .question-text,
 .question-area--leaving .question-meta {
-  animation: questionLeave var(--md-sys-motion-duration-medium2) var(--md-sys-motion-easing-accelerate) forwards;
+  animation: questionLeave var(--md-sys-motion-duration-long3) var(--md-sys-motion-easing-accelerate) forwards;
   animation-delay: 0ms;
 }
 
 .question-area--leaving .answer-grid {
-  animation: questionAreaLeave var(--md-sys-motion-duration-medium2) var(--md-sys-motion-easing-accelerate) forwards;
+  animation: questionAreaLeave var(--md-sys-motion-duration-long3) var(--md-sys-motion-easing-accelerate) forwards;
   animation-delay: 0ms;
 }
 
@@ -2389,7 +2517,7 @@
    the cards restart their entrance animation while the grid fades out and blink away. */
 .question-area--leaving .answer-card:not(.answer-card--center):not(.answer-card--fade-out),
 .question-area--leaving .short-answer-card {
-  animation: questionLeave var(--md-sys-motion-duration-medium2) var(--md-sys-motion-easing-accelerate) forwards;
+  animation: questionLeave var(--md-sys-motion-duration-long3) var(--md-sys-motion-easing-accelerate) forwards;
   animation-delay: 0ms;
 }
 

@@ -210,6 +210,72 @@ Keputusan yang menyertainya:
    ditampilkan. Permintaan ini menambah 823 karakter, karena itu alamat prefill diukur dan diuji
    ulang (lihat baris "Batas panjang alamat" di tabel atas).
 
+## Impor dari tautan Pastebin
+
+Ditambahkan 2026-09-29. Guru bisa mengambil soal dari satu alamat Pastebin, bukan hanya dari berkas
+atau teks yang ditempel sendiri. Jalur ini yang paling pendek untuk soal yang dibagikan guru lain:
+yang berpindah cukup alamatnya.
+
+Aturannya: **satu kolom alamat, tanpa kotak teks besar.** Di jalur ini tidak ada yang perlu ditempel
+guru sendiri, jadi kotak setinggi 180px hanya menambah tinggi layar tanpa dipakai.
+
+| Keputusan | Nilai | Alasan |
+|---|---|---|
+| Bentuk masukan | satu baris `<input type="url">`, Enter langsung mengambil | Yang dibutuhkan cuma satu alamat; Enter sudah jadi kebiasaan setelah menempel tautan |
+| Label tab | "Tautan" | Tiga label harus muat satu baris di lebar 390px; "Dari tautan" memaksa labelnya membungkus |
+| Label kolom | "Tautan Pastebin" | Menyebut layanannya apa adanya, karena hanya Pastebin yang dikenali |
+| Tombol | "Ambil soal" | Kata kerja yang sama bentuknya dengan "Baca soal" di tab sebelah |
+| Keadaan tombol | mati selama kolom kosong atau sedang mengambil, dengan alasan tertulis di baris status | Tombol mati tanpa penjelasan adalah teka-teki (R-26) |
+| Baris status | satu baris tetap: "Belum ada tautan." → "Mengambil teks dari tautan…" → jumlah soal, atau pesan galat bernada pena | Tinggi panel tidak melompat saat pengambilan selesai, dan kalimat sukses palsu tidak pernah muncul |
+| Jalan mengambil | lewat `r.jina.ai`, bukan `fetch` langsung ke pastebin.com | Diuji 2026-09-29: pastebin.com tidak mengirim header CORS sama sekali (delapan endpoint dan delapan proxy diuji; hanya r.jina.ai yang menjawab) |
+| Header permintaan | `X-Return-Format: text` | Diuji pada hari yang sama: dengan header itu pembaca mengembalikan teks mentah apa adanya (1.595 karakter, sama dengan isi paste); tanpa itu balasannya dibungkus empat baris metadata |
+| Batas tunggu | 15 detik | Paste 20-an soal sekitar 2 KB; tanpa batas ini tombolnya bisa menggantung tanpa kabar |
+| Pemeriksa isi | wajib ada baris soal bernomor **dan** baris `Answer:` | Paste yang tidak ada tetap dibalas `200` berisi halaman 404 Pastebin, jadi status HTTP saja tidak cukup untuk memutuskan berhasil |
+| Gambar | sama dengan jalur tempel: alamat online jalan, nama berkas lokal menunggu dipasang di layar Siap | Yang berpindah hanya teksnya, jadi tidak ada berkas gambar yang bisa ikut |
+
+Keputusan yang menyertainya:
+
+1. **Ini satu-satunya bagian aplikasi yang mengirim sesuatu ke pihak ketiga, dan itu ditulis di
+   README.** Alamat paste dikirim ke `r.jina.ai`. Impor berkas dan impor tempel tetap tidak keluar
+   dari PC guru. Menyembunyikan ketergantungan ini akan membuat guru menyimpulkan sendiri saat
+   jalurnya gagal.
+2. **Tidak ada server, jadi tidak ada proxy sendiri.** Fungsi serverless akan lebih andal, tetapi ia
+   mati di build lokal dan di salinan `dist` yang dipakai mengajar dari flashdisk, yaitu cara pakai
+   yang justru dianjurkan README.
+3. **Gagal itu biasa, dan pesannya konkret.** Tiga kegagalan dibedakan: bukan tautan Pastebin,
+   paste tidak ada atau tidak berisi soal, dan pengambilan lewat batas waktu atau jaringan. Semuanya
+   menyebut jalan keluarnya (pakai tab Tempel teks).
+
+## Reveal jawaban di mode latihan
+
+Ditambahkan 2026-09-29. Saat guru menampilkan jawaban di mode latihan, kertas di belakang kartu
+jawaban dibuat kabur.
+
+Aturannya: **satu jawaban yang dibaca, bukan sepuluh baris soal sekaligus.** Kelas sedang mengoreksi
+satu baris; menampilkan kartu jawaban di atas soal yang tetap tajam membuat mata membagi perhatian
+antara jawaban dan pengecoh di belakangnya.
+
+| Keputusan | Nilai | Alasan |
+|---|---|---|
+| Bentuk | satu lapisan `position: fixed` ber-`backdrop-filter: blur(14px)` dengan selubung `color-mix(--paper 55%)` | 14px plus selubung 55% membuat teks soal di belakangnya benar-benar berhenti terbaca dari baris belakang, dan selubung itu menjaga kertas tetap hangat, bukan abu dingin |
+| Dosis | satu elemen, dan itu satu-satunya blur di aplikasi | Batas R-10 adalah 1-2 elemen; sebelum ini tidak ada satu pun `backdrop-filter` yang dirender |
+| Tumpukan | `z-index: 1040`, di bawah kartu jawaban (1050) dan bar kontrol guru (1050) | Guru harus tetap bisa menekan tombol mata untuk menutup jawaban lagi, dan bar-nya tetap tajam supaya bisa dibaca saat mengajar |
+| Jawaban isian singkat | barisnya dinaikkan ke atas lapisan (`z-index: 1050`) alih-alih dipindahkan ke tengah | Satu perilaku untuk dua tipe soal, tanpa mengubah bentuk reveal yang sudah ada |
+| Kontras | tidak berubah: kartu jawaban tetap berlatar `--sheet` pekat dengan garis pena | Blur tidak menyentuh satu pun pasangan warna yang sudah diukur (ink di atas sheet 14:1, pena di atas sheet 6,1:1) |
+| Tanpa `backdrop-filter` | selubung 55% tetap dirender | Peramban lama kehilangan blur-nya saja; kartu jawabannya tidak pernah tenggelam di belakang soal |
+| Ruang tepi kartu pilihan ganda | `max-width: calc(100vw - clamp(48px, 10vw, 200px))` | Di layar sempit, kartu selebar 80vw nyaris menyentuh tepi; batas ini menyisakan jarak tepi berapa pun lebar layar |
+| Ruang tepi jawaban isian singkat | blok pen-wash berpadding mendatar `clamp(16px, 2vw, 32px)` | Sebelumnya padding mendatarnya 0, jadi teks jawabannya menempel di tepi blok dan terbaca mepet (dilaporkan pemilik produk 2026-09-29) |
+| Mode harian | tidak terpengaruh | Jawaban memang tidak pernah tampil di mode ini, jadi latarnya tidak pernah muncul |
+
+Keputusan yang menyertainya:
+
+1. **Ini pengecualian dari aturan "overlay tembus pandang jadi keruh di proyektor"** yang dipakai
+   papan countdown, waktu habis, dan jeda. Alasannya berbeda: di ketiga papan itu isinya adalah
+   overlay itu sendiri, sedangkan di sini isinya kartu jawaban yang pekat, dan blur justru yang
+   memisahkannya dari latar.
+2. **Aksinya bisa dibalik satu klik.** Tombol mata yang sama menutup jawaban sekaligus
+   menghilangkan blur, jadi guru yang ingin membaca ulang soalnya tidak terkunci di layar kabur.
+
 ## Tipografi
 
 | Peran | Font | Alasan |
@@ -237,10 +303,24 @@ Elevasi hanya tiga tingkat dan dipakai hemat: `elevation-1` untuk kartu yang bis
 `elevation-2` untuk panel yang menutup layar, `elevation-3` untuk modal yang harus di atas segalanya.
 Mayoritas kartu memakai border 2-3px, bukan bayangan, jadi halaman tidak terasa mengambang.
 
-Gerak: durasi 50ms sampai 500ms, easing standar `cubic-bezier(0.2, 0, 0, 1)`. Setiap animasi masuk
+Gerak: durasi 50ms sampai 750ms, easing standar `cubic-bezier(0.2, 0, 0, 1)`. Setiap animasi masuk
 memakai fill `backwards` supaya elemen tidak berkedip di frame pertama. Kontrak `prefers-reduced-motion`
 di akhir `src/App.css` mematikan semua loop dan mempercepat transisi jadi instan tanpa kehilangan
 informasi: maskot dihilangkan total, pulsa timer dimatikan, dan delay dinolkan.
+
+### Pergantian soal: satu tempo 0,75 detik
+
+Diperjelas 2026-09-29. Setiap jalur yang mengganti soal (lewati, waktu habis, auto-reveal, masuk soal
+pertama) memakai tempo yang sama: overlay ditahan 0,75 detik, lalu soal berikutnya masuk dengan
+animasi 0,75 detik.
+
+| Keputusan | Nilai | Alasan |
+|---|---|---|
+| Nomor tempo | `--md-sys-motion-duration-long3: 750ms` di CSS dan `TRANSISI_SOAL_MS = 750` di `App.tsx` | Dua angka yang berbeda membuat overlay dan animasinya berhenti terasa sebagai satu gerakan; komentar di kedua tempat menyebut pasangannya |
+| Animasi keluar | 0,75 detik, sama dengan animasi masuk | Sebelumnya 300ms keluar dan 500ms masuk; satu tempo membuat pergantian terasa tenang, bukan tergesa di satu sisi |
+| Jeda sebelum berpindah | 0,75 detik untuk semua jalur | Sebelumnya 500ms saat guru menekan "lewati" dan 800ms saat waktu habis; dua tempo berbeda untuk aksi yang sama terbaca sebagai aplikasi yang tidak konsisten |
+| Stagger kartu jawaban | tetap 40/80/120/160ms | Yang menentukan terasa 0,75 detik adalah baris terakhir, dan mata tetap dituntun dari A ke D |
+| Total waktu | sekitar 1,5 detik per soal, 0,75 detik di antaranya gerak yang terlihat | Angka ini yang diukur di layar, bukan dihitung dari kode |
 
 Aturan gerak produk ini: animasi harus menjawab "apa yang baru saja berubah". Masuknya soal menjawab
 "ini soal berbeda", stagger kartu menuntun mata dari A ke D, overlay transisi menjawab "sebentar lagi
