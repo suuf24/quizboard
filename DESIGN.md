@@ -276,6 +276,96 @@ Keputusan yang menyertainya:
 2. **Aksinya bisa dibalik satu klik.** Tombol mata yang sama menutup jawaban sekaligus
    menghilangkan blur, jadi guru yang ingin membaca ulang soalnya tidak terkunci di layar kabur.
 
+## Opsi pilihan ganda sama besar dengan teks soal (tanpa batas kata)
+
+Ditambahkan 2026-10-11; disamakan dengan teks soal pada 2026-10-12 atas permintaan pemilik produk;
+batas kata dihapus pada 2026-10-12 atas permintaan pemilik produk. Guru memakai TV kelas sebagai layar
+penampil, dan baris belakang harus bisa membaca pilihan ganda dari jarak 6 sampai 8 meter. Karena itu
+ukuran yang dipakai bukan "satu tingkat lebih besar", melainkan **sama besar dan sama tebal dengan
+teks soal itu sendiri**: kalau soal tampil 52 px bobot 700 di TV 1080p, opsinya juga 52 px bobot 700.
+
+Aturannya: **semua soal pilihan ganda memakai ukuran yang sama dengan teks soal, di desktop, tanpa
+syarat jumlah kata.** Yang sebelumnya dipakai sebagai penanda bukan panjang huruf melainkan jumlah
+kata dan penanda kelas `*-opsi-pendek`; kedua penanda itu dihapus, dan ukuran sekarang dibaca dari
+satu token yang sama dengan teks soal. Angka yang dipakai sekarang adalah `--type-pilihan: 500
+var(--ukuran-soal)/1.35 'Plus Jakarta Sans', sans-serif`, dengan `font-weight: 700` di kelas
+`.answer-card__text`; di ponsel media query 600 px menimpanya dengan ukuran lama.
+
+| Keputusan | Nilai | Alasan |
+|---|---|---|
+| Sumber ukuran bersama | `--ukuran-soal: clamp(1.75rem, 3.4vw, 3.25rem)`; `--type-soal` dan `--type-pilihan` sama-sama membacanya | "Sama besar" diambil dari satu variabel, bukan dari dua `clamp` yang harus dijaga seragam berdua; dua angka yang harus cocok cepat atau lambat akan berbeda |
+| Token teks opsi | `--type-pilihan: 500 var(--ukuran-soal)/1.35 'Plus Jakarta Sans', sans-serif` | Di TV 1080p hasilnya 52 px, persis ukuran teks soalnya. Token ini bukan token khusus opsi pendek: ia dipakai semua soal pilihan ganda di desktop |
+| Bobot teks opsi | `font-weight: 700` di `.answer-card__text`, sama dengan teks soal | Permintaan pemilik produk: goresan yang lebih tebal menambah keterbacaan dari baris belakang tanpa menambah tinggi baris. Token `--type-pilihan` tetap 500 supaya petunjuk "Jawaban" pada soal isian tidak ikut menebal; hanya baris pilihan yang 700 |
+| Token kartu jawaban tengah | `--type-jawaban-tengah: max(var(--ukuran-soal), clamp(2rem, min(3.5vw, 5.4vh), 3.5rem))` | Kartu yang naik ke tengah punya aturan ukurannya sendiri; tanpa itu, jawaban yang dipilih justru mengecil tepat saat kelas paling perlu membacanya. `max()` memasang lantainya di ukuran teks soal, jadi jawaban yang dipilih tidak pernah lebih kecil dari baris yang ditinggalkannya, dan di atas lantai itu `5,4vh` menjaga kartu tetap muat di layar pendek |
+| Ukuran kartu tengah di ponsel | `clamp(1.5rem, 3.2vw, 2.4rem)`, ditulis ulang di media query 600 px | Di ponsel kartu itu satu baris selebar layar; ukuran presentasi akan mendorong jawaban panjang keluar dari kartunya |
+| Faktor `vh` di dalam `min()` | `5,4vh`, hanya pada token kartu tengah | Di layar lebar tapi pendek (proyektor 1366x768) yang membatasi kartu adalah tinggi layar. Baris opsi sendiri tidak punya batas `vh` lagi; konsekuensinya diukur di bawah |
+| Kolom baris opsi | `.answer-grid { max-width: min(72ch, 100%) }` (bawaan, tanpa penanda khusus) | Batas 72ch dihitung dari huruf dasar 16 px, jadi pada huruf 52 px batas itu hanya menyisakan sekitar 23 karakter per baris dan opsi lima kata membungkus jadi dua baris. Tanpa blok opsi pendek, semua soal memakai batas ini, yang berarti opsi lima kata menjadi dua baris |
+| Gelembung huruf | `clamp(34px, 3.4vw, 48px)` dan huruf `clamp(1rem, 1.4vw, 1.25rem)` | Gelembung tidak diikutsertakan ke blok opsi pendek lagi: ukuran sekarang tetap di level dasar. Penurunan dari 76 px ke 48 px di TV 1080p disengaja dan ditulis di sini secara eksplisit |
+| Padding baris | tetap milik `.answer-card` (tidak ditimpa) | Perbesaran tidak perlu menambah padding: gelembung yang lebih besar sudah memberi ruang, dan setiap piksel padding berarti satu baris lebih dekat ke batas pemotongan |
+| Batas berlakunya | hanya layar lebih lebar dari 600 px | Ponsel tidak punya baris belakang untuk dijangkau, dan ukuran ponsel yang sudah ditulis di media query 600 px tetap berlaku |
+| Panel pratinjau | memakai token yang sama (`--type-pilihan` dan `--ukuran-soal`), lembarnya hanya selebar 1100 px | Pratinjau berjanji memperlihatkan apa yang akan dilihat kelas; teks soal di lembar pratinjau juga `--type-soal`, jadi opsi yang setinggi soal di lembar itu berarti sama persis dengan yang akan dilihat kelas |
+| Penanda di kode | tidak ada lagi kelas `question-area--opsi-pendek` atau `preview-slide--opsi-pendek` | CSS tidak bisa menghitung kata; penanda yang menghitung kata dihapus, dan ukuran sekarang langsung dibaca dari satu token di `App.css` |
+| Penanda yang tinggal | hanya penanda umum `question-area--figure` (jika ada gambar) | CSS tidak butuh penanda khusus karena ukuran sudah sama semua soal pilihan ganda, dan penanda yang dibutuhkan hanya ada di `App.tsx` |
+| Ambang kata | tidak ada lagi `MAX_WORDS_SHORT_OPTION` | Angka dan alasan yang sama harus terbaca dari kode dan dari dokumen ini; karena batas kata dihapus, tidak ada lagi angka ambang di kode |
+
+Hasil pengukuran 2026-10-12 di Chromium atas kuis contoh `src/demo.ts` (ukuran teks opsi, gelembung,
+tinggi baris, dan piksel yang terpotong):
+
+| Layar | Soal uji | Teks opsi | Teks soal | Gelembung | Tinggi baris | Terpotong |
+|---|---|---|---|---|---|---|
+| 1920x1080 (TV kelas) | soal 1, opsi satu kata | **52 px, bobot 700** | 52 px | 48 px | 101,1 px | 0 px |
+| 1366x768 (proyektor) | soal 1, opsi satu kata | 46,4 px, bobot 700 | 46,4 px | 46,4 px | 84,9 px | 0 px |
+| 1366x768 (proyektor) | soal 20, teks 33 karakter, opsi sampai 9 kata | 46,4 px, bobot 700 | 46,4 px | 46,4 px | 210,3 px (baris terpanjang) | 38 px |
+| 960x540 (setara perbesaran 200% di layar 1080p) | soal 3, opsi satu kata | 32,6 px, bobot 700 | 32,6 px | 34 px | 60,7 px | 0 px |
+| 390x844 (ponsel) | soal 20, opsi sampai 9 kata | 16,4 px (tidak berubah), bobot 700 (dulu 500) | 21,1 px | 34 px | 87 px (baris terpanjang) | 0 px |
+| Panel pratinjau di 1920 | soal 20 | **52 px, bobot 700** | 52 px | 48 px | 101,1 px | 0 px |
+
+Di 1920x1080 opsi pilihan ganda sama persis dengan teks soal (52 px, bobot 700). Di 1366x768 keduanya
+juga sama (46,4 px), jadi baris opsi tidak lagi punya pengaman `vh`: yang menjadi batasnya sekarang hanya
+lebar layar. Konsekuensinya terukur pada soal terpanjang kuis contoh (teks 33 karakter, opsi sampai
+semblian kata): baris terpanjangnya 210,3 px dan isi area soal meluber 38 px, sehingga baris terakhirnya
+duduk di belakang bar kontrol guru. Angka 38 px ini menggantikan catatan F-39 yang lama (76 px dan
+117 px); angka lama diukur pada geometri opsi yang lebih kecil dan tidak lagi menggambarkan kode
+sekarang. Di 1920x1080, 960x540, dan di ponsel tidak ada yang terpotong pada soal yang diuji. Bobot 700
+tidak menambah pembungkusan baris: di 1920x1080 jumlah baris tiap baris opsi sama seperti pada bobot
+500. Di ponsel ukurannya tidak berubah (opsi 16,4 px, gelembung 34 px), hanya bobotnya ikut naik ke 700
+karena `.answer-card__text` dasar yang menentukannya.
+
+Keputusan yang menyertainya:
+
+1. **Semua soal pilihan ganda seragam, bukan satu soal seragam dan yang lain kecil.** Versi sebelum 2026-10-12 hanya membesarkan soal yang keempat opsinya di bawah 6 kata; versi sekarang memakai ukuran sama untuk semua soal pilihan ganda di desktop, tanpa melihat jumlah katanya. Kalau ukurannya per soal, pengukuran sebelumnya (tabel F-39) berhenti; kalau per baris, satu baris pendek berdiri di sebelah tiga baris panjang dan matanya berhenti di situ. Ukuran sekarang mengikuti teks soal, bukan panjang masing-masing baris.
+2. **Tinggi baris adalah anggaran, dan sejak 2026-10-12 tidak ada lagi yang menjaganya selain lebar
+   layar.** Area soal memakai `overflow: hidden`, jadi baris yang meluber terpotong tanpa pesan.
+   Pengaman tinggi layar (`min(..., 4,9vh)`) dilepas bersama blok opsi pendek supaya baris opsi benar-benar
+   sama dengan teks soal; konsekuensinya terukur 38 px pemotongan di 1366x768 pada soal terpanjang
+   kuis contoh. Kalau ini mengganggu saat presentasi, yang perlu dikembalikan adalah batas `vh` untuk
+   baris opsi, bukan ukuran per soal.
+3. **Kolom opsi tidak lagi melebar per soal.** Tanpa blok opsi pendek, batas kolom kembali ke 72ch (768
+   px di layar 1080p), yang berarti opsi lima kata langsung membungkus jadi dua baris. Ini adalah
+   perilaku lama yang dikembalikan, bukan perilaku baru: perbesaran ukuran sekarang terjadi di luar
+   pengaruh kolom, dan kolom memakai batas yang sama untuk semua soal.
+4. **Gelembung huruf turun ke level dasar.** Gelembung tidak lagi naik mengikuti opsi; ukuran gelembung
+   sekarang tetap di level dasar (48 px di TV 1080p). Penurunan ini disengaja dan ditulis di sini secara
+   eksplisit; gelembung 48 px masih sepadan dengan teks 52 px di sebelahnya.
+5. **Kasus tersulit belum diuji ulang pada ukuran yang sekarang.** Soal sintetis 283 karakter dengan
+   empat opsi lima kata (76 px dan 117 px pemotongan) diukur pada geometri opsi yang lebih kecil dan
+   dicatat di `anti-slop/audit-004-2026-10-11.md`, jadi angkanya tidak berlaku untuk kode sekarang.
+   Yang terukur pada kode sekarang adalah soal terpanjang kuis contoh: 38 px di 1366x768, 0 px di
+   1920x1080 dan 960x540. Yang bisa memperbaikinya adalah tata letak area soal (misalnya bisa digulir),
+   bukan ukuran huruf.
+6. **Jawaban yang naik ke tengah tidak pernah menyusut.** Token `--type-jawaban-tengah` memasang
+   lantainya di ukuran teks soal: terukur 56 px di 1920x1080 (di atas baris opsi 52 px) dan 46,4 px di
+   1366x768 (sama dengan baris opsi, tidak lebih kecil), jadi jawaban yang dipilih tetap barang paling
+   besar di layar tepat saat semua mata mengarah ke situ. Di ponsel ukurannya tetap 24 px seperti
+   sebelum perubahan.
+7. **Tidak ada warna, bayangan, atau gerak yang ditambahkan.** Yang berubah hanya ukuran huruf,
+   bobot huruf, gelembung, dan kolom, jadi tema gelap dan kontrak `prefers-reduced-motion` tidak
+   perlu aturan baru. Semua token ukuran hanya ada di `:root` (diperiksa 2026-10-12: blok `:root[data-theme='dark']`
+   tidak menyentuh satu pun token ukuran), jadi ukurannya identik di kedua tema, dan kontrasnya tetap milik token yang sudah ada (tinta `#F1F3EF`
+   di atas lembar `#1E242A`).
+8. **Kunci jawaban cetak tidak tersentuh.** Lembar cetak memakai kelas `print-sheet*` dan tabel,
+   bukan baris `.answer-card`, jadi blok ukuran baru ini tidak punya sasaran di atas kertas.
+
 ## Tipografi
 
 | Peran | Font | Alasan |
@@ -287,6 +377,9 @@ Keputusan yang menyertainya:
 Skala: display-large `clamp(2rem, 4vw, 4.5rem)`, headline-large `clamp(1.25rem, 2.5vw, 2.25rem)`,
 body-large `clamp(1rem, 1.2vw, 1.125rem)`, label-medium `0.75rem`. Semua ukuran yang tampil di
 proyektor memakai `clamp` dengan `vw` supaya membesar mengikuti lebar layar, bukan piksel tetap.
+Ukuran baris opsi tidak menambahkan batas `vh` di atas itu (seksi "Opsi pilihan ganda sama besar
+dengan teks soal"); hanya token kartu jawaban tengah yang memakai `5,4vh`, karena kartu itu satu baris
+di tengah layar.
 
 `Space Mono` boleh muncul hanya untuk angka, tidak untuk kalimat. Label uppercase dengan tracking
 lebar hanya pada satu tempat (label "Jawaban" di panel preview) karena fungsinya memisahkan label

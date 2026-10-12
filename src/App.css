@@ -74,8 +74,17 @@
   --md-sys-typescale-label-medium: 600 0.8125rem/1.4 'Plus Jakarta Sans', sans-serif;
 
   /* Skala khusus layar presentasi, dibaca dari 3 sampai 8 meter */
-  --type-soal: 700 clamp(1.75rem, 3.4vw, 3.25rem)/1.25 'Plus Jakarta Sans', sans-serif;
-  --type-pilihan: 500 clamp(1.125rem, 1.9vw, 1.75rem)/1.35 'Plus Jakarta Sans', sans-serif;
+  /* Ukuran teks soal disimpan terpisah dari font-nya supaya bisa dipakai ulang: baris opsi harus
+     sama besarnya dengan teks soal, dan "sama" lebih aman diambil dari satu variabel daripada
+     dari dua `clamp` yang harus dijaga seragam berdua. */
+  --ukuran-soal: clamp(1.75rem, 3.4vw, 3.25rem);
+  --type-soal: 700 var(--ukuran-soal)/1.25 'Plus Jakarta Sans', sans-serif;
+  --type-pilihan: 500 var(--ukuran-soal)/1.35 'Plus Jakarta Sans', sans-serif;
+  /* Kartu jawaban yang naik ke tengah memakai tokennya sendiri: tanpa itu, jawaban yang dipilih
+     justru mengecil tepat saat kelas paling perlu membacanya. Lantainya adalah ukuran teks soal,
+     jadi jawaban yang dipilih tidak pernah lebih kecil dari baris yang ditinggalkannya; di atas
+     lantai itu yang membatasi lebarnya dan tinggi layar. */
+  --type-jawaban-tengah: max(var(--ukuran-soal), clamp(2rem, min(3.5vw, 5.4vh), 3.5rem));
   --type-mesin: 700 clamp(1.25rem, 1.9vw, 2rem)/1 'Space Mono', monospace;
   --type-label: 600 0.8125rem/1.4 'Plus Jakarta Sans', sans-serif;
 
@@ -1533,14 +1542,18 @@
   flex-shrink: 0;
 }
 
+/* Teks baris pilihan. Bobot 700 disamakan dengan teks soal atas permintaan pemilik produk:
+   goresan yang lebih tebal menambah keterbacaan dari baris belakang tanpa menambah tinggi
+   baris, dan baris yang panjang tetap bisa membungkus seperti sebelumnya. */
 .answer-card__text {
   font: var(--type-pilihan);
+  font-weight: 700;
   color: var(--md-sys-color-on-surface);
 }
 
-/* Baris yang ditandai: gelembung terisi pena, teks naik ke bobot 700, dan centang digambar
-   di ujung baris. Tiga tanda sekaligus, karena di mode harian warna saja tidak cukup
-   memberi tahu siswa mana jawaban yang benar. */
+/* Baris yang ditandai: gelembung terisi pena, latar wash, dan centang digambar di ujung baris.
+   Tiga tanda sekaligus, karena di mode harian warna saja tidak cukup memberi tahu siswa mana
+   jawaban yang benar. Bobot teks tidak lagi jadi tanda, karena semua baris kini sama-sama 700. */
 .answer-card--reveal-correct {
   background: var(--pen-wash);
 }
@@ -1550,11 +1563,6 @@
   background: var(--pen);
   border-color: var(--pen);
   color: var(--sheet);
-}
-
-.answer-card--reveal-correct .answer-card__text,
-.answer-card--center .answer-card__text {
-  font-weight: 700;
 }
 
 /* Centang pena di ujung baris. Digambar dari dua tepi yang diputar dan masuk dengan
@@ -1611,7 +1619,7 @@
 }
 
 .answer-card--center .answer-card__text {
-  font-size: clamp(1.5rem, 3.2vw, 2.4rem);
+  font-size: var(--type-jawaban-tengah);
 }
 
 @keyframes flyToCenter {
@@ -2368,6 +2376,13 @@
 
   .answer-card__text {
     font-size: clamp(1rem, 4.2vw, 1.25rem);
+  }
+
+  /* Kartu jawaban yang naik ke tengah tetap memakai ukuran ponselnya sendiri: di layar selebar
+     ini kartu itu satu baris, dan ukuran presentasi akan mendorong jawaban panjang keluar dari
+     kartunya. */
+  .answer-card--center .answer-card__text {
+    font-size: clamp(1.5rem, 3.2vw, 2.4rem);
   }
 
   /* Panel kunci jadi lembar penuh dari atas: tepi kirinya tidak lagi berarti apa-apa

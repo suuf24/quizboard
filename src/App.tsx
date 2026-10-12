@@ -160,7 +160,10 @@ function QuizPreview({
       )}
 
       <div className="preview-body">
-        <div className={`preview-slide preview-slide--${direction}`} key={index}>
+        <div
+          className={`preview-slide preview-slide--${direction}`}
+          key={index}
+        >
           <div className="question-meta">
             <span className={`question-type-chip question-type-chip--${question.type}`}>
               {question.type === 'short-answer' ? 'Isian Singkat' : 'Pilihan Ganda'}
