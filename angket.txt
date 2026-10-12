@@ -1,0 +1,217 @@
+Title: Pendapat Siswa tentang QuizBoard
+
+# Pilih jawaban yang paling sesuai dengan perasaanmu.
+# A = Sangat Setuju, B = Setuju, C = Tidak Setuju, D = Sangat Tidak Setuju
+
+1. Saya merasa senang ketika mengerjakan penilaian menggunakan QuizBoard.
+A. Sangat Setuju
+B. Setuju
+C. Tidak Setuju
+D. Sangat Tidak Setuju
+Answer: A
+
+2. Saya merasa lebih fokus saat mengerjakan soal menggunakan QuizBoard.
+A. Sangat Setuju
+B. Setuju
+C. Tidak Setuju
+D. Sangat Tidak Setuju
+Answer: A
+
+3. Saya lebih mudah berkonsentrasi saat menggunakan QuizBoard.
+A. Sangat Setuju
+B. Setuju
+C. Tidak Setuju
+D. Sangat Tidak Setuju
+Answer: A
+
+4. Saya lebih tertarik mengerjakan soal menggunakan QuizBoard.
+A. Sangat Setuju
+B. Setuju
+C. Tidak Setuju
+D. Sangat Tidak Setuju
+Answer: A
+
+5. Saya tidak cepat bosan saat mengerjakan soal menggunakan QuizBoard.
+A. Sangat Setuju
+B. Setuju
+C. Tidak Setuju
+D. Sangat Tidak Setuju
+Answer: A
+
+6. Saya merasa nyaman mengerjakan soal menggunakan QuizBoard.
+A. Sangat Setuju
+B. Setuju
+C. Tidak Setuju
+D. Sangat Tidak Setuju
+Answer: A
+
+7. Saya merasa QuizBoard mudah digunakan.
+A. Sangat Setuju
+B. Setuju
+C. Tidak Setuju
+D. Sangat Tidak Setuju
+Answer: A
+
+8. Saya dapat memahami soal dengan baik saat menggunakan QuizBoard.
+A. Sangat Setuju
+B. Setuju
+C. Tidak Setuju
+D. Sangat Tidak Setuju
+Answer: A
+
+9. Saya lebih semangat mengerjakan penilaian menggunakan QuizBoard.
+A. Sangat Setuju
+B. Setuju
+C. Tidak Setuju
+D. Sangat Tidak Setuju
+Answer: A
+
+10. Saya dapat mengerjakan soal dengan tenang menggunakan QuizBoard.
+A. Sangat Setuju
+B. Setuju
+C. Tidak Setuju
+D. Sangat Tidak Setuju
+Answer: A
+
+11. Saya lebih memperhatikan soal ketika menggunakan QuizBoard.
+A. Sangat Setuju
+B. Setuju
+C. Tidak Setuju
+D. Sangat Tidak Setuju
+Answer: A
+
+12. Saya merasa penilaian menggunakan QuizBoard lebih menyenangkan.
+A. Sangat Setuju
+B. Setuju
+C. Tidak Setuju
+D. Sangat Tidak Setuju
+Answer: A
+
+13. Saya ingin menggunakan QuizBoard lagi pada penilaian berikutnya.
+A. Sangat Setuju
+B. Setuju
+C. Tidak Setuju
+D. Sangat Tidak Setuju
+Answer: A
+
+14. Saya lebih suka mengerjakan penilaian menggunakan QuizBoard.
+A. Sangat Setuju
+B. Setuju
+C. Tidak Setuju
+D. Sangat Tidak Setuju
+Answer: A
+
+15. Secara keseluruhan, saya suka mengerjakan penilaian menggunakan QuizBoard.
+A. Sangat Setuju
+B. Setuju
+C. Tidak Setuju
+D. Sangat Tidak Setuju
+Answer: A
+
+# Pertanyaan berikut membandingkan QuizBoard dengan kertas.
+# A = Sangat Setuju, B = Setuju, C = Tidak Setuju, D = Sangat Tidak Setuju
+
+16. Dibandingkan mengerjakan soal di kertas, saya lebih suka menggunakan QuizBoard.
+A. Sangat Setuju
+B. Setuju
+C. Tidak Setuju
+D. Sangat Tidak Setuju
+Answer: A
+
+17. Dibandingkan kertas, saya lebih fokus saat menggunakan QuizBoard.
+A. Sangat Setuju
+B. Setuju
+C. Tidak Setuju
+D. Sangat Tidak Setuju
+Answer: A
+
+18. Dibandingkan kertas, saya lebih nyaman menggunakan QuizBoard.
+A. Sangat Setuju
+B. Setuju
+C. Tidak Setuju
+D. Sangat Tidak Setuju
+Answer: A
+
+19. Dibandingkan kertas, saya lebih semangat mengerjakan soal menggunakan QuizBoard.
+A. Sangat Setuju
+B. Setuju
+C. Tidak Setuju
+D. Sangat Tidak Setuju
+Answer: A
+
+20. Dibandingkan kertas, saya lebih tertarik mengerjakan penilaian menggunakan QuizBoard.
+A. Sangat Setuju
+B. Setuju
+C. Tidak Setuju
+D. Sangat Tidak Setuju
+Answer: A
+
+21. Dibandingkan kertas, saya lebih mudah berkonsentrasi menggunakan QuizBoard.
+A. Sangat Setuju
+B. Setuju
+C. Tidak Setuju
+D. Sangat Tidak Setuju
+Answer: A
+
+22. Dibandingkan kertas, penilaian menggunakan QuizBoard terasa lebih menyenangkan.
+A. Sangat Setuju
+B. Setuju
+C. Tidak Setuju
+D. Sangat Tidak Setuju
+Answer: A
+
+23. Jika boleh memilih, saya memilih QuizBoard daripada kertas untuk penilaian harian.
+A. Sangat Setuju
+B. Setuju
+C. Tidak Setuju
+D. Sangat Tidak Setuju
+Answer: A
+
+24. Saat menggunakan QuizBoard, saya merasa lebih bersemangat mengerjakan soal.
+A. Sangat Setuju
+B. Setuju
+C. Tidak Setuju
+D. Sangat Tidak Setuju
+Answer: A
+
+25. Saat menggunakan QuizBoard, saya merasa lebih siap mengikuti penilaian.
+A. Sangat Setuju
+B. Setuju
+C. Tidak Setuju
+D. Sangat Tidak Setuju
+Answer: A
+
+26. Menurut saya, QuizBoard membuat penilaian harian menjadi lebih menarik.
+A. Sangat Setuju
+B. Setuju
+C. Tidak Setuju
+D. Sangat Tidak Setuju
+Answer: A
+
+27. Menurut saya, QuizBoard membantu saya tetap memperhatikan penilaian sampai selesai.
+A. Sangat Setuju
+B. Setuju
+C. Tidak Setuju
+D. Sangat Tidak Setuju
+Answer: A
+
+28. Menurut saya, QuizBoard membuat saya lebih bersemangat untuk menyelesaikan semua soal.
+A. Sangat Setuju
+B. Setuju
+C. Tidak Setuju
+D. Sangat Tidak Setuju
+Answer: A
+
+29. Kalau besok ada penilaian lagi, saya lebih memilih menggunakan QuizBoard daripada kertas.
+A. Sangat Setuju
+B. Setuju
+C. Tidak Setuju
+D. Sangat Tidak Setuju
+Answer: A
+
+30. Menurut saya, penggunaan QuizBoard membuat pengalaman penilaian harian menjadi lebih baik.
+A. Sangat Setuju
+B. Setuju
+C. Tidak Setuju
+D. Sangat Tidak Setuju
+Answer: A

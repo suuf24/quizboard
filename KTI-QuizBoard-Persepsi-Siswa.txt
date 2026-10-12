@@ -1,0 +1,209 @@
+JUDUL
+
+PEMANFAATAN APLIKASI QUIZBOARD SEBAGAI MEDIA PERSIAPAN PENILAIAN HARIAN BAHASA INGGRIS: PERSEPSI SISWA KELAS 4, 5, DAN 6 MI PLUS DARUL FALAH
+
+Penulis: Mohammad Yusuf Rizaldy
+Surel: mailtoyusufrizaldy@gmail.com
+Lembaga: MI Plus Darul Falah
+
+ABSTRAK
+
+Penelitian ini mendeskripsikan persepsi siswa kelas 4, 5, dan 6 MI Plus Darul Falah terhadap pemanfaatan aplikasi QuizBoard sebagai media persiapan penilaian harian Bahasa Inggris. QuizBoard adalah aplikasi pemutar kuis kelas berbasis web yang dibuka guru melalui peramban pada alamat https://quizboard-alpha.vercel.app/, tanpa pemasangan dan tanpa pendaftaran akun. Guru menyiapkan soal dalam satu berkas teks (.txt), mengimpornya, lalu menampilkan soal satu per satu pada proyektor atau layar besar dengan pengatur waktu dan bar kendali guru. Siswa menjawab secara lisan atau di buku, sehingga aplikasi tidak memerlukan perangkat siswa dan tidak mengirim data siswa ke mana pun. Materi yang dipakai adalah Simple Present untuk kelas 4, Body Ache untuk kelas 5, dan Simple Past untuk kelas 6. Penelitian memakai pendekatan deskriptif kuantitatif dengan angket tertutup berisi 30 butir pernyataan dan skala Likert empat pilihan, dari Sangat Setuju hingga Sangat Tidak Setuju. Angket diisi oleh 28 siswa, dan 27 lembar jawaban terisi lengkap sehingga layak dianalisis. Hasil analisis menunjukkan skor rata-rata keseluruhan 2,89 dari skor maksimum 4,00 dengan kategori Baik, simpangan baku 0,826, dan koefisien reliabilitas Alpha Cronbach 0,938. Sebanyak 620 dari 810 jawaban atau 76,54% berada pada pilihan Setuju atau Sangat Setuju. Skor rata-rata tertinggi berada pada butir perhatian terhadap soal (3,41) dan perasaan senang mengerjakan penilaian (3,30), sedangkan skor terendah berada pada butir pilihan QuizBoard dibandingkan kertas (2,52) dan butir kesiapan mengikuti penilaian (2,59). Kelompok butir tentang pengalaman dan minat memperoleh rata-rata 3,02, kelompok butir perbandingan dengan kertas 2,80, dan kelompok butir kesiapan menghadapi penilaian harian 2,74. Siswa memandang QuizBoard sebagai media yang menyenangkan, mudah dipakai, dan membantu mereka memperhatikan soal, tetapi keunggulan aplikasi ini dibandingkan lembar soal kertas belum sekuat itu menurut siswa.
+
+Kata kunci: QuizBoard, persepsi siswa, penilaian harian, Bahasa Inggris, madrasah ibtidaiyah, media pembelajaran
+
+PENDAHULUAN
+
+Penilaian harian atau ulangan harian adalah kegiatan yang berulang setiap kali satu bab selesai diajarkan, dan guru memakainya untuk mengetahui bagian materi yang belum dipahami siswa sebelum pembelajaran berlanjut. Karena kegiatan ini berulang, setiap tambahan pekerjaan persiapan dan koreksi terasa berat, sedangkan waktu di depan kelas tetap sama. Laporan ini menyajikan hasil penelitian tentang persepsi siswa kelas 4, 5, dan 6 MI Plus Darul Falah terhadap QuizBoard, aplikasi pemutar kuis kelas yang dipakai sebagai media persiapan penilaian harian Bahasa Inggris. Aplikasi yang diteliti adalah salinan yang sudah dipublikasikan sehingga guru dapat langsung memakainya, yaitu pada alamat https://quizboard-alpha.vercel.app/.
+
+Menilai sebuah media dari sudut pandang siswa perlu dilakukan, sebab media yang dianggap guru praktis belum tentu terasa nyaman bagi siswa, dan media yang terasa membebani siswa akan gagal meskipun gurunya rajin memakainya. Penelitian ini karena itu menempatkan siswa sebagai sumber data utama. Angket yang dipakai memuat 30 butir pernyataan dengan empat pilihan jawaban dan diisi oleh siswa kelas 4, 5, dan 6, sehingga hasilnya menggambarkan apa yang benar-benar dirasakan anak usia madrasah ibtidaiyah, bukan dugaan guru tentang mereka. Temuan yang disajikan memuat dua sisi sekaligus: bagian yang sudah dinilai baik oleh siswa, dan bagian yang masih lemah sehingga perlu diperbaiki sebelum media ini dipakai lebih luas.
+
+LATAR BELAKANG
+
+Penilaian harian bukan sekadar kegiatan memberi angka. Mujiburrahman, Kartiani, dan Parhanuddin (2023) menjelaskan bahwa asesmen di sekolah dasar dalam Kurikulum Merdeka berfungsi mengumpulkan dan mengolah informasi tentang kebutuhan belajar serta capaian perkembangan siswa, sehingga hasilnya menjadi dasar bagi guru untuk memperbaiki cara mengajar dan bagi siswa untuk mengenali materi yang belum dikuasainya. Dari penjelasan itu, persiapan sebelum penilaian harian menjadi bagian dari pekerjaan asesmen itu sendiri, karena siswa yang terbiasa berhadapan dengan bentuk soal sejak awal akan lebih siap menunjukkan apa yang sebenarnya mereka pahami.
+
+Bahasa Inggris termasuk mata pelajaran yang menuntut latihan berulang, terutama pada tata bahasa dan kosakata. Soelistyowati, Oemiati, dan Furisari (2022) mencatat bahwa di madrasah ibtidaiyah kedudukan Bahasa Inggris umumnya berada pada ranah muatan lokal, bukan mata pelajaran inti dalam kurikulum nasional, sehingga guru harus menyusun sendiri rencana pelaksanaan pembelajarannya dan menyiapkan bahan latihannya. Kondisi itu membuat jumlah kesempatan berlatih siswa bergantung besar pada inisiatif guru dan pada bahan yang tersedia di sekolah.
+
+Cara paling langsung untuk menambah kesempatan berlatih adalah dengan mengerjakan soal. Roediger dan Karpicke (2006) membuktikan dalam serangkaian percobaan bahwa mengambil jawaban dari ingatan melalui tes menghasilkan retensi jangka panjang yang lebih baik daripada membaca ulang materi. Temuan itu diperkuat oleh tinjauan sistematis dan meta-analisis Yang, Luo, Vadillo, Yu, dan Shanks (2021), yang menyimpulkan bahwa kuis yang dipakai di kelas secara umum meningkatkan hasil belajar di berbagai jenjang dan mata pelajaran. Karena itu, latihan menjawab soal sebelum penilaian harian bukan sekadar pemanasan, melainkan cara belajar yang punya dasar bukti.
+
+Kuis digital tercatat mampu menambah semangat dan keterlibatan siswa. Wang dan Tahir (2020) meninjau puluhan studi tentang Kahoot! dan menemukan dampak positif pada hasil belajar, dinamika kelas, sikap siswa, serta kecemasan menghadapi ujian. Licorish, Owen, Daniel, dan George (2018) melaporkan bahwa pengalaman siswa memakai kuis bergaya permainan memperkaya keterlibatan dan motivasi mereka. Di jenjang sekolah dasar di Indonesia, Maharani, Erlisnawati, dan Alpusari (2023) menemukan bahwa pemakaian aplikasi Quizizz sebagai alat penilaian di akhir pembelajaran meningkatkan hasil belajar siswa kelas IV pada uji coba mereka. Ketiga rujukan itu menunjukkan bahwa media kuis digital memang menjanjikan, khususnya untuk latihan menjelang penilaian.
+
+Persoalannya, media kuis digital yang populer belum tentu dapat dipakai di semua kelas. Husen, Hizbullah, dan Mustari (2025) mendapati bahwa keterbatasan jumlah perangkat, kondisi perangkat yang sudah lama, dan jaringan internet yang terbatas menghambat pelaksanaan pembelajaran digital di sebuah sekolah dasar, sehingga guru terpaksa memakai media luring dan perangkat pribadi. Sodiq, Mahfud, dan Adi (2021) melaporkan bahwa guru dan siswa memandang aplikasi kuis berbasis web sebagai media yang membantu di sekolah dasar, tetapi penelitian semacam itu umumnya dilakukan pada jenjang yang lebih tinggi dengan siswa yang sudah terbiasa memakai perangkat sendiri. Untuk anak kelas 4, 5, dan 6 yang perangkatnya belum tentu tersedia, bukti seperti itu belum cukup.
+
+MI Plus Darul Falah menghadapi keadaan yang mirip. Latihan menjelang penilaian harian Bahasa Inggris selama ini memakai lembar soal cetak dan buku pelajaran, jumlah soalnya terbatas, dan koreksinya dikerjakan guru satu per satu. Pada semester yang berjalan, kelas 4 mempelajari Simple Present, kelas 5 mempelajari kosakata keluhan tubuh atau Body Ache, dan kelas 6 mempelajari Simple Past. Kebutuhan yang muncul bukan aplikasi yang menilai jawaban siswa secara otomatis, melainkan media penyaji soal yang membuat latihan terasa lebih hidup dan dapat disiapkan guru dengan cepat.
+
+QuizBoard dirancang untuk kebutuhan itu. Aplikasi ini dibangun khusus untuk guru: soal disiapkan dalam satu berkas teks biasa, guru memeriksanya sebentar, lalu menampilkannya satu per satu di layar besar dengan pengatur waktu. Siswa menjawab secara lisan atau menulis di buku, sehingga tidak ada siswa yang perlu memegang perangkat, tidak ada akun yang harus dibuat, dan tidak ada data siswa yang dikumpulkan. Aplikasi juga menyediakan mode latihan yang membuka kunci jawaban untuk umpan balik langsung di depan kelas dan mode penilaian harian yang menahan jawaban, di samping kunci jawaban yang dapat dicetak untuk koreksi manual. Salinan yang sudah dipublikasikan dan dipakai dalam penelitian ini dapat dibuka pada alamat https://quizboard-alpha.vercel.app/.
+
+Tabel 1. Materi dan media yang dipakai pada setiap kelas
+Kelas | Materi penilaian harian | Media penyaji soal
+4 | Simple Present | QuizBoard dengan berkas soal teks yang disiapkan guru
+5 | Body Ache | QuizBoard dengan berkas soal teks yang disiapkan guru
+6 | Simple Past | QuizBoard dengan berkas soal teks yang disiapkan guru
+
+Yang belum diketahui adalah bagaimana siswa sendiri menilai media ini. Guru dapat mengukur hasil belajar, tetapi keputusan untuk memakai sebuah media setiap hari juga bergantung pada apakah siswa merasa nyaman, tertarik, dan terbantu. Penelitian ini mengisi bagian itu dengan mengolah jawaban angket 30 butir dari siswa kelas 4, 5, dan 6, sehingga penilaian terhadap QuizBoard tidak berhenti pada pendapat guru atau pada hasil ujian semata.
+
+TUJUAN PENELITIAN
+
+Penelitian ini memiliki tiga tujuan. Pertama, mendeskripsikan persepsi siswa kelas 4, 5, dan 6 MI Plus Darul Falah terhadap pemakaian QuizBoard sebagai media persiapan penilaian harian Bahasa Inggris, dilihat dari tiga hal yaitu pengalaman dan minat siswa, perbandingan aplikasi dengan lembar soal kertas, dan kesiapan siswa menghadapi penilaian harian. Kedua, mengukur tingkat persetujuan siswa pada setiap butir pernyataan angket sehingga dapat diketahui butir mana yang dinilai paling baik dan butir mana yang dinilai paling lemah. Ketiga, merumuskan bagian yang perlu diperbaiki dari cara pemakaian QuizBoard di kelas, berdasarkan butir-butir yang skornya rendah, agar media ini benar-benar membantu persiapan penilaian harian dan bukan sekadar menambah keramaian di kelas.
+
+MANFAAT PENELITIAN
+
+Manfaat teoretis penelitian ini adalah menambah bukti tentang penerapan kuis digital di jenjang madrasah ibtidaiyah, khususnya pada model pemakaian satu layar kelas yang telah diteliti pada konteks Kahoot! dan Quizizz. Hasil penelitian ini juga memperlihatkan bahwa persepsi siswa pada jenjang itu dapat diukur secara sederhana dan tetap tertata, sehingga dapat dipakai peneliti lain sebagai pembanding atau sebagai titik awal penelitian lanjutan.
+
+Manfaat praktis pertama bagi guru adalah tersedianya gambaran bagian mana dari pemakaian QuizBoard yang sudah dirasakan manfaatnya oleh siswa dan bagian mana yang masih menimbulkan keluhan. Guru dapat memakai temuan ini untuk menyesuaikan tempo sesi latihan, jumlah soal per sesi, dan cara mengaitkan latihan dengan penilaian harian yang sesungguhnya. Guru juga mendapat contoh instrumen angket yang sederhana, yaitu 30 pernyataan dengan empat pilihan jawaban, yang dapat dipakai ulang setelah perbaikan.
+
+Manfaat praktis berikutnya bagi siswa adalah pengalaman mengerjakan latihan dengan bentuk yang lebih hidup dan dengan waktu yang terasa jelas, tanpa keharusan memiliki perangkat sendiri. Bagi sekolah, temuan penelitian ini dapat menjadi bahan pertimbangan dalam memilih media penilaian yang murah dan tidak menambah beban sarana, karena QuizBoard dijalankan dari komputer guru dan tidak memerlukan langganan. Bagi pengembang aplikasi, butir-butir yang skornya rendah menunjukkan bagian mana yang layak dibenahi lebih dahulu sebelum aplikasi dipakai lebih luas.
+
+LANDASAN TEORI
+
+Asesmen dan penilaian harian. Black dan Wiliam (1998) meninjau ratusan penelitian dan menyimpulkan bahwa asesmen baru bermanfaat memperbaiki pembelajaran apabila bukti tentang pemahaman siswa benar-benar dipakai guru untuk menyesuaikan langkah pengajaran berikutnya. Dalam kerangka itu, penilaian harian bukan kegiatan penutup yang berdiri sendiri, melainkan bagian dari siklus mengajar. Mujiburrahman, Kartiani, dan Parhanuddin (2023) menerapkan gagasan serupa pada konteks Kurikulum Merdeka di sekolah dasar dan menekankan bahwa asesmen diarahkan pada kebutuhan belajar siswa, bukan hanya pada angka akhir.
+
+Retrieval practice dan efek tes. Roediger dan Karpicke (2006) menunjukkan bahwa menguji ingatan melalui tes menghasilkan retensi yang lebih kuat dibandingkan membaca ulang materi, dan efek ini muncul pada jeda yang lebih panjang. Yang, Luo, Vadillo, Yu, dan Shanks (2021) memperkuat temuan itu melalui meta-analisis dan menyatakan bahwa kuis di kelas bermanfaat untuk belajar, bukan sekadar untuk mengukur. Kedua rujukan ini menjadi alasan mengapa latihan soal sebelum penilaian harian dipandang berguna, dan mengapa media yang mempermudah guru menyelenggarakan latihan secara berkala layak diperhatikan.
+
+Media pembelajaran dan kuis digital. Wang dan Tahir (2020) menemukan bahwa kuis bergaya permainan berdampak positif pada hasil belajar sekaligus pada suasana kelas. Licorish, Owen, Daniel, dan George (2018) menunjukkan bahwa siswa memandang kuis semacam itu memperkaya keterlibatan dan pengalaman belajar mereka. Di Indonesia, Maharani, Erlisnawati, dan Alpusari (2023) membuktikan peningkatan hasil belajar siswa kelas IV setelah aplikasi kuis dipakai sebagai alat penilaian akhir pembelajaran. Dua hal yang penting dari ketiga rujukan itu adalah adanya unsur waktu yang terasa jelas bagi siswa dan adanya umpan balik yang cepat, sebab keduanya juga hadir pada QuizBoard melalui pengatur waktu dan mode latihan yang dapat membuka kunci jawaban.
+
+Gamifikasi yang dibatasi. Hamari, Koivisto, dan Sarsa (2014) meninjau puluhan kajian empiris dan menyimpulkan bahwa dampak gamifikasi bersifat bergantung konteks, sebab hasilnya berbeda-beda menurut pengguna, jenis kegiatan, dan rancangan yang dipakai. Karena itu, penambahan unsur permainan pada sebuah media tidak otomatis membuat belajar menjadi lebih baik. Pada QuizBoard, unsur itu sengaja dibatasi pada pengatur waktu, suara, dan transisi tampilan, tanpa papan peringkat dan tanpa kompetisi antarindividu, sebab penilaian harian menuntut suasana yang tenang.
+
+Penerimaan teknologi. Davis (1989) menyatakan bahwa persepsi kegunaan dan persepsi kemudahan penggunaan adalah dua penentu utama apakah seseorang akan menerima sebuah teknologi. Kedua hal itu sejalan dengan butir-butir yang diukur dalam angket penelitian ini, terutama pernyataan tentang kemudahan penggunaan dan tentang manfaat aplikasi bagi persiapan penilaian. Selain itu, kemudahan yang dimaksud di sini diukur dari sisi guru maupun sisi siswa: guru harus mudah menyiapkan soal, dan siswa harus mudah mengikuti alur soal di layar.
+
+Persepsi dan pengukurannya. Sugiyono (2019) menjelaskan bahwa penelitian deskriptif kuantitatif berusaha menggambarkan keadaan objek yang diteliti melalui angka yang dikumpulkan dari sampel, dan bahwa skala Likert lazim dipakai untuk mengukur sikap, pendapat, serta persepsi seseorang terhadap suatu keadaan. Butir-butir dalam skala itu disusun dalam bentuk pernyataan dan jawabannya diberi bobot, sehingga tingkat persetujuan responden dapat diringkas menjadi skor rata-rata. Sodiq, Mahfud, dan Adi (2021) memakai pendekatan semacam itu untuk mengukur persepsi guru dan siswa terhadap aplikasi kuis berbasis web di sekolah dasar, dan penelitian ini mengikuti pola yang sama pada konteks madrasah ibtidaiyah dengan media yang dipakai satu layar kelas.
+
+Landasan tersebut menghasilkan satu kerangka sederhana yang dipakai dalam pembahasan. Jika unsur waktu yang jelas dan umpan balik cepat benar-benar bekerja di kelas, siswa seharusnya merasa lebih memperhatikan soal dan lebih menikmati kegiatan penilaian. Jika kemudahan penggunaan sudah tercapai, siswa seharusnya menilai aplikasi ini mudah dipakai. Sebaliknya, pengharapan bahwa media digital lebih baik daripada kertas tidak datang dari teori mana pun, melainkan dari anggapan umum, dan karena itu angket penelitian ini sengaja memuat butir-butir perbandingan dengan kertas untuk diuji apa adanya.
+
+METODE PENELITIAN
+
+Jenis dan pendekatan. Penelitian ini merupakan penelitian deskriptif dengan pendekatan kuantitatif. Sugiyono (2019) menjelaskan bahwa penelitian deskriptif berusaha menggambarkan keadaan objek yang diteliti berdasarkan data yang dikumpulkan, tanpa memberi perlakuan khusus dan tanpa menguji hubungan sebab akibat antara variabel. Penelitian ini tidak membandingkan kelas satu dengan kelas lain dan tidak menguji efek sebuah perlakuan terhadap hasil belajar; yang dikerjakan adalah mengukur dan menggambarkan persepsi siswa terhadap satu media yang sudah dipakai dalam kegiatan persiapan penilaian harian.
+
+Tempat dan waktu. Penelitian dilaksanakan di MI Plus Darul Falah pada semester berjalan, mengikuti jadwal penilaian harian Bahasa Inggris kelas 4, 5, dan 6. Sesi latihan dengan QuizBoard dijalankan guru pada waktu persiapan sebelum penilaian harian, memakai komputer guru dan proyektor kelas.
+
+Subjek penelitian. Subjek penelitian adalah siswa kelas 4, 5, dan 6 MI Plus Darul Falah yang mengikuti latihan dengan QuizBoard. Angket dikumpulkan dari 28 siswa. Satu lembar jawaban tidak terisi sama sekali dan tidak dapat dianalisis, sehingga jumlah responden yang diolah adalah 27 siswa. Lembar angket tidak memuat kolom kelas, sehingga hasil penelitian ini tidak dirinci menurut kelas dan dibaca sebagai gambaran gabungan siswa kelas 4, 5, dan 6. Persentase pada seluruh tabel dihitung dari 27 responden tersebut.
+
+Materi dan media. Media yang diteliti adalah QuizBoard pada salinan yang sudah dipublikasikan, yaitu https://quizboard-alpha.vercel.app/. Materi yang dipakai mengikuti materi penilaian harian Bahasa Inggris pada semester berjalan, yaitu Simple Present untuk kelas 4, Body Ache untuk kelas 5, dan Simple Past untuk kelas 6, seperti ditunjukkan pada Tabel 1. Guru menyiapkan soal pada berkas teks untuk masing-masing materi, memasukkannya ke aplikasi melalui unggah berkas atau tempel teks, memeriksa soal beserta kuncinya, lalu menampilkan soal satu per satu pada layar besar dengan pengatur waktu.
+
+Instrumen penelitian. Instrumen yang dipakai adalah angket tertutup berjudul Pendapat Siswa tentang QuizBoard yang disusun guru peneliti dan memuat 30 butir pernyataan. Setiap butir disertai empat pilihan jawaban, yaitu Sangat Setuju, Setuju, Tidak Setuju, dan Sangat Tidak Setuju, dengan bobot berturut-turut 4, 3, 2, dan 1. Skala empat pilihan dipakai dengan sengaja tanpa pilihan tengah supaya siswa tidak berlindung pada jawaban ragu-ragu dan tetap memilih arah pendapatnya. Semua pernyataan ditulis dalam bentuk positif, sehingga skor yang lebih tinggi selalu berarti penilaian yang lebih baik terhadap aplikasi.
+
+Pengelompokan butir. Untuk meringkas hasil, 30 butir angket dikelompokkan ke dalam tiga bagian yang mengikuti urutan bagian pada lembar angket itu sendiri. Butir 1 sampai 15 memuat pernyataan tentang pengalaman dan minat siswa saat memakai QuizBoard, butir 16 sampai 23 memuat pernyataan yang membandingkan QuizBoard dengan mengerjakan soal di kertas, dan butir 24 sampai 30 memuat pernyataan tentang kesiapan dan semangat siswa menghadapi penilaian harian. Pengelompokan ini dipakai hanya untuk meringkas hasil, bukan sebagai hasil uji faktor, karena penelitian ini tidak melakukan analisis faktor terhadap instrumen.
+
+Teknik analisis data. Data jawaban angket diberi bobot sesuai skala, lalu diolah dengan bantuan program pengolah angka. Analisis yang dilakukan meliputi penghitungan frekuensi dan persentase setiap pilihan jawaban pada tiap butir, skor rata-rata dan simpangan baku tiap butir, skor rata-rata setiap kelompok butir, skor rata-rata keseluruhan, serta skor rata-rata setiap responden. Reliabilitas instrumen dihitung dengan rumus Alpha Cronbach atas 30 butir. Skor rata-rata ditafsirkan dengan empat tingkat kategori yang lazim dipakai, yaitu 1,00 sampai 1,75 Kurang, 1,76 sampai 2,50 Cukup, 2,51 sampai 3,25 Baik, dan 3,26 sampai 4,00 Sangat Baik. Penentuan kategori memakai nilai rata-rata sebelum dibulatkan, sehingga butir yang nilai rata-ratanya tampil sebagai 3,26 pada tabel dapat tercatat Baik apabila nilai tepatnya masih berada di bawah batas 3,26.
+
+HASIL DAN PEMBAHASAN
+
+Hasil
+
+Gambaran umum responden dan sebaran jawaban. Angket diisi oleh 28 siswa, dan 27 lembar terisi lengkap sehingga dapat dianalisis. Dari 27 responden dan 30 butir pernyataan terkumpul 810 jawaban. Sebaran jawaban siswa pada seluruh butir ditunjukkan pada Tabel 2. Pilihan Setuju muncul 450 kali atau 55,56% dari seluruh jawaban, Sangat Setuju muncul 170 kali atau 20,99%, Tidak Setuju muncul 123 kali atau 15,19%, dan Sangat Tidak Setuju muncul 67 kali atau 8,27%. Dengan demikian, 620 jawaban atau 76,54% berada pada sisi persetujuan, sedangkan 190 jawaban atau 23,46% berada pada sisi ketidaksetujuan.
+
+Tabel 2. Sebaran jawaban siswa pada seluruh butir angket (n = 810 jawaban)
+Pilihan jawaban | Bobot | Frekuensi | Persentase
+Sangat Setuju | 4 | 170 | 20,99%
+Setuju | 3 | 450 | 55,56%
+Tidak Setuju | 2 | 123 | 15,19%
+Sangat Tidak Setuju | 1 | 67 | 8,27%
+Kelompok Setuju dan Sangat Setuju | - | 620 | 76,54%
+Kelompok Tidak Setuju dan Sangat Tidak Setuju | - | 190 | 23,46%
+
+Skor rata-rata keseluruhan dan reliabilitas instrumen. Skor rata-rata keseluruhan dari 810 jawaban adalah 2,89 dari skor maksimum 4,00 dengan simpangan baku 0,826, sehingga persepsi siswa secara umum termasuk kategori Baik. Koefisien reliabilitas Alpha Cronbach atas 30 butir sebesar 0,938, yang berarti instrumen ini konsisten mengukur hal yang sama dan layak dipakai untuk menggambarkan persepsi siswa pada konteks ini. Skor rata-rata butir bergerak dari 2,52 sampai 3,41, dan tidak ada satu butir pun yang berada di bawah kategori Baik.
+
+Tabel 3. Skor rata-rata setiap butir angket menurut urutan butir (n = 27 responden)
+No | Pernyataan | Sangat Setuju | Setuju | Tidak Setuju | Sangat Tidak Setuju | Rata-rata | Simpangan baku | Kategori
+1 | Saya merasa senang ketika mengerjakan penilaian menggunakan QuizBoard. | 10 | 15 | 2 | 0 | 3,30 | 0,61 | Sangat Baik
+2 | Saya merasa lebih fokus saat mengerjakan soal menggunakan QuizBoard. | 7 | 18 | 2 | 0 | 3,19 | 0,56 | Baik
+3 | Saya lebih mudah berkonsentrasi saat menggunakan QuizBoard. | 5 | 17 | 4 | 1 | 2,96 | 0,71 | Baik
+4 | Saya lebih tertarik mengerjakan soal menggunakan QuizBoard. | 11 | 12 | 2 | 2 | 3,19 | 0,88 | Baik
+5 | Saya tidak cepat bosan saat mengerjakan soal menggunakan QuizBoard. | 9 | 16 | 2 | 0 | 3,26 | 0,59 | Baik
+6 | Saya merasa nyaman mengerjakan soal menggunakan QuizBoard. | 4 | 18 | 4 | 1 | 2,93 | 0,68 | Baik
+7 | Saya merasa QuizBoard mudah digunakan. | 8 | 18 | 1 | 0 | 3,26 | 0,53 | Baik
+8 | Saya dapat memahami soal dengan baik saat menggunakan QuizBoard. | 5 | 17 | 5 | 0 | 3,00 | 0,62 | Baik
+9 | Saya lebih semangat mengerjakan penilaian menggunakan QuizBoard. | 6 | 14 | 4 | 3 | 2,85 | 0,91 | Baik
+10 | Saya dapat mengerjakan soal dengan tenang menggunakan QuizBoard. | 6 | 10 | 8 | 3 | 2,70 | 0,95 | Baik
+11 | Saya lebih memperhatikan soal ketika menggunakan QuizBoard. | 11 | 16 | 0 | 0 | 3,41 | 0,50 | Sangat Baik
+12 | Saya merasa penilaian menggunakan QuizBoard lebih menyenangkan. | 1 | 18 | 7 | 1 | 2,70 | 0,61 | Baik
+13 | Saya ingin menggunakan QuizBoard lagi pada penilaian berikutnya. | 7 | 13 | 4 | 3 | 2,89 | 0,93 | Baik
+14 | Saya lebih suka mengerjakan penilaian menggunakan QuizBoard. | 4 | 18 | 4 | 1 | 2,93 | 0,68 | Baik
+15 | Secara keseluruhan, saya suka mengerjakan penilaian menggunakan QuizBoard. | 4 | 14 | 6 | 3 | 2,70 | 0,87 | Baik
+16 | Dibandingkan mengerjakan soal di kertas, saya lebih suka menggunakan QuizBoard. | 9 | 10 | 3 | 5 | 2,85 | 1,10 | Baik
+17 | Dibandingkan kertas, saya lebih fokus saat menggunakan QuizBoard. | 5 | 17 | 3 | 2 | 2,93 | 0,78 | Baik
+18 | Dibandingkan kertas, saya lebih nyaman menggunakan QuizBoard. | 5 | 15 | 3 | 4 | 2,78 | 0,93 | Baik
+19 | Dibandingkan kertas, saya lebih semangat mengerjakan soal menggunakan QuizBoard. | 6 | 17 | 1 | 3 | 2,96 | 0,85 | Baik
+20 | Dibandingkan kertas, saya lebih tertarik mengerjakan penilaian menggunakan QuizBoard. | 9 | 15 | 1 | 2 | 3,15 | 0,82 | Baik
+21 | Dibandingkan kertas, saya lebih mudah berkonsentrasi menggunakan QuizBoard. | 2 | 16 | 5 | 4 | 2,59 | 0,84 | Baik
+22 | Dibandingkan kertas, penilaian menggunakan QuizBoard terasa lebih menyenangkan. | 2 | 15 | 7 | 3 | 2,59 | 0,80 | Baik
+23 | Jika boleh memilih, saya memilih QuizBoard daripada kertas untuk penilaian harian. | 4 | 11 | 7 | 5 | 2,52 | 0,98 | Baik
+24 | Saat menggunakan QuizBoard, saya merasa lebih bersemangat mengerjakan soal. | 3 | 17 | 4 | 3 | 2,74 | 0,81 | Baik
+25 | Saat menggunakan QuizBoard, saya merasa lebih siap mengikuti penilaian. | 3 | 13 | 8 | 3 | 2,59 | 0,84 | Baik
+26 | Menurut saya, QuizBoard membuat penilaian harian menjadi lebih menarik. | 4 | 14 | 7 | 2 | 2,74 | 0,81 | Baik
+27 | Menurut saya, QuizBoard membantu saya tetap memperhatikan penilaian sampai selesai. | 7 | 13 | 4 | 3 | 2,89 | 0,93 | Baik
+28 | Menurut saya, QuizBoard membuat saya lebih bersemangat untuk menyelesaikan semua soal. | 3 | 17 | 5 | 2 | 2,78 | 0,75 | Baik
+29 | Kalau besok ada penilaian lagi, saya lebih memilih menggunakan QuizBoard daripada kertas. | 3 | 17 | 3 | 4 | 2,70 | 0,87 | Baik
+30 | Menurut saya, penggunaan QuizBoard membuat pengalaman penilaian harian menjadi lebih baik. | 7 | 9 | 7 | 4 | 2,70 | 1,03 | Baik
+
+Skor rata-rata menurut kelompok butir. Ringkasan skor menurut tiga kelompok butir disajikan pada Tabel 4. Kelompok butir pengalaman dan minat memperoleh rata-rata 3,02 dengan 81,98% jawaban pada sisi persetujuan. Kelompok butir perbandingan dengan kertas memperoleh rata-rata 2,80 dengan 73,15% jawaban pada sisi persetujuan. Kelompok butir kesiapan menghadapi penilaian harian memperoleh rata-rata 2,74 dengan 68,78% jawaban pada sisi persetujuan. Ketiga kelompok berada pada kategori Baik, tetapi urutan skornya memperlihatkan kecenderungan yang jelas, yaitu penilaian paling tinggi pada pengalaman memakai aplikasi, lebih rendah saat aplikasi dibandingkan dengan kertas, dan paling rendah pada kesiapan menghadapi penilaian.
+
+Tabel 4. Skor rata-rata menurut kelompok butir
+Kelompok butir | Nomor butir | Jumlah jawaban | Rata-rata | Simpangan baku | Jawaban Setuju dan Sangat Setuju | Kategori
+Pengalaman dan minat siswa | 1 sampai 15 | 405 | 3,02 | 0,75 | 81,98% | Baik
+Perbandingan dengan kertas | 16 sampai 23 | 216 | 2,80 | 0,90 | 73,15% | Baik
+Kesiapan menghadapi penilaian harian | 24 sampai 30 | 189 | 2,74 | 0,86 | 68,78% | Baik
+Seluruh butir | 1 sampai 30 | 810 | 2,89 | 0,83 | 76,54% | Baik
+
+Skor rata-rata menurut responden. Skor rata-rata setiap siswa bergerak dari 1,90 sampai 4,00, dengan rentang yang cukup lebar untuk sekelompok siswa yang mengikuti kegiatan yang sama. Sebaran responden menurut kategori skor rata-ratanya disajikan pada Tabel 5. Sebanyak 14 siswa atau 51,85% memperoleh skor rata-rata 3,00 atau lebih, dan 20 siswa atau 74,07% memperoleh skor rata-rata 2,51 atau lebih sehingga masuk kategori Baik ke atas. Tujuh siswa atau 25,93% berada pada kategori Cukup, dan tidak ada siswa yang berada pada kategori Kurang.
+
+Tabel 5. Sebaran responden menurut skor rata-rata (n = 27 siswa)
+Kategori | Rentang skor rata-rata | Jumlah siswa | Persentase
+Sangat Baik | 3,26 sampai 4,00 | 5 | 18,52%
+Baik | 2,51 sampai 3,25 | 15 | 55,56%
+Cukup | 1,76 sampai 2,50 | 7 | 25,93%
+Kurang | 1,00 sampai 1,75 | 0 | 0,00%
+
+Pembahasan
+
+Sisi yang sudah bekerja dengan baik. Butir dengan skor tertinggi adalah pernyataan bahwa siswa lebih memperhatikan soal ketika menggunakan QuizBoard, dengan rata-rata 3,41 dan simpangan baku 0,50. Yang menarik, tidak ada satu pun siswa yang menjawab Tidak Setuju atau Sangat Tidak Setuju pada butir ini, sehingga butir ini menjadi satu-satunya butir tanpa suara penolakan sama sekali. Skor tinggi berikutnya adalah perasaan senang mengerjakan penilaian dengan rata-rata 3,30, tidak cepat bosan dengan rata-rata 3,26, dan perasaan bahwa aplikasi mudah digunakan dengan rata-rata 3,26. Pola ini sesuai dengan temuan Wang dan Tahir (2020) serta Licorish, Owen, Daniel, dan George (2018) bahwa kuis bergaya permainan menambah keterlibatan dan suasana positif di kelas. Pada konteks penelitian ini, yang tampak menonjol bukan hiburan yang ditawarkan, melainkan perhatian siswa terhadap soal, dan hal itu selaras dengan gagasan bahwa pengatur waktu yang terlihat membuat siswa memusatkan perhatian pada satu soal dalam satu waktu.
+
+Sisi kemudahan dan pemahaman. Butir tentang kemudahan penggunaan memperoleh rata-rata 3,26 dan butir tentang pemahaman soal memperoleh rata-rata 3,00. Keduanya mendukung unsur persepsi kemudahan penggunaan pada model penerimaan teknologi yang dikemukakan Davis (1989). Bagi siswa kelas 4, 5, dan 6, kemudahan itu bukan hal kecil, sebab mereka tidak berhadapan dengan perangkat sendiri dan hanya perlu membaca layar serta menjawab. Kenyataan bahwa tidak ada siswa yang menilai aplikasi ini sulit dipakai memperkuat temuan Sodiq, Mahfud, dan Adi (2021) bahwa aplikasi kuis berbasis web diterima baik oleh pengguna di sekolah dasar, dan menambah bukti pada jenjang madrasah ibtidaiyah yang belum banyak diteliti.
+
+Sisi yang masih lemah. Kelompok butir perbandingan dengan kertas memperoleh rata-rata terendah kedua, dan butir terendah seluruh angket ada di dalamnya, yaitu pernyataan bahwa siswa memilih QuizBoard daripada kertas untuk penilaian harian dengan rata-rata 2,52. Sebanyak 12 siswa atau 44,44% menjawab Tidak Setuju atau Sangat Tidak Setuju pada butir ini, dan hanya 4 siswa atau 14,81% yang menjawab Sangat Setuju. Dua butir sesamanya juga menempati posisi bawah, yaitu pernyataan bahwa siswa lebih mudah berkonsentrasi dibandingkan dengan kertas dan pernyataan bahwa penilaian terasa lebih menyenangkan dibandingkan dengan kertas, keduanya dengan rata-rata 2,59. Angka-angka ini menunjukkan bahwa siswa senang memakai QuizBoard, tetapi belum tentu menganggapnya lebih baik daripada lembar soal kertas. Tafsir yang paling masuk akal adalah bahwa kertas memiliki keunggulannya sendiri bagi anak, terutama keleluasaan untuk membaca ulang soal yang sudah lewat dan menulis catatan di sebelah soal, sementara QuizBoard menampilkan satu soal pada satu waktu dan soal yang sudah lewat tidak dapat dibuka kembali.
+
+Sisi kesiapan menghadapi penilaian harian. Kelompok butir kesiapan memperoleh rata-rata terendah, 2,74, dengan butir terendahnya berupa pernyataan bahwa siswa merasa lebih siap mengikuti penilaian, yaitu 2,59. Sebanyak 11 siswa atau 40,74% menjawab Tidak Setuju atau Sangat Tidak Setuju pada butir itu. Sementara itu, butir tentang perhatian selama penilaian berlangsung memperoleh rata-rata 2,89, dan butir tentang semangat menyelesaikan seluruh soal memperoleh rata-rata 2,78. Perbedaan antara perhatian yang tinggi saat latihan dan kesiapan yang lebih rendah saat menghadapi penilaian menunjukkan bahwa media ini lebih kuat sebagai alat pemusat perhatian daripada sebagai alat pembangun rasa siap. Dengan kata lain, QuizBoard membuat siswa mengikuti latihan dengan sungguh-sungguh, tetapi tidak otomatis membuat mereka merasa menguasai materi. Hal ini sejalan dengan Hamari, Koivisto, dan Sarsa (2014) yang mengingatkan bahwa dampak unsur permainan bersifat bergantung konteks dan tidak dapat dianggap sama pada semua keadaan.
+
+Variasi antar siswa. Skor rata-rata per siswa bergerak dari 1,90 sampai 4,00, dan tujuh butir memiliki simpangan baku 0,93 atau lebih, yaitu butir 16, 30, 23, 10, 18, 13, dan 27. Butir dengan simpangan baku terbesar, yaitu 1,10, adalah pernyataan bahwa siswa lebih suka memakai QuizBoard dibandingkan mengerjakan soal di kertas. Sebaran jawaban yang lebar pada butir-butir perbandingan itu menegaskan bahwa sikap siswa terhadap aplikasi ini belum seragam, dan bahwa sebagian siswa merasa terbantu sementara sebagian lain merasa cara lama tetap lebih cocok bagi mereka. Karena itu, penggunaan QuizBoard sebaiknya tidak menggantikan sepenuhnya lembar soal kertas, melainkan dipakai berdampingan sebagai variasi, terutama pada sesi latihan sebelum penilaian.
+
+Kaitan dengan asesmen formatif dan latihan mengingat. Dari sudut asesmen, pemakaian QuizBoard dalam penelitian ini masih sebatas menampilkan soal dan memberi kesempatan siswa menjawab. Black dan Wiliam (1998) menekankan bahwa asesmen baru bersifat formatif apabila bukti pemahaman siswa dipakai untuk menyesuaikan pengajaran berikutnya, dan di sinilah peran mode latihan yang membuka kunci jawaban serta kunci jawaban cetak yang disediakan aplikasi. Guru yang membahas jawaban di depan kelas segera setelah soal ditampilkan memenuhi syarat itu. Sedangkan dari sudut latihan mengingat, latihan soal yang dijalankan berulang sebelum penilaian harian merupakan wujud sederhana dari retrieval practice yang oleh Roediger dan Karpicke (2006) serta Yang, Luo, Vadillo, Yu, dan Shanks (2021) terbukti memperkuat retensi.
+
+Keterbatasan penelitian. Penelitian ini memiliki beberapa keterbatasan yang perlu disebut apa adanya. Pertama, jumlah responden hanya 27 siswa dari satu lembaga, sehingga hasilnya menggambarkan keadaan sekolah ini dan tidak dapat digeneralisasi ke sekolah lain. Kedua, angket tidak memuat kolom kelas, sehingga perbedaan persepsi antara siswa kelas 4, 5, dan 6 tidak dapat dilihat, padahal kemampuan membaca soal Bahasa Inggris pada ketiga kelas itu berbeda. Ketiga, instrumen hanya mengukur persepsi dan tidak mengukur hasil belajar, sehingga penelitian ini tidak dapat menyimpulkan bahwa pemakaian QuizBoard meningkatkan nilai siswa. Keempat, pengisian angket berlangsung setelah siswa memakai aplikasi dan mungkin dipengaruhi pengalaman pada sesi terakhir saja, bukan pada keseluruhan pemakaian. Kelima, pengelompokan butir menjadi tiga bagian mengikuti urutan bagian pada lembar angket dan belum diuji secara statistik sebagai faktor, sehingga tafsir per kelompok butir perlu dibaca sebagai ringkasan praktis.
+
+KESIMPULAN DAN SARAN
+
+Kesimpulan. Pertama, siswa kelas 4, 5, dan 6 MI Plus Darul Falah memandang QuizBoard sebagai media persiapan penilaian harian Bahasa Inggris yang baik, dengan skor rata-rata keseluruhan 2,89 dari skor maksimum 4,00 dan 76,54% jawaban berada pada sisi persetujuan. Instrumen yang dipakai juga terbukti konsisten dengan koefisien reliabilitas Alpha Cronbach 0,938. Kedua, bagian yang paling kuat menurut siswa adalah perhatian terhadap soal, dengan skor rata-rata 3,41 dan tanpa satu pun jawaban penolakan, diikuti perasaan senang mengerjakan penilaian dengan skor 3,30 dan penilaian bahwa aplikasi mudah digunakan dengan skor 3,26. Ketiga, bagian yang paling lemah adalah perbandingan dengan lembar soal kertas, dengan skor rata-rata 2,80 pada kelompok butirnya dan skor butir terendah 2,52 pada pernyataan tentang memilih QuizBoard daripada kertas, diikuti kelompok butir kesiapan menghadapi penilaian harian dengan skor rata-rata 2,74. Keempat, persepsi siswa belum seragam, terbukti dari rentang skor rata-rata per siswa antara 1,90 sampai 4,00 dan dari lima butir bersimpangan baku 0,93 atau lebih. Kelima, QuizBoard lebih berperan sebagai alat yang menjaga perhatian siswa selama latihan daripada sebagai alat yang membuat siswa merasa siap menghadapi penilaian.
+
+Saran bagi guru. Guru disarankan memakai QuizBoard sebagai variasi pada sesi latihan sebelum penilaian harian, bukan sebagai pengganti seluruh lembar soal kertas, karena keunggulannya dibandingkan kertas belum dirasakan semua siswa, sementara keleluasaan membaca ulang soal pada kertas sudah terbukti disukai sebagian anak. Guru juga disarankan memanfaatkan mode latihan untuk membahas jawaban langsung di depan kelas setelah soal ditampilkan, sebab bagian itu yang membuat latihan berfungsi sebagai asesmen formatif dan bukan sekadar penyajian soal. Untuk membangun kesiapan siswa, latihan sebaiknya ditutup dengan pembahasan singkat bagian materi yang paling banyak salah, karena hasil penelitian ini menunjukkan perhatian siswa sudah tinggi tetapi rasa siapnya masih rendah.
+
+Saran bagi sekolah. Sekolah disarankan mempertimbangkan media penyaji soal yang dijalankan dari satu komputer guru semacam ini sebagai pilihan penilaian yang tidak menambah kebutuhan perangkat bagi siswa dan tidak memerlukan biaya langganan, terutama pada kelas yang jumlah perangkat dan mutu jaringannya terbatas. Penyediaan proyektor yang dapat dibaca dari baris belakang juga layak dijaga, sebab seluruh manfaat media ini bergantung pada keterbacaan soal di layar besar.
+
+Saran bagi peneliti berikutnya. Penelitian lanjutan disarankan mencantumkan kelas pada lembar angket supaya perbedaan persepsi antara kelas 4, 5, dan 6 dapat dilihat tersendiri, memperbesar jumlah responden dan melibatkan lebih dari satu sekolah, serta menambahkan pengukuran hasil belajar sehingga hubungan antara persepsi siswa dan capaian belajarnya dapat diketahui. Mengingat hasil penelitian ini menunjukkan bahwa media digital tidak otomatis lebih baik daripada kertas, pengujian yang membandingkan keduanya secara langsung akan lebih memberi keterangan daripada pengukuran satu media saja. Peneliti berikutnya juga dapat menguji butir-butir angket ini secara statistik untuk memastikan pengelompokan aspeknya sebelum instrumen yang sama dipakai pada populasi yang lebih luas.
+
+DAFTAR PUSTAKA
+
+Black, P., & Wiliam, D. (1998). Assessment and classroom learning. Assessment in Education: Principles, Policy & Practice, 5(1), 7-74. https://doi.org/10.1080/0969595980050102
+
+Davis, F. D. (1989). Perceived usefulness, perceived ease of use, and user acceptance of information technology. MIS Quarterly, 13(3), 319-340. https://doi.org/10.2307/249008
+
+Hamari, J., Koivisto, J., & Sarsa, H. (2014). Does gamification work? A literature review of empirical studies on gamification. Dalam 2014 47th Hawaii International Conference on System Sciences. IEEE. https://doi.org/10.1109/HICSS.2014.377
+
+Husen, S., Hizbullah, & Mustari, M. (2025). Dampak keterbatasan infrastruktur TIK terhadap efektivitas pembelajaran digital (Studi penerapan model TPACK di SDN 3 Jagaraga). Cermat: Jurnal Cendekiawan dan Riset Multidisiplin Akademik Terintegrasi, 1(2). https://doi.org/10.31004/cermat.v1i2.39
+
+Licorish, S. A., Owen, H. E., Daniel, B., & George, J. L. (2018). Students' perception of Kahoot!'s influence on teaching and learning. Research and Practice in Technology Enhanced Learning, 13(1), 9. https://doi.org/10.1186/s41039-018-0078-8
+
+Maharani, F., Erlisnawati, & Alpusari, M. (2023). Pengaruh penggunaan aplikasi Quizizz terhadap hasil belajar siswa kelas IV sekolah dasar. Jurnal Kiprah Pendidikan, 2(1), 1-8. https://doi.org/10.33578/kpd.v2i1.133
+
+Mujiburrahman, Kartiani, B. S., & Parhanuddin, L. (2023). Asesmen pembelajaran sekolah dasar dalam Kurikulum Merdeka. Pena Anda: Jurnal Pendidikan Sekolah Dasar, 1(1), 39-48.
+
+Roediger, H. L., & Karpicke, J. D. (2006). Test-enhanced learning: Taking memory tests improves long-term retention. Psychological Science, 17(3), 249-255. https://doi.org/10.1111/j.1467-9280.2006.01693.x
+
+Sodiq, M., Mahfud, H., & Adi, F. P. (2021). Persepsi guru dan peserta didik terhadap penggunaan aplikasi berbasis web "Quizizz" sebagai media pembelajaran di sekolah dasar. Didaktika Dwija Indria, 9(5), 50-55.
+
+Soelistyowati, D., Oemiati, S., & Furisari, P. (2022). Pembelajaran bahasa Inggris bagi siswa Madrasah Ibtidaiyah Blora. Didaktik: Jurnal Ilmiah PGSD STKIP Subang, 8(2), 1896-1907. https://doi.org/10.36989/didaktik.v8i2.484
+
+Sugiyono. (2019). Metode penelitian kuantitatif, kualitatif, dan R&D. Bandung: Alfabeta.
+
+Wang, A. I., & Tahir, R. (2020). The effect of using Kahoot! for learning: A literature review. Computers & Education, 149, 103818. https://doi.org/10.1016/j.compedu.2020.103818
+
+Yang, C., Luo, L., Vadillo, M. A., Yu, R., & Shanks, D. R. (2021). Testing (quizzing) boosts classroom learning: A systematic and meta-analytic review. Psychological Bulletin, 147(4), 399-435. https://doi.org/10.1037/bul0000309
